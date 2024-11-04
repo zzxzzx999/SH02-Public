@@ -1,3 +1,8 @@
+from django.contrib import admin
+from django.urls import path
+from django.urls import include
+from gap import views
+
 """
 URL configuration for gap_project project.
 
@@ -18,5 +23,8 @@ from django.contrib import admin
 from django.urls import path
 
 urlpatterns = [
+    path('', views.index, name='index'),
+    path('gap/', include('gap.urls')), # Maps any URLs starting with gap/ to be handled by gap.
+
     path("admin/", admin.site.urls),
 ]
