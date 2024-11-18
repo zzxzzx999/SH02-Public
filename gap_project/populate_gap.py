@@ -1,11 +1,17 @@
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 'gap_project.settings')
-
 import django
 django.setup()
 from django.db import models
 from gap.models import Company, GapAnalysis
+import json
+
+#Set up answer set template
+singular_set_answers = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+question_answer_set = {}
+for i in range(1, 13):
+    question_answer_set[i] = singular_set_answers.copy()
 
 def populate():
     joes_gap_analyses = [
@@ -25,6 +31,7 @@ def populate():
          "Gap Analyses" : res_gap_analyses}
     ]
     
+        
     for company in companies:
         c = add_comp(company)
         for i, date in enumerate(company["Gap Analyses"]):
@@ -34,15 +41,20 @@ def populate():
         for g in GapAnalysis.objects.filter(company = c):
             print(f'- {c}: {g}')
             
+            
 
 def add_comp(company):
-    c = Company.objects.get_or_create(name = company["Name"], dateRegistered = company["Date Registered"])[0]
+    c = Company.objects.get_or_create(name = company["Name"])[0]
+    c.dateRegistered = company["Date Registered"]
     c.save()
     return c
 
 def add_gap(date, c, i):
     g = GapAnalysis.objects.get_or_create(date = date, company = c, )[0]
+    print(date)
     g.title = f"Gap Analysis{i} : {date}"
+    g.gap_data = json.dumps(question_answer_set.copy())
+    g.save()
     
 if __name__ == '__main__':
     print("Starting Gap Analysis population")
