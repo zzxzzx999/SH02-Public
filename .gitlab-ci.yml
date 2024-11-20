@@ -1,0 +1,15 @@
+image : node:latest
+
+stages:
+    - build
+
+cache:
+    paths:
+        -node_modules/
+
+buid:
+    stage: build
+    script:
+        - cd ./gap_project
+        - npm install
+        - npm run build
