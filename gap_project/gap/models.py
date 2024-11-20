@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 
 class Company(models.Model):
@@ -13,10 +14,11 @@ class Company(models.Model):
     
 class GapAnalysis(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(default = timezone.now)
     title = models.CharField(max_length=50, default = f"Gap Analysis : {date}")
     consultant = models.CharField(max_length=128, unique=False)
-    url = models.URLField()
+    gap_data = models.JSONField(default=dict)
+
     
     class Meta:
         verbose_name_plural = "Gap Analyses"
