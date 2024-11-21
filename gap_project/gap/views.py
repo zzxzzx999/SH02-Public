@@ -1,5 +1,11 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import IndexSerializer
+from .models import Company
 
+@api_view(['GET'])
 def index(request):
-    return HttpResponse("Hell00000")
+    queryset = Company.objects.all()
+    serializer = IndexSerializer(queryset, many=True)
+    
+    return Response(serializer.data, status=201)
