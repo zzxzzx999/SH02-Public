@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import SpecificCompany from "./SpecificCompany";
 
 function Company() {
   // companies is an array - it stores all the companies in the database
@@ -28,17 +30,45 @@ function Company() {
       });
   }, []);  // Empty array means "run this effect only once after the initial render"
 
+  //Router : context for routing in your application. It enables navigation between different components or pages without reloading the browser.
   return (
-    // loop through the companies array and display relevant info
-    <div>
-      {companies.map((company) => (
-        <div key={company.name}>
-          <h1>{company.name}</h1>
-          <p>Number of analysis = {company.numOfAnalysis}</p>
-          <p>Date created = {company.dateRegistered}</p>
-        </div>
-      ))}
-    </div>
+    <Router>
+      {/* Router : Used to define and group multiple <Route> components. */}
+      <Routes>
+        {/* Route : Default path to show the company list */}
+        <Route
+          path="/"
+          element={
+            <div>
+              {companies.map((company) => (
+                <div key={company.name}>
+                  <h1>{company.name}</h1>
+                  <p>Number of analysis = {company.numOfAnalysis}</p>
+                  <p>Date created = {company.dateRegistered}</p>
+
+                  {/* Link : Link to the specific company, passing numOfAnalysis, dateRegistered, and name to SpecificCompany component. */}
+                  {/*        used for navigation between routes in your React app. It’s like an HTML <a> tag but optimized for React Router */}
+                  {/*        navigates without reloading the page */}
+                  <Link
+                    to={`/company/${company.name}`}
+                    state={{
+                      numOfAnalysis: company.numOfAnalysis,
+                      dateRegistered: company.dateRegistered,
+                      name: company.name,
+                    }}
+                  >
+                    View Details
+                  </Link>
+                </div>
+              ))}
+            </div>
+          }
+        />
+
+        {/* Route for SpecificCompany */}
+        <Route path="/company/:name" element={<SpecificCompany />} />
+      </Routes>
+    </Router>
   );
 }
 
