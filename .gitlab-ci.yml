@@ -1,15 +1,76 @@
-image : node:latest
-
 stages:
-    - build
+  - setup
+  - test
+  - build
+  - deploy
+
+variables:
+  # Specify the paths for cached dependencies
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  NODE_MODULES_CACHE: "$CI_PROJECT_DIR/node_modules"
 
 cache:
-    paths:
+  paths:
+    - .cache/pip/
     - node_modules/
 
-buid:
-    stage: build
-    script:
-        - cd ./gap_project
-        - npm install
-        - npm run build
+# Step 1: Setup Backend (Django)
+setup_backend:
+  stage: setup
+  image: python:3.12  # Use your desired Python version
+  before_script:
+    - pip install django djangorestframework django-cors-headers
+  script:
+    - cd gap_project/
+    - python manage.py migrate  # Run migrations to set up the database
+
+# Step 2: Test Backend (Django)
+test_backend:
+  stage: test
+  image: python:3.12
+  before_script:
+    - pip install django djangorestframework django-cors-headers
+  script:
+    - cd gap_project/
+    - python manage.py test  # Run Django tests
+
+# Step 3: Setup Frontend (React)
+setup_frontend:
+  stage: setup
+  image: node:14  # Use your desired Node.js version
+  script:
+    - npm install reactstrap bootstrap react-hook-form axios  # Install React dependencies
+
+# Step 4: Test Frontend (React)
+test_frontend:
+  stage: test
+  image: node:14
+  script:
+    - cd gap_project/frontend/
+    - npm install
+    - npm test  # Run React tests
+
+# Step 5: Build Frontend (React)
+build_frontend:
+  stage: build
+  image: node:14
+  script:
+    - cd gap_project/frontend/
+    - npm install
+    - npm run build  # Build React for production
+  artifacts:
+    paths:
+      - build/
+
+# Step 6: Deploy (Optional)
+deploy:
+  stage: deploy
+  image: python:3.12
+  before_script:
+    - pip install django djangorestframework django-cors-headers
+  script:
+    - cd gap_project/
+    - python manage.py collectstatic --noinput  # Collect static files from React build
+    - python manage.py runserver 0.0.0.0:8000  # Start Django server (for demo purposes)
+  only:
+    - main  # Deploy only from the main branch
