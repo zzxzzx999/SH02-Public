@@ -19,8 +19,6 @@ setup_backend:
   stage: setup
   image: python:3.12  # Use your desired Python version
   before_script:
-    - python -m venv gapenv
-    - source gapenv/Scripts/activate
     - pip install django djangorestframework django-cors-headers
   script:
     - python manage.py migrate  # Run migrations to set up the database
@@ -30,8 +28,6 @@ test_backend:
   stage: test
   image: python:3.12
   before_script:
-    - python -m venv gapenv
-    - source gapenv/Scripts/activate
     - pip install django djangorestframework django-cors-headers
   script:
     - python manage.py test  # Run Django tests
