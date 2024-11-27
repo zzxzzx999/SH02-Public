@@ -46,6 +46,7 @@ test_frontend:
   stage: test
   image: node:10.9
   script:
+    - cd gap_project/frontend/
     - npm run test -- --watchAll=false  # Run React tests
 
 # Step 5: Build Frontend (React)
@@ -53,6 +54,7 @@ build_frontend:
   stage: build
   image: node:10.9
   script:
+    - cd gap_project/frontend/
     - npm run build  # Build React for production
   artifacts:
     paths:
@@ -63,10 +65,9 @@ deploy:
   stage: deploy
   image: python:3.12
   before_script:
-    - python -m venv gapenv
-    - gapenv/Scripts/activate
     - pip install django djangorestframework django-cors-headers
   script:
+    - cd gap_project/
     - python manage.py collectstatic --noinput  # Collect static files from React build
     - python manage.py runserver 0.0.0.0:8000  # Start Django server (for demo purposes)
   only:
