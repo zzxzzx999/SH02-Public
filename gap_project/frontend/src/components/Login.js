@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import '../css/Login.css';
+import { useNavigate } from "react-router-dom";
 
 function Login(){
     const [username, setName] = useState("");
@@ -7,9 +8,11 @@ function Login(){
 
     const [visible, setVisible] = useState(false);
 
+    const navigate = useNavigate(); 
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log('logged in yay');
+        navigate('/home');
     };
 
     const togglePassword = () => {

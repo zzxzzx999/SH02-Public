@@ -1,0 +1,191 @@
+/* variables */
+:root {
+  --sidebar-width: 210px; /* Default width for expanded sidebar */
+  --collapsed-sidebar-width: 60px; /* Collapsed sidebar width */
+}
+
+/* defined in App.js */
+.app-container {
+  display: flex; /* Sidebar and main content in a row */
+  height: 100vh; /* Full viewport height */
+}
+
+/* Main content area */
+.main-content {
+  padding: 20px;
+  transition: margin-left 0.3s ease; /* Smoot
+  h transition */
+  width: 100%; /* Ensures full width */
+  width: auto; /* Prevent unwanted centering */
+  height: auto; /* Prevent unwanted vertical centering */
+  margin-left: var(--sidebar-width); /* Default for expanded sidebar */
+}
+
+.side-navbar, .main-content * {
+  font-family: 'Poppins', sans-serif;
+  font-size:15px;
+}
+
+
+.side-navbar.collapsed + .main-content {
+  transition: margin-left 0.3s ease; /* Smooth transition for margin change */
+  margin-left: var(--collapsed-sidebar-width);
+}
+
+/* Side nav bar */
+.side-navbar {
+  position: fixed;
+  border-right: 5px solid #50a7d3; /* Change the color to light gray if desired */
+  top: 0;
+  left: 0;
+  width: var(--sidebar-width);
+  height: 100%;
+  background-color: white;
+  display:flex;
+  flex-direction: column; /* Stack items vertically */
+  transition: width 0.3s ease; /* Smooth transition for expanding/collapsing */
+  z-index:5;
+}
+
+.side-navbar ul {
+  flex-grow: 1; /* Make the list take up all available space */
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.side-navbar li {
+  margin-top: 5px;
+  margin-bottom : 5px;
+}
+
+.side-navbar a {
+  display: flex; /* Links span full width for clickability */
+  box-sizing: border-box; /* Make sure padding doesn't overflow the link */
+  display: flex; /* Use flex to manage link content */
+  align-items: center; /* Vertically align text */
+  color: black;
+  text-decoration: none;
+  padding: 10px 15px;
+  white-space: nowrap; /* Ensure text doesn't wrap */
+  width: var(--sidebar-width);
+  transition: width 0.3s ease; /* Smooth transition for expanding/collapsing */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.side-navbar a:hover {
+  background-color: rgba(224, 224, 224, 0.5); /* 50% transparent light gray */
+}
+
+.side-navbar img {
+  margin-right: 10px; /* Add 10px space between the image and the text */
+}
+
+.side-navbar.collapsed {
+  width: var(--collapsed-sidebar-width); /* Collapsed width */
+  transition: width 0.3s ease; /* Smooth transition for expanding/collapsing */
+  margin:0px;
+}
+
+.side-navbar.collapsed img{
+  margin:0px;
+}
+
+.side-navbar.collapsed a {
+  justify-content: center; /* Center the icon and text when collapsed */
+  padding: 10px 0; /* Adjust padding to remove excessive space */
+  text-align: center; /* Ensure text and icon are centered */
+  width: 100%; /* Ensure the link spans full width of the sidebar */
+}
+
+/* icon styling */
+.collapsed-icons{
+  width:20px;
+  height:20px;
+  align-self: center;
+}
+
+.gordon-logo-container {
+  display: flex; /* Enable flexbox for positioning */
+  align-items: center; /* Vertically center */
+  justify-content: space-between; /* Space out the items horizontally */
+  padding: 10px;
+}
+
+.gordon-logo {
+  width: 40px; /* Default width for expanded state */
+  height: auto; /* Maintain aspect ratio */
+  transition: width 0.2s ease; /* Smooth width change on collapse/expand */
+}
+
+/* toggle button */
+.toggle-btn {
+  background-color: white;
+  color: #4691B7;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.2s ease;
+  text-align: center; /* Ensures text inside the button is centered */
+  display: block;
+  justify-content: center; /* Horizontally center content */
+  align-items: center; /* Vertically center content */
+  width: 40px; /* Set a consistent width for the button */
+  height: 40px; /* Set a consistent height for the button */
+}
+
+.side-navbar.collapsed .toggle-btn {
+  margin:auto;
+}
+
+.logout-button {
+  position: absolute; /* Use absolute positioning relative to the nearest positioned ancestor */
+  bottom: 0; /* Position at the bottom of the page */
+  display: flex;
+  transition: width 1s ease; /* Smooth transition for expanding/collapsing */
+  background-color: #4691B7;
+  border-radius : 10px;
+  display: flex;
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+  width: 125px;
+  height: 50px;
+}
+
+.logout-button a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 10px 15px;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px; /* Apply border-radius to the link */
+  text-decoration: none; /* Remove underline */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.logout-button img {
+  width: 30px;
+  height: 30px;
+}
+
+.logout-button a {
+  color: white;
+}
+
+.side-navbar.collapsed .logout-button {
+  width: 50px;/* Match the collapsed sidebar width */
+  height: 50px; /* Keep consistent height */
+  transition: width 0.3s ease, height 0.3s ease; /* Smooth resizing */
+  margin-left:4px;
+}
+
+.side-navbar:not(.collapsed) .logout-button {
+  margin-left:30px;
+  transition: width 0.4s ease, height 0.4s ease; /* Smooth resizing */
+}

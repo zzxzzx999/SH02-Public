@@ -2,22 +2,27 @@
   font-family: 'Poppins', sans-serif;
 }
 
+:root {
+  --sidebar-width: 210px; /* Default width for expanded sidebar */
+  --collapsed-sidebar-width: 60px; /* Collapsed sidebar width */
+}
+
 #root {
   width:100vw
 }
 
 body {
   background-color: lightgray;
-  display: flex;
-  justify-content: center;  /* Centers the content horizontally */
-  align-items: center;      /* Centers the content vertically */
   height: 100vh;            /* Full viewport height */
   margin: 0;                /* Remove default margin */
 }
 
 .main-content {
-  padding: 5%;
+  padding: 20px;
   font-family: 'Poppins', sans-serif;
+  justify-content: flex-start; /* Ensure the content is aligned to the left */
+  align-items: flex-start; /* Aligns the content to the top */
+  position: relative; /* Prevent absolute positioning overrides */
 }
 
 .App-header {
@@ -91,9 +96,6 @@ body {
 
 /* Ensure the body uses Flexbox to center content */
 body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   height: 100vh;           /* Full height of the viewport */
   margin: 0;
 }
@@ -101,11 +103,16 @@ body {
 
 /* Main content container */
 .app-container {
-  display: flex;
-  justify-content: center;  /* Center horizontally */
-  align-items: center;      /* Center vertically */
+  display: flex; /* Arrange items horizontally */
+  height: 100vh; /* Full viewport height */
+  width: 100%; /* Full width */
+  margin: 0;
+  padding: 0;
+  align-items: flex-start; /* Align items to the top */
+  justify-content: flex-start; /* Align the sidebar and content to the left */
 
   width:100vw;
   height:100vh;
   z-index: 10; /* Ensures this is above the overlay and video */
+  align-items: flex-start; /* Align items to the top */
 }
