@@ -39,6 +39,7 @@ setup_frontend:
   stage: setup
   image: node:10.9  # Use your desired Node.js version
   script:
+    - npm install
     - npm install reactstrap bootstrap react-hook-form axios  # Install React dependencies
 
 # Step 4: Test Frontend (React)
