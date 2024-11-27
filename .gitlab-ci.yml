@@ -21,6 +21,7 @@ setup_backend:
   before_script:
     - pip install django djangorestframework django-cors-headers
   script:
+    - cd gap_project/
     - python manage.py migrate  # Run migrations to set up the database
 
 # Step 2: Test Backend (Django)
@@ -30,6 +31,7 @@ test_backend:
   before_script:
     - pip install django djangorestframework django-cors-headers
   script:
+    - cd gap_project/
     - python manage.py test  # Run Django tests
 
 # Step 3: Setup Frontend (React)
