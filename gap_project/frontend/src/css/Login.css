@@ -1,8 +1,8 @@
-.login-page, .create-new-company * {
+.login-page, .create-new-company, .gap-confirm, .gap-info, .div * {
     font-family: 'Poppins', sans-serif;
 }
   
-.login-page body {
+.login-page, .create-new-company, .gap-confirm, .gap-info body {
     display: grid;
     height: 100vh;
     margin: 0;
@@ -29,7 +29,7 @@
 }
 
 .bubble-container input[type="text"], input[type="password"]{
-    width: 100%;
+    width: 90%;
     height: 35px;
     border-radius: 10px;
     border: 2px solid #dcdcdc;
@@ -38,8 +38,8 @@
 }
 
 .bubble-container textarea{
-    width: 80%;
-    height: 35px;
+    width: 90%;
+    height: 100px;
     border-radius: 10px;
     border: 2px solid #dcdcdc;
     max-width: 500px;
@@ -47,7 +47,7 @@
 }
 
 .submitButton {
-    width: 175px;
+    width: 14em;
     padding: 5px; /* Add padding for consistency */
     border-radius: 10px;
     border: none;
@@ -58,7 +58,7 @@
     margin: 0 auto;
     margin-top : 45px;
     font-weight: 500;
-    font-size: 20px;
+    font-size: 17px;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
     text-decoration: none;

@@ -2,7 +2,9 @@ import '../css/App.css';
 import Login from './Login'; 
 import Home from './Home';
 import NewCompany from './NewCompany';
+import GapAnalysis from './GapAnalysis';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import GapAnalysisConfirm, {GapInformation} from './GapAnalysisInformation';
 
 function App() {
   return (
@@ -17,6 +19,9 @@ function App() {
             <Route path="/" element={<Login />} />
             <Route path="/home" element={<Home />} />
             <Route path="/new-company" element={<NewCompany />} />
+            <Route path="/new-gap-confirm" element={<GapAnalysisConfirm />} />
+            <Route path="/new-gap-information" element={<GapInformation />} />
+            <Route path="/gap-analysis" element={<GapAnalysis />} />
           </Routes>
         </div>
       </Router>
