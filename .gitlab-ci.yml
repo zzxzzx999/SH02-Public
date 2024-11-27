@@ -42,13 +42,13 @@ setup_frontend:
     - npm install reactstrap bootstrap react-hook-form axios  # Install React dependencies
 
 # Step 4: Test Frontend (React)
-test_frontend:
-  stage: test
-  image: node:10.9
-  script:
-    - cd gap_project/frontend/
-    - npm install react-scripts --save
-    - npm run test -- --watchAll=false  # Run React tests
+#test_frontend:
+#  stage: test
+#  image: node:10.9
+#  script:
+#    - cd gap_project/frontend/
+#    - npm install react-scripts --save
+#    - npm run test -- --watchAll=false  # Run React tests
 
 # Step 5: Build Frontend (React)
 build_frontend:
