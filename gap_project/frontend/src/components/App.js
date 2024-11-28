@@ -1,17 +1,14 @@
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import '../css/App.css';
-import Login from './Login'; 
 import Home from './Home';
 import NewCompany from './NewCompany';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './Login';
+import Template from './Template';
 
 function App() {
   return (
     <Router>
-      <div className="video-container">
-        <video autoPlay muted loop className="background-video" src='/background-video.mp4' type="video/mp4" />
-      </div>
-      <div className="overlay"></div>
-
+        <Template>
         <div className="app-container">
           <Routes>
             <Route path="/" element={<Login />} />
@@ -19,7 +16,8 @@ function App() {
             <Route path="/new-company" element={<NewCompany />} />
           </Routes>
         </div>
-      </Router>
+      </Template>
+    </Router>
   );
 }
 
