@@ -15,15 +15,15 @@ function NewCompany() {
 
   const handleSubmit = (event) => {
       event.preventDefault();
-      navigate('/gap-analysis-confirm');
+      navigate('/new-gap-confirm');
   }
 
   return (
   <div className="create-new-company">
   <NavBar links={linksForPage2} />;
   <div className = "bubble-container" style={{width:'500px'}}>
-  <h1>CREATE NEW COMPANY</h1>
-  <form onSubmit={handleSubmit}>
+  <h2>CREATE NEW COMPANY</h2>
+  <form onSubmit={handleSubmit} className="form">
       <label>
       <input 
           type="text" 
@@ -38,7 +38,6 @@ function NewCompany() {
           type="text" 
           value={additionalNotes}
           onChange={(e) => setAdditionalNotes(e.target.value)}
-          style={{ display: 'block', height:'100px', width:'300px'}}
           placeholder = "Additional Notes"
       />
       </label>
