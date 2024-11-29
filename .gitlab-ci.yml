@@ -2,6 +2,7 @@ stages:
   - setup
   - test
   - build
+  - debug
   - deploy
 
 variables:
@@ -41,7 +42,8 @@ setup_frontend:
   script:
     - cd gap_project/frontend/
     - npm install reactstrap bootstrap react-hook-form axios  # Install React dependencies
-    - npm install react-scripts --save
+    - npm install --legacy-peer-deps  # Install dependencies
+    - ls node_modules/react-scripts || echo "react-scripts not installed" # for debugging later
 
 # Step 4: Test Frontend (React)
 test_frontend:
@@ -61,6 +63,15 @@ build_frontend:
   artifacts:
     paths:
       - build/
+
+# Step 5.5: Debugging React Script
+debug_react_scripts:
+  stage: debug
+  image: node:10.5
+  script:
+    - cd gap_project/frontend/
+    - npm ls react-scripts  # Check if react-scripts is installed and its version
+    - ls -l node_modules/react-scripts/bin/  # Check if the react-scripts binary exists
 
 # Step 6: Deploy (Optional)
 deploy:
