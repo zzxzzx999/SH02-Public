@@ -47,8 +47,7 @@ test_frontend:
   image: node:14
   script:
     - cd gap_project/frontend/
-    - npm install
-    - npm test  # Run React tests
+    - npm run test  # Run React tests
 
 # Step 5: Build Frontend (React)
 build_frontend:
@@ -56,7 +55,6 @@ build_frontend:
   image: node:14
   script:
     - cd gap_project/frontend/
-    - npm install
     - npm run build  # Build React for production
   artifacts:
     paths:
