@@ -1,18 +1,39 @@
 import React, {useState} from "react";
 import '../css/Login.css';
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 function Login(){
     const [username, setName] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("")
 
     const [visible, setVisible] = useState(false);
 
     const navigate = useNavigate(); 
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async(event) => {
         event.preventDefault();
-        navigate('/home');
+
+        try { 
+            const response = await axios.post('http://localhost:8000/api/login/', {
+                username,
+                password,
+            });
+            const { token, username: loggedInUsername} = response.data;
+            localStorage.setItem('authToken', token);
+            localStorage.setItem('username', loggedInUsername);
+            navigate('/home')
+        } catch (err) {
+            console.error("Login error:", err);
+            setError("Invalid username or password.");
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('username');
+        }
+
+
+
+
     };
 
     const togglePassword = () => {

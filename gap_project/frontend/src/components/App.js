@@ -6,6 +6,7 @@ import GapAnalysis from './GapAnalysis';
 import Login from './Login';
 import Template from './Template';
 import GapAnalysisConfirm, {GapInformation} from './GapAnalysisInformation';
+import PrivateRoute from './PrivateRoute';
 
 function App() {
   return (
@@ -14,11 +15,11 @@ function App() {
         <div className="app-container">
           <Routes>
             <Route path="/" element={<Login />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/new-company" element={<NewCompany />} />
-            <Route path="/new-gap-confirm" element={<GapAnalysisConfirm />} />
-            <Route path="/new-gap-information" element={<GapInformation />} />
-            <Route path="/gap-analysis" element={<GapAnalysis />} />
+            <Route path="/home" element={<PrivateRoute element={Home} />} />
+            <Route path="/new-company" element={<PrivateRoute element={NewCompany} />} />
+            <Route path="/new-gap-confirm" element={<PrivateRoute element={GapAnalysisConfirm} />} />
+            <Route path="/new-gap-information" element={<PrivateRoute element={GapInformation} />} />
+            <Route path="/gap-analysis" element={<PrivateRoute element={GapAnalysis} />} />
           </Routes>
         </div>
       </Template>
