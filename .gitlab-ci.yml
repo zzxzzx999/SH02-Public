@@ -67,7 +67,7 @@ setup_frontend:
 # Step 5.5: Debugging React Script
 debug_react_scripts:
   stage: debug
-  image: node:10.5
+  image: node:22.11
   script:
     - cd gap_project/frontend/
     - npm ls react-scripts  # Check if react-scripts is installed and its version
