@@ -71,7 +71,7 @@ debug_react_scripts:
   image: node:22.11
   script:
     - cd gap_project/frontend/
-    - npm ls node_modules/react-scripts  # Check if react-scripts is installed and its version
+    - npm ls react-scripts  # Check if react-scripts is installed and its version
     - ls -l node_modules/react-scripts/bin/  # Check if the react-scripts binary exists
 
 # Step 6: Deploy (Optional)
