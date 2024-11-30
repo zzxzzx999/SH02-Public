@@ -41,17 +41,22 @@ setup_frontend:
   image: node:22.11  # Use your desired Node.js version
   script:
     - cd gap_project/frontend/
+    - rm -rf node_modules package-lock.json  # Remove any old dependencies
+    - npm cache clean --force
     - npm install reactstrap bootstrap react-hook-form axios  # Install React dependencies
-    - npm install --legacy-peer-deps  # Install dependencies
-    - ls node_modules/react-scripts || echo "react-scripts not installed" # for debugging later
+    - npm install  # Install dependencies
 
 # Step 4: Test Frontend (React)
-#test_frontend:
-#  stage: test
-#  image: node:22.11
-#  script:
-#    - cd gap_project/frontend/
-#   - npm run test -- --watchAll=false  # Run React tests
+test_frontend:
+  stage: test
+  image: node:22.11
+  cache:
+    paths:
+      - gap_project/frontend/node_modules/
+  script:
+    - cd gap_project/frontend/
+    - npm ci  # Install dependencies
+    - npm run test -- --watchAll=false  # Run React tests
 
 # Step 5: Build Frontend (React)
 #build_frontend:
@@ -67,10 +72,13 @@ setup_frontend:
 # Step 5.5: Debugging React Script
 debug_react_scripts:
   stage: debug
-  image: node:10.5
+  image: node:22.11
   script:
     - cd gap_project/frontend/
-    - npm ls react-scripts  # Check if react-scripts is installed and its version
+    #- npm ls react-scripts  # Check if react-scripts is installed and its version
+    - rm -rf node_modules package-lock.json  # Remove node_modules and lock file
+    - npm cache clean --force                # Clear npm cache
+    - npm install                            # Reinstall dependencies
     - ls -l node_modules/react-scripts/bin/  # Check if the react-scripts binary exists
 
 # Step 6: Deploy (Optional)
