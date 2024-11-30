@@ -50,8 +50,12 @@ setup_frontend:
 test_frontend:
   stage: test
   image: node:22.11
+  cache:
+    paths:
+      - gap_project/frontend/node_modules/
   script:
     - cd gap_project/frontend/
+    - npm ci  # Install dependencies
     - npm run test -- --watchAll=false  # Run React tests
 
 # Step 5: Build Frontend (React)
