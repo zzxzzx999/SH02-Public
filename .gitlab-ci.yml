@@ -41,18 +41,18 @@ setup_frontend:
   image: node:22.11  # Use your desired Node.js version
   script:
     - cd gap_project/frontend/
-    - rm -rf node_modules package-lock.json  # Remove any old dependencies # new debug line
+    - rm -rf node_modules package-lock.json  # Remove any old dependencies
+    - npm cache clean --force
     - npm install reactstrap bootstrap react-hook-form axios  # Install React dependencies
-    - npm install --legacy-peer-deps  # Install dependencies
-    - ls node_modules/react-scripts || echo "react-scripts not installed" # for debugging later
+    - npm install  # Install dependencies
 
 # Step 4: Test Frontend (React)
-#test_frontend:
-#  stage: test
-#  image: node:22.11
-#  script:
-#    - cd gap_project/frontend/
-#   - npm run test -- --watchAll=false  # Run React tests
+test_frontend:
+  stage: test
+  image: node:22.11
+  script:
+    - cd gap_project/frontend/
+    - npm run test -- --watchAll=false  # Run React tests
 
 # Step 5: Build Frontend (React)
 #build_frontend:
