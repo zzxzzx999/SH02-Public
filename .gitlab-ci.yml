@@ -44,6 +44,7 @@ setup_frontend:
     - rm -rf node_modules package-lock.json  # Remove any old dependencies
     - npm cache clean --force
     - npm install reactstrap bootstrap react-hook-form axios  # Install React dependencies
+    - npm install --save-dev @babel/core @babel/preset-env @babel/preset-react babel-jest
     - npm install  # Install dependencies
 
 # Step 4: Test Frontend (React)
@@ -56,6 +57,7 @@ test_frontend:
   script:
     - cd gap_project/frontend/
     - npm ci  # Install dependencies
+    - npx babel-jest --init  # Automatically generate Jest config for Babel
     - npm run test -- --watchAll=false  # Run React tests
 
 # Step 5: Build Frontend (React)
