@@ -57,19 +57,18 @@ test_frontend:
   script:
     - cd gap_project/frontend/
     - npm ci  # Install dependencies
-    - npx babel-jest --init  # Automatically generate Jest config for Babel
     - npm run test -- --watchAll=false  # Run React tests
 
 # Step 5: Build Frontend (React)
-#build_frontend:
-#  stage: build
-#  image: node:22.11
-#  script:
-#    - cd gap_project/frontend/
-#    - npm run build  # Build React for production
-#  artifacts:
-#    paths:
-#      - build/
+build_frontend:
+  stage: build
+  image: node:22.11
+  script:
+   - cd gap_project/frontend/
+    - npm run build  # Build React for production
+  artifacts:
+    paths:
+      - build/
 
 # Step 5.5: Debugging React Script
 debug_react_scripts:
