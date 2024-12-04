@@ -2,7 +2,6 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import '../css/App.css';
 import Home from './Home';
 import NewCompany from './NewCompany';
-import CreateNewCompany from './CreateNewCompany';
 import GapAnalysis from './GapAnalysis';
 import ListofCompany from './ListofCompany';
 import Login from './Login';
@@ -23,7 +22,6 @@ function App() {
             <Route path="/new-gap-confirm" element={<PrivateRoute element={GapAnalysisConfirm} />} />
             <Route path="/new-gap-information" element={<PrivateRoute element={GapInformation} />} />
             <Route path="/gap-analysis" element={<PrivateRoute element={GapAnalysis} />} />
-            <Route path="/create-new-company" element={<PrivateRoute element={CreateNewCompany} />} />
           </Routes>
         </div>
       </Template>
