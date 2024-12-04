@@ -5,7 +5,7 @@ import '../css/Login.css'
 
 function NewCompany() {
   const linksForPage2 = [
-    { name: 'Previous Page', path: '/about-us', image:'/back-button.png'},
+    { name: 'Previous Page', path: '/home', image:'/back-button.png'},
   ];
 
   const [companyName, setCompanyName] = useState("");
