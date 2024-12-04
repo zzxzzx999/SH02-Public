@@ -43,7 +43,7 @@ function NewCompany() {
               <form className="form" onSubmit={handleSubmit}>
                   {/* company name */}
 
-                    <label htmlFor="company-name">:</label>
+                    <label htmlFor="company-name"></label>
                       <input
                           type="text"
                           id="company-name"

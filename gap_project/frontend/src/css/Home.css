@@ -1,0 +1,21 @@
+.about-us-box {
+    z-index: 0;
+    background-color: white;
+    border-radius: 30px;
+    text-align: center;
+    width: 1050px;
+    height: 300px;
+}
+
+.search-box{
+    background-color:white;
+    width:100px;
+    height:100px;
+    clear:both;
+}
+
+.about-us-search{
+    background-color: #296E8F;
+    width: 1050px;
+}
+
