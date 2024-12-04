@@ -30,7 +30,8 @@ def login_user(request):
 
     if user:
         token, created = Token.objects.get_or_create(user=user)
-        return Response({'token' : token.key, 'username': user.username})
+        is_admin = username == 'GAPAdmin'
+        return Response({'token' : token.key, 'username': user.username, 'is_admin' : is_admin})
     else:
         return Response({'error': "Invalid credentials"}, status= 404)
 

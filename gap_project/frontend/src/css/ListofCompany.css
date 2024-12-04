@@ -1,0 +1,259 @@
+.bubble-container-list {
+  z-index:3;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  height: 75%;
+  padding: 2%;
+  border-radius: 35px;
+  background-color : white;
+  box-shadow: 0 4px 6px rgba(189, 70, 70, 0.1);
+  text-align: center;
+  display: flex; /* Add Flexbox */
+  flex-direction: column; /* Stack children vertically */
+  align-items: center; /* Center children horizontally */
+}
+
+.title {
+    text-align: center;
+    font-weight: bolder;
+    font-size: 40px;
+    margin-bottom: 2%;
+    margin-top: 2%;
+
+  }
+  
+  /*serch part(input, filter, sort)*/
+  .search-part {
+    margin-left: 40px;
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2%;
+    width: 100%;
+  }
+  /*input*/
+  .search-wrapper {
+    display: flex;
+    align-items: center; 
+    border: 1px solid #ccc; 
+    border-radius: 25px; 
+    padding: 5px 10px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    width: 60%; 
+    margin-right: 40px;
+    height: 30px;
+  }
+  
+  .search-icon svg {
+    margin-right: 1px; /* the distance between icon and input*/
+    margin-top: 5px;
+    margin-left: 3px;
+    
+  }
+  .search-input {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    border: none;
+    outline: none;
+    width: 100%;
+    padding:8px 10px; 
+    box-sizing: border-box;
+  }
+  
+  /*filter, sort*/
+  .filter-wrapper, .sort-wrapper {
+    position: relative;
+    display: flex;
+    margin: 10px;
+    align-items: center; 
+    justify-content: center;
+    border: 1px solid #ccc; 
+    border-radius: 25px; 
+    padding: 5px 10px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    margin-right: 40px; /* spacing between elements */
+    height: 30px;
+    width: 15%;
+  }
+  
+  .filter-icon, .sort-icon {
+    display: inline-flex;
+    align-items: auto; 
+    vertical-align: middle; /* Ensure the baseline of the icon is aligned with the text*/
+  }
+
+  
+  .filter-button, .sort-button {
+    font-family: 'Poppins', sans-serif;
+    font-weight:500;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 5px 10px;
+  }
+  
+  /*filter bar and sort bar*/
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+
+}
+
+.dropdown button {
+    font-family: "Poppins", sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    text-align: left;
+    width: 100%;
+    white-space: nowrap;/* 禁止换行 */
+    border-bottom: 1px solid #ccc;
+}
+.dropdown button:last-child {
+  border-bottom: none;
+}
+
+.dropdown button:hover {
+    background: #e9ecef;
+    border-radius: 20px;
+}
+
+  
+  /*Main list table*/
+  .table {
+    position: relative;
+    max-height: 300px;
+    overflow-y: auto;
+    width: 95%;
+    margin: 0 auto;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 2.5px solid #71B7FE;
+  }
+  
+  .table-header, .table-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 2fr;
+    align-items: center;
+    padding: 10px 0;
+    background-color: white;
+    
+  }
+  
+  .table-header{
+    font-weight: bold;
+    font-size: 18px;
+    margin-left: 1%;
+    margin-right: 1%;
+    position: sticky;
+    
+  }
+  
+  .table-row {
+    cursor: pointer;
+    font-size: 15px;
+    align-items: center;
+    padding: 10px 10px; 
+    margin: 0 10px; /* add space of left and right side of rows */
+    background-color: #D9D9D9;  
+    border-radius: 15px; 
+    margin-bottom: 20px; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  
+  .table-row span {
+    flex: 1;
+    text-align: center;
+  }
+  
+  
+  /* delete button */
+  .delete-button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #EB4F4F;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+  }
+  
+  .delete-button:hover {
+    background-color: #e11818;
+  }
+
+  /*delete pop up*/
+  .popup-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 半透明背景 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10; 
+    border-radius: 35px;
+  }
+
+  .popup-content {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    width: 300px;
+    max-width: 90%;
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+
+  }
+
+  .popup-content h2 {
+    margin: 0 0 10px;
+    font-size: 20px;
+    color: #333;
+  }
+
+  .popup-content p {
+    font-size: 16px;
+    margin: 10px 0;
+    color: #555;
+  }
+
+  .popup-buttons {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+  }
+
+  .popup-yes,
+  .popup-no {
+    padding: 8px 15px;
+    font-size: 16px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    color: white;
+    background-color: #369DCE;
+    width: 80px;
+  }
+
