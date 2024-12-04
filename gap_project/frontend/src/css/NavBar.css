@@ -18,7 +18,7 @@
   width: 100%; /* Ensures full width */
   width: auto; /* Prevent unwanted centering */
   height: auto; /* Prevent unwanted vertical centering */
-  margin-left: var(--sidebar-width); /* Default for expanded sidebar */
+  margin-left: var(--collapsed-sidebar-width); /* Default for expanded sidebar */
 }
 
 .side-navbar, .main-content * {
@@ -28,7 +28,6 @@
 
 
 .side-navbar.collapsed + .main-content {
-  transition: margin-left 0.3s ease; /* Smooth transition for margin change */
   margin-left: var(--collapsed-sidebar-width);
 }
 
