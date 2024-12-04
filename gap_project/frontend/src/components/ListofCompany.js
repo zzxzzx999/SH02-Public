@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import '../css/ListofCompany.css';
 import '../css/NavBar.css';
 import NavBar from './NavBar';
+import axios from "axios";
 
 function ListofCompany(){
     const linksForPage2 = [
@@ -14,14 +15,23 @@ function ListofCompany(){
     const[showPopup, setShowPopup]= useState(false);
     const [deleteTarget, setDeleteTarget] = useState(null); // save ID of deleted company
 
-    const [companies, setCompanies] = useState([
-        { id:1, name: "Company A", score: 580, date: "2024-10-16"},
-        { id:2, name: "Company B", score: 500, date: "2024-09-10"},
-        { id:3, name: "Company C", score: 630, date: "2023-08-05"},
-      ]);
+    const [companies, setCompanies] = useState([]);
 
     const[filter, setFilter]= useState("");
     const [sort, setSort] = useState("");    // current sort condition
+    
+    //backendlink
+    useEffect(() => {const token = localStorage.getItem("authToken");
+        axios.get("http://localhost:8000/api/companies/", {
+            headers: {
+                Authorization: `Token ${token}`,
+            }
+        }).then((response) => {setCompanies(response.data);})
+    .catch((error) => {console.error("Error :", error.response || error.message);
+
+    });}, []);
+
+    
     
     //filter bar
     const filteredCompanies = companies.filter((company) => {
