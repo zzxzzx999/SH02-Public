@@ -10,4 +10,4 @@ class IndexSerializer(serializers.ModelSerializer):
     # create a meta class
     class Meta:
         model = Company
-        fields = ('name','numOfAnalysis','dateRegistered')
+        fields = ('name','numOfAnalysis','dateRegistered', 'notes')

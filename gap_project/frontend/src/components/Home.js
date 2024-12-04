@@ -4,9 +4,17 @@ import '../css/NavBar.css'
 
 
 function AboutUs() {
-  const linksForPage1 = [
+
+  const isAdmin = localStorage.getItem('isAdmin') === 'true';
+
+  const linksForPage1 = isAdmin ? [
     { name: 'Add New Company', path: '/new-company' , image:'/add-new-company.png'},
-  ];
+    { name: 'List of Companies', path: '/list-of-company', image: '/company-list.png'},
+  ] : [
+    { name: 'Add New Company', path: '/new-company' , image:'/add-new-company.png'},
+  ]
+
+
 
   return (
     <div>

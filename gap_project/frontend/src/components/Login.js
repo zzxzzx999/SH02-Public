@@ -20,9 +20,10 @@ function Login(){
                 username,
                 password,
             });
-            const { token, username: loggedInUsername} = response.data;
+            const { token, username: loggedInUsername, is_admin} = response.data;
             localStorage.setItem('authToken', token);
             localStorage.setItem('username', loggedInUsername);
+            localStorage.setItem('isAdmin', is_admin);
             navigate('/home')
         } catch (err) {
             console.error("Login error:", err);

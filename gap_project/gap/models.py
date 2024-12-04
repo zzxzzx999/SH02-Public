@@ -5,6 +5,7 @@ class Company(models.Model):
     name = models.CharField(max_length=128, unique=True)
     numOfAnalysis = models.IntegerField(default=0)
     dateRegistered = models.DateField(auto_now_add=True)
+    notes = models.TextField(blank=True, null=True)
     
     class Meta:
         verbose_name_plural = "Companies"
