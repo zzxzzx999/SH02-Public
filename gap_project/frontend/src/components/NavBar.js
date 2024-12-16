@@ -31,7 +31,24 @@ function NavBar({links}) {
       <ul>
         {links.map((link) => (
           <div key={link.name}>
-          <li><Link to={link.path}><img className="collapsed-icons" src={link.image} alt={link.name} />{collapsed ? '' : (link.name)}</Link></li>
+ <li key={link.name}>
+            {collapsed ? (
+              // Only show the link when collapsed if there is an image
+              link.image && (
+                <Link to={link.path}>
+                  <img className="collapsed-icons" src={link.image} alt={link.name} />
+                </Link>
+              )
+            ) : (
+              // In normal state, show both image and link name
+              <Link to={link.path}>
+                {link.image && (
+                  <img className="collapsed-icons" src={link.image} alt={link.name} />
+                )}
+                {link.name && <span>{link.name}</span>}
+              </Link>
+            )}
+          </li>
           </div>
         ))}
         <li className="logout-button">
