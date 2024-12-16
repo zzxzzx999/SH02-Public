@@ -20,8 +20,12 @@ function Policy() {
       ]
     }
   ];
-
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
+  // Function to navigate to a specific question
+  const navigateToQuestion = (index) => {
+    setCurrentQuestionIndex(index);
+  };
 
   const goToNextQuestion = () => {
     if (currentQuestionIndex < questions[0].Questions.length - 1) {
@@ -56,6 +60,21 @@ function Policy() {
               Next &gt;
             </button>
           </div>
+
+          <div className="navigation-buttons">
+            {/* Button navigation for questions 1 and 2 */}
+            <button 
+              onClick={() => navigateToQuestion(0)} 
+              className={currentQuestionIndex === 0 ? "active" : ""}>
+              1
+            </button>
+            <button 
+              onClick={() => navigateToQuestion(1)} 
+              className={currentQuestionIndex === 1 ? "active" : ""}>
+              2
+            </button>
+          </div>
+
         </div>
       </div>
     </div>
