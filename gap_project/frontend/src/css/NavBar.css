@@ -68,11 +68,12 @@
   align-items: center; /* Vertically align text */
   color: black;
   text-decoration: none;
-  padding: 10px 15px;
   white-space: nowrap; /* Ensure text doesn't wrap */
   width: var(--sidebar-width);
   transition: width 0.3s ease; /* Smooth transition for expanding/collapsing */
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  font-size: 13.5px;
+  padding-left:2px;
 }
 
 .side-navbar a:hover {

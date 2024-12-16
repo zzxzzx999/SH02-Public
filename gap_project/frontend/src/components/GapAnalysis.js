@@ -3,7 +3,22 @@ import NavBar from './NavBar';
 import { Outlet } from 'react-router-dom';
 import '../css/NavBar.css';
 
-function Policy() {
+function Elements() {
+  const links = [
+    { name: 'Policy', path: '/gap-analysis/policy', image: '' },
+    { name: 'Management', path: '/gap-analysis/management', image: '' },
+    { name: 'Documented System', path: '/gap-analysis/documented-system', image: '' },
+    { name: 'Meetings', path: '/gap-analysis/meetings', image: '' },
+    { name: 'Performance Measurement', path: '/gap-analysis/performance-measurement', image: '' },
+    { name: 'Committee & Representatives', path: '/gap-analysis/committee-and-representatives', image: '' },
+    { name: 'Investiagtion Process', path: '/gap-analysis/investigation-process', image: '' },
+    { name: 'Incident Reporting', path: '/gap-analysis/incident-reporting', image: '' },
+    { name: 'Training Plan', path: '/gap-analysis/training-plan', image: '' },
+    { name: 'Risk Management Process', path: '/gap-analysis/risk-management-process', image: '' },
+    { name: 'Audit & Inspection Process', path: '/gap-analysis/audit-and-inspection-process', image: '' },
+    { name: 'Improvement Planning', path: '/gap-analysis/improvement-planning', image: '' },
+  ];
+
   const questions = [
     {
       Section_Number: 1,
@@ -42,7 +57,7 @@ function Policy() {
   return (
     <div>
       <div className="gap">
-        <NavBar links={[{ name: 'Policy', path: '/gap-analysis/policy', image: '' }]} />
+        <NavBar links={links} />
         <div className="main-content">
           <h1>{questions[0].Section_Name}</h1>
           <p>
@@ -80,7 +95,7 @@ function Policy() {
     </div>
   );
 }
-export { Policy };
+export { Elements };
 
 function Compliance({ question }) {
   const [selectedRatings, setSelectedRatings] = useState({});
@@ -165,14 +180,24 @@ export {Compliance};
 
 function GapAnalysis() {
   const links = [
-    { name: 'Policy', path: 'policy', image: '' },
+    { name: 'Policy', path: '/gap-analysis/policy', image: '' },
+    { name: 'Management', path: '/gap-analysis/management', image: '' },
+    { name: 'Documented System', path: '/gap-analysis/documented-system', image: '' },
+    { name: 'Meetings', path: '/gap-analysis/meetings', image: '' },
+    { name: 'Performance Measurement', path: '/gap-analysis/performance-measurement', image: '' },
+    { name: 'Committee & Representatives', path: '/gap-analysis/committee-and-representatives', image: '' },
+    { name: 'Investiagtion Process', path: '/gap-analysis/investigation-process', image: '' },
+    { name: 'Incident Reporting', path: '/gap-analysis/incident-reporting', image: '' },
+    { name: 'Training Plan', path: '/gap-analysis/training-plan', image: '' },
+    { name: 'Risk Management Process', path: '/gap-analysis/risk-management-process', image: '' },
+    { name: 'Audit & Inspection Process', path: '/gap-analysis/audit-and-inspection-process', image: '' },
+    { name: 'Improvement Planning', path: '/gap-analysis/improvement-planning', image: '' },
   ];
 
   return (
     <div>
       <div className="gap">
         <NavBar links={links} />
-        <Outlet />
         <div className="main-content">
           <h1>GAP ANALYSIS</h1>
           <p>Test content for Gap Analysis</p>
