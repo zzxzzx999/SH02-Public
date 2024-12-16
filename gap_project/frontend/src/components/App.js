@@ -24,6 +24,7 @@ function App() {
             <Route path="/gap-analysis" element={<PrivateRoute element={GapAnalysis} />}/>
               <Route path="/gap-analysis/policy" element={<PrivateRoute element={Elements} />} />
               <Route path="/gap-analysis/management" element={<PrivateRoute element={Elements} />} />
+              <Route path="/gap-analysis/documented-system" element={<PrivateRoute element={Elements} />} />
               <Route path="/gap-analysis/meetings" element={<PrivateRoute element={Elements} />} />
               <Route path="/gap-analysis/performance-measurement" element={<PrivateRoute element={Elements} />} />
               <Route path="/gap-analysis/committee-and-representatives" element={<PrivateRoute element={Elements} />} />
@@ -31,6 +32,7 @@ function App() {
               <Route path="/gap-analysis/incident-reporting" element={<PrivateRoute element={Elements} />} />
               <Route path="/gap-analysis/training-plan" element={<PrivateRoute element={Elements} />} />
               <Route path="/gap-analysis/risk-management-process" element={<PrivateRoute element={Elements} />} />
+              <Route path="/gap-analysis/audit-and-inspection-process" element={<PrivateRoute element={Elements} />} />
               <Route path="/gap-analysis/improvement-planning" element={<PrivateRoute element={Elements} />} />
           </Routes>
         </div>

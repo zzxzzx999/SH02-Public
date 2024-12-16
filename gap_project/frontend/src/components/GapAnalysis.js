@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import NavBar from './NavBar';
 import { Outlet } from 'react-router-dom';
-import '../css/NavBar.css';
 
 function Elements() {
   const links = [
@@ -57,8 +56,7 @@ function Elements() {
   return (
     <div>
       <div className="gap">
-        <NavBar links={links} />
-        <div className="main-content">
+        <NavBar className="elements" links={links} />
           <h1>{questions[0].Section_Name}</h1>
           <p>
             <strong>{questions[0].Questions[currentQuestionIndex].Question_Number}:</strong>
@@ -92,7 +90,6 @@ function Elements() {
 
         </div>
       </div>
-    </div>
   );
 }
 export { Elements };
@@ -197,11 +194,8 @@ function GapAnalysis() {
   return (
     <div>
       <div className="gap">
-        <NavBar links={links} />
-        <div className="main-content">
-          <h1>GAP ANALYSIS</h1>
-          <p>Test content for Gap Analysis</p>
-        </div>
+        <NavBar className="elements" links={links} />
+          <p>This is GAP analysis</p>
       </div>
     </div>
   );
