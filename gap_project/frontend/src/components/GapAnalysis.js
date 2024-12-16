@@ -195,7 +195,18 @@ function GapAnalysis() {
     <div>
       <div className="gap">
         <NavBar className="elements" links={links} />
-          <p>This is GAP analysis</p>
+        <p>To move onto the GAP analysis use the navigation bar</p>
+        <h2>Purpose</h2>
+        <p>The Gap Analysis tool identifies an organization’s current status in health and safety management.
+        The Gap Analysis applies a set of questions which cover the general scope of a health and safety management system.</p>
+        <h2>Benchmarking</h2>
+        <p>The Gap Analysis benchmarks the organization against Gordon Foley’s ‘best in class’ standards and creates a phased improvement plan for health and safety, with options for periodic progress checks.</p>
+        <p>The Gap Analysis process produces 3 main outputs:</p>
+        <ul>
+          <li>A detailed review as an outcome of the 12 key theme question sets</li>
+          <li>A benchmarking scorecard and dashboard</li>
+          <li>A phased improvement plan</li>
+        </ul>
       </div>
     </div>
   );
