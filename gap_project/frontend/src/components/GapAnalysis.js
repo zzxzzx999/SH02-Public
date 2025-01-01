@@ -207,20 +207,29 @@ function GapAnalysis() {
 
   return (
     <div>
-      <div className="gap">
+      <div className="gap-intro">
         <NavBar className="elements" links={links} />
-        <p>To move onto the GAP analysis use the navigation bar</p>
-        <h2>Purpose</h2>
-        <p>The Gap Analysis tool identifies an organization’s current status in health and safety management.
-        The Gap Analysis applies a set of questions which cover the general scope of a health and safety management system.</p>
-        <h2>Benchmarking</h2>
-        <p>The Gap Analysis benchmarks the organization against Gordon Foley’s ‘best in class’ standards and creates a phased improvement plan for health and safety, with options for periodic progress checks.</p>
-        <p>The Gap Analysis process produces 3 main outputs:</p>
-        <ul>
-          <li>A detailed review as an outcome of the 12 key theme question sets</li>
-          <li>A benchmarking scorecard and dashboard</li>
-          <li>A phased improvement plan</li>
-        </ul>
+
+        <p className="move-to-gap"> To move onto the GAP analysis use the navigation bar</p>
+        <div className="purpose-benchmarking">
+          <div className="purpose">
+            <h2 className="purpose-title">Purpose</h2>
+            <p className="purpose-text">The Gap Analysis tool identifies an organization’s current status in health and safety management.
+            The Gap Analysis applies a set of questions which cover the general scope of a health and safety management system.</p>
+          </div>
+          <div className="benchmarking">
+            <h2 className="benchmarking-title">Benchmarking</h2>
+            <p className="benchmarking-text">The Gap Analysis benchmarks the organization against Gordon Foley’s ‘best in class’ standards and creates a phased improvement plan for health and safety, with options for periodic progress checks.</p>
+          </div>
+        </div>
+        <p className="gap-intro-outputs">The Gap Analysis process produces <b>3 main outputs:</b></p>
+        <div className="gap-outputs">
+          <ul>
+            <li className="output">A detailed review as an outcome of the 12 key theme question sets</li>
+            <li className="output">A benchmarking scorecard and dashboard</li>
+            <li className="output">A phased improvement plan</li>
+          </ul>
+        </div>
       </div>
     </div>
   );
