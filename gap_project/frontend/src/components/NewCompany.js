@@ -29,14 +29,14 @@ function NewCompany() {
           });
           setCompanyName("");
           setAdditionalNotes("");
-          navigate("/list-of-company");
+          navigate("/new-gap-confirm");
       } catch (error) {
           console.error("Error : ", error.response || error.message);
       }
   };
   return (
     <div className="create-new-company">
-        <NavBar links = {linksForPage2}/>
+        <NavBar links = {linksForPage2} logout={true}/>
         <div className="bubble-container" style = {{width:'500px'}}>
         <h2> CREATE NEW COMPANY </h2>
             <form className="form" onSubmit={handleSubmit}>

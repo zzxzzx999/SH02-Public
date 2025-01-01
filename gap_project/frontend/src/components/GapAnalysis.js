@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import NavBar from './NavBar';
-import { Outlet } from 'react-router-dom';
 
 function Elements() {
   const links = [
@@ -56,7 +55,7 @@ function Elements() {
   return (
     <div>
       <div className="gap">
-        <NavBar className="elements" links={links} />
+        <NavBar className="elements" links={links} logout={false} />
           <h1>{questions[0].Section_Name}</h1>
           <p>
             <strong>{questions[0].Questions[currentQuestionIndex].Question_Number}:</strong>

@@ -1,8 +1,40 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import '../css/NavBar.css';
 
-function NavBar({links}) {
+function NavBar({links, logout}) {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const navigate = useNavigate();
+  const pageRef = useRef(null);
+  const popUpRef = useRef(null);
+
+  const handleOutsideClick = (e) => {
+    if (
+      pageRef.current &&
+      !pageRef.current.contains(e.target) &&
+      pageRef.current &&
+      !pageRef.current.contains(e.target)
+    ) {
+      setIsPopupOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
+  const handleButtonClick = () => {
+    if (logout) {
+      navigate('/');
+    } else {
+      setIsPopupOpen(true);
+    }
+  };
+
   const [collapsed, setCollapsed] = useState(true);
 
   const toggleSidebar = () => {
@@ -10,6 +42,7 @@ function NavBar({links}) {
   };
 
   return (
+    <div ref={pageRef}>
     <nav className={`side-navbar ${collapsed ? 'collapsed' : ''}`}>
       <div className="gordon-logo-container">
         <img
@@ -33,14 +66,12 @@ function NavBar({links}) {
           <div key={link.name}>
  <li key={link.name}>
             {collapsed ? (
-              // Only show the link when collapsed if there is an image
               link.image && (
                 <Link to={link.path}>
                   <img className="collapsed-icons" src={link.image} alt={link.name} />
                 </Link>
               )
             ) : (
-              // In normal state, show both image and link name
               <Link to={link.path}>
                 {link.image && (
                   <img className="collapsed-icons" src={link.image} alt={link.name} />
@@ -51,41 +82,43 @@ function NavBar({links}) {
           </li>
           </div>
         ))}
-        <li className="logout-button">
-        <Link to='/'><img className="collapsed-icons" src='/logout.png' alt='logout' />{collapsed ? '' : 'LOG OUT'}</Link>
+        <li
+          className="logout-button"
+          onClick={(e) => {
+            if (!logout) {
+              e.preventDefault();
+              handleButtonClick();
+            }
+          }}>
+          <a href={logout ? '/' : '#'} className="logout-link">
+            <img className="collapsed-icons" src="/logout.png" alt="logout" />
+            {collapsed ? '' : (logout ? 'LOG OUT' : 'SAVE AND EXIT')}
+          </a>
         </li>
       </ul>
     </nav>
+
+    {isPopupOpen && (
+      <Popup ref={popUpRef} onClose={() => setIsPopupOpen(false)}>
+      <button className="close-button" onClick={() => setIsPopupOpen(false)}>X</button>
+        <h2>Company Name</h2>
+        <p>Are you finished?<br></br>If not, you can save and come back later.</p>
+        <button className="submitButton" onClick={() => navigate('/home')}>SAVE AND EXIT</button>
+        <button className="submitButton" style={{margin:'15px'}} onClick={() => navigate('/results')}>FINISHED, GO TO RESULTS</button>
+      </Popup>
+    )}
+    </div>
   );
 }
 
 export default NavBar;
 
-
-
-
-/*<Link 
-to="/page1" 
-className={collapsed ? 'collapsed-link' : ''}>
-{collapsed ? '' : 'Committees & Representative'}
-</Link>
-</li>
-<li> <button className="nav-button" onClick={() => openPopup('Page 2')}>
-Page 2
-</button></li>
-<li className="bottom-components">
-<Link to="/page3">
-<img
-  src={require('./profileIcon.png')}
-  className={`navbar-icons ${collapsed ? 'collapsed' : ''}`}
-  alt="Link to profile"
-/>
-</Link></li>
-
-
-
-      {isPopupOpen && (
-        <GapConfirmPopUp onClose={closePopup} pageName={'company fojhEIFH'} />
-      )}*/
+function Popup({onClose, children}) {
+  return (
+      <div className="bubble-container" style = {{width:'500px', marginTop:'40px'}} onClick={(e) => e.stopPropagation()}>
+        {children}
+      </div>
+  );
+}
 
 

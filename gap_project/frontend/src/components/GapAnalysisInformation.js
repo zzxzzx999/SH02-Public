@@ -40,7 +40,7 @@ function GapInformation(){
 
   return (
   <div className="gap-info">
-  <NavBar links={links} />
+  <NavBar links={links} logout={true}/>
   <div className = "bubble-container" style={{width:'600px', height:'475px'}}>
   <h2>COMPANY NAME</h2>
   <form onSubmit={handleSubmit} className="form">

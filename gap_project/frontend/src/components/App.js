@@ -2,6 +2,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import '../css/App.css';
 import Home from './Home';
 import NewCompany from './NewCompany';
+import Results from './Results';
 import GapAnalysis, {Elements} from './GapAnalysis';
 import ListofCompany from './ListofCompany';
 import Login from './Login';
@@ -34,6 +35,7 @@ function App() {
               <Route path="/gap-analysis/risk-management-process" element={<PrivateRoute element={Elements} />} />
               <Route path="/gap-analysis/audit-and-inspection-process" element={<PrivateRoute element={Elements} />} />
               <Route path="/gap-analysis/improvement-planning" element={<PrivateRoute element={Elements} />} />
+            <Route path="/results" element={<PrivateRoute element={Results} />}/>
           </Routes>
         </div>
       </Template>

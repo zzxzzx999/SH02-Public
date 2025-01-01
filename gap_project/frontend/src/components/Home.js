@@ -11,7 +11,7 @@ function AboutUs() {
 
   return (
     <div className="main-content">
-      <NavBar links={linksForPage1} /> {/* Passing the links to the Navbar component */}
+      <NavBar links={linksForPage1} logout={true}/> {/* Passing the links to the Navbar component */}
       <div className="about-us-search">
         <h2>Search for Company</h2>
       </div>
