@@ -1,11 +1,10 @@
-.login-page, .create-new-company, .gap-confirm, .gap-info, .about-us-box, .div * {
+.login-page, .create-new-company, .gap-confirm, .main-content, .gap, .gap-info, .about-us-box, .div * {
     font-family: 'Poppins', sans-serif;
 }
   
 .login-page, .create-new-company, .gap-confirm, .gap-info, .about-us.box body {
     display: grid;
     height: 100vh;
-    margin: 0;
     place-items: center;
 }
 

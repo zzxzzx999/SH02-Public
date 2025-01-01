@@ -67,7 +67,7 @@ function ListofCompany(){
       };
     return(
         <div>
-             <NavBar links={linksForPage2} />
+             <NavBar links={linksForPage2} logout={true} />
             <div className="bubble-container-list">
                 <h1 className='title'>List of Companies</h1>
                

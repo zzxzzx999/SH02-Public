@@ -11,10 +11,9 @@ function AboutUs() {
 
   return (
     <div className="main-content">
-      <NavBar links={linksForPage1} /> {/* Passing the links to the Navbar component */}
-      <div className="about-us-info">
-        <div className="about-us-search">
-          <h2>Search for Company</h2>
+      <NavBar links={linksForPage1} logout={true}/> {/* Passing the links to the Navbar component */}
+      <div className="about-us-search">
+        <h2>Search for Company</h2>
       </div>
       <div className="about-us-box">
         <h1>About Us</h1>
@@ -27,7 +26,6 @@ function AboutUs() {
           - Health and safety Inspections<br></br>
           - Health and Safety Training<br></br>
         </p>
-      </div>
       </div>
     </div>
   );

@@ -29,46 +29,44 @@ function NewCompany() {
           });
           setCompanyName("");
           setAdditionalNotes("");
-          navigate("/list-of-company");
+          navigate("/new-gap-confirm");
       } catch (error) {
           console.error("Error : ", error.response || error.message);
       }
   };
   return (
-      
-          <div className="create-new-company">
-            <NavBar links = {linksForPage2}/>;
-            <div className="bubble-container" style = {{width:'500px'}}>
-            <h2> CREATE NEW COMPANY </h2>
-              <form className="form" onSubmit={handleSubmit}>
-                  {/* company name */}
+    <div className="create-new-company">
+        <NavBar links = {linksForPage2} logout={true}/>
+        <div className="bubble-container" style = {{width:'500px'}}>
+        <h2> CREATE NEW COMPANY </h2>
+            <form className="form" onSubmit={handleSubmit}>
+                {/* company name */}
 
-                    <label htmlFor="company-name"></label>
-                      <input
-                          type="text"
-                          id="company-name"
-                          value={companyName} // Controlled input
-                          onChange={(e) => setCompanyName(e.target.value)} // Update state
-                          placeholder = "Company Name"
-                      />
-
-
-                  {/* Additional comments */}
-                <label> 
-                    <textarea
-                        type="text" 
-                        value={additionalNotes}
-                        onChange={(e) => setAdditionalNotes(e.target.value)}
-                        placeholder = "Additional Notes"
+                <label htmlFor="company-name"></label>
+                    <input
+                        type="text"
+                        id="company-name"
+                        value={companyName} // Controlled input
+                        onChange={(e) => setCompanyName(e.target.value)} // Update state
+                        placeholder = "Company Name"
                     />
-                </label>
-                <input className = "submitButton" type="submit" value="Create New GAP"/>
 
-            </form>
-            </div>
+
+                {/* Additional comments */}
+            <label> 
+                <textarea
+                    type="text" 
+                    value={additionalNotes}
+                    onChange={(e) => setAdditionalNotes(e.target.value)}
+                    placeholder = "Additional Notes"
+                />
+            </label>
+            <input className = "submitButton" type="submit" value="Create New GAP"/>
+
+        </form>
         </div>
-                
-        );
+    </div>
+)
 }
 
 export default NewCompany;

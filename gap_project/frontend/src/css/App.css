@@ -17,8 +17,8 @@ body {
   margin: 0;                /* Remove default margin */
 }
 
-.main-content {
-  padding: 20px;
+.main-content, .gap {
+  margin-left : 70px;
   font-family: 'Poppins', sans-serif;
   justify-content: flex-start; /* Ensure the content is aligned to the left */
   align-items: flex-start; /* Aligns the content to the top */
