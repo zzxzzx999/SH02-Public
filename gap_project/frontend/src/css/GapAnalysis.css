@@ -1,1 +1,175 @@
+/* Container for the radio buttons and textareas */
+.compliance-container {
+    display: flex;
+    flex-direction: column;  /* Stack radio buttons in the first row, and textarea in the second */
+    align-items: flex-start;  /* Left align all elements */
+  }
+  
+  /* Row for radio buttons - keeping all options horizontally aligned */
+  .compliance-row {
+    display: flex;
+    flex-wrap: wrap; /* Allows radio buttons to wrap if there's not enough space */
+    justify-content: flex-start;  /* Ensure radio buttons are aligned to the left */
+  }
+  
+  /* Style each individual radio button option */
+  .compliance-option {
+    display: flex;
+    flex-direction: column; /* Stack label on top of radio button */
+    align-items: center; /* Center the radio button and label */
+    margin-left: 16px;  /* Space between radio buttons */
+    margin-bottom: 10px;  /* Ensures some space below each radio button when wrapping */
+    font-size: 16px;
+  }
+  
+  /* Hide the default radio button */
+  .compliance-option input[type="radio"] {
+    display: none;
+  }
+  
+  /* Custom radio button appearance */
+  .compliance-option .compliance {
+    position: relative;
+    width: 200px;  /* Width of the radio button */
+    height: 90px;  /* Height of the radio button */
+    background-color: white;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;  /* Center text horizontally inside the button */
+    align-items: flex-start;  /* Align text vertically at the top */
+    padding-top: 3px; /* Add some padding to move text towards the top */
+    cursor: pointer;
+    font-size: 16px;
+    color: white;
+    text-align: center; /* Center the text horizontally */
+    z-index: 1;
+    font-size:14px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Optional: Light shadow for a border effect */
+  }
+  
+  /* Inner circle for the custom radio button */
+  .compliance-option .compliance::after {
+    content: ''; /* Hide the circle by default */
+  }
+  
+  /* When radio button is checked, move the inner circle to the right */
+  .compliance-option input[type="radio"]:checked + .compliance::after {
+    content: 'X';  /* Show "X" when checked */
+    font-size: 24px; /* Size of the "X" */
+    color: black; /* Color of the "X" */
+    position: absolute;
+    top: 75%;  /* Vertically center the "X" */
+    left: 50%;  /* Horizontally center the "X" */
+    transform: translate(-50%, -50%); /* Center "X" inside the button */
+    z-index: 2; /* Ensure the "X" appears above the button */
+  }
 
+  /* General styling for text areas */
+.textareas-row {
+    display: flex;
+    gap: 100px; /* Space between the text areas */
+    width:auto;
+  }
+  
+  .textarea-container {
+    margin-top:10px;
+    margin-left:16px;
+    position: relative; /* Positioning context for the label */
+    width:475px;
+  }
+  
+  .textarea-wrapper {
+    position: relative; /* For absolute positioning of label */
+    padding-top: 40px; /* Provide space at the top for the label */
+    border-radius: 5px; /* Rounded corners for text areas */
+    border: none;
+    overflow: hidden; /* Hide the border of the wrapper when the label is inside */
+  }
+  
+  .textarea-label {
+    position: absolute;
+    font-size:18px;
+    top: 5px; /* Top space between label and top */
+    left: 50%; /* Position from the left at the middle */
+    transform: translateX(-50%); /* Offset by 50% of its width to fully center it */
+    font-weight: bold;
+    color: #555; /* Dark grey color for the label text */
+    background-color: #ECEBEB; /* Background same as the box for visibility */
+    z-index: 2; /* Place it above the textarea content */
+  }
+  
+  
+  textarea {
+    width: 100%; /* Take up the full width */
+    height: 130px; /* Fixed height for the textarea */
+    padding: 20px 10px 10px; /* Add padding inside the text area for text */
+    border-bottom-left-radius: 10px; /* Rounded corners for the textarea */
+    border-bottom-right-radius: 10px;
+    font-size: 14px; /* Font size for the text inside */
+    line-height: 1.5; /* Line height for better readability */
+    resize: none; /* Disable resizing */
+    position: relative; /* Positioning for proper stacking */
+    z-index: 1; /* Place it under the label */
+    border-color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Optional: Light shadow for a border effect */
+    box-sizing: border-box;
+  }
+  /* Grey background within the wrapper */
+  .textarea-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 30%; /* Cover the top half of the textarea with grey */
+    background-color: #ECEBEB; /* Grey color for the top part */
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    z-index: 0; /* Ensure it's below the label and textarea */
+  }
+  
+  textarea:focus {
+    outline: none; /* Remove the default outline when focused */
+  }
+
+  .navigation-buttons-container {
+    width: 92%;
+    position: fixed; /* Stick the container to the bottom */
+    bottom: 10px;    /* Distance from the bottom of the page */
+    margin-left: 16px;
+  }
+  
+  .navigation-buttons {
+    display: flex; /* Enable flexbox for alignment */
+    align-items: center; /* Align items vertically */
+  }
+  
+  .navigation-buttons button {
+    border: 1px solid #DFDFDF; /* Add border for styling */
+    background-color: #ecebeb;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .navigation-buttons button:hover {
+    background-color: #dfdfdf; /* Change background on hover */
+  }
+  
+  .navigation-buttons button:disabled {
+    background-color: #dcdcdc;
+    cursor: not-allowed;
+  }
+  
+  .navigation-buttons .question-button {
+    flex-shrink: 0; /* Prevent shrinking of the question buttons */
+  }
+  
+  .navigation-buttons .next-button {
+    margin-left:auto;
+    flex-shrink: 0; /* Prevent shrinking of the Next button */
+  }
+  
+  

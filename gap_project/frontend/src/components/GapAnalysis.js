@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import NavBar from './NavBar';
+import '../css/GapAnalysis.css';
 
 function Elements() {
   const links = [
@@ -33,6 +34,7 @@ function Elements() {
       ]
     }
   ];
+
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   // Function to navigate to a specific question
@@ -46,49 +48,44 @@ function Elements() {
     }
   };
 
-  const goToPreviousQuestion = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-    }
-  };
-
   return (
     <div>
       <div className="gap">
         <NavBar className="elements" links={links} logout={false} />
-          <h1>{questions[0].Section_Name}</h1>
-          <p>
-            <strong>{questions[0].Questions[currentQuestionIndex].Question_Number}:</strong>
+          <h1 style={{marginLeft:'16px'}}>{questions[0].Section_Name}</h1>
+          <p style={{marginLeft:'16px'}}>
+            <strong>{questions[0].Questions[currentQuestionIndex].Question_Number}: </strong>
             {questions[0].Questions[currentQuestionIndex].Question_Name}
           </p>
 
           <Compliance question={questions[0].Questions[currentQuestionIndex]} />
 
-          <div className="navigation-buttons">
-            <button onClick={goToPreviousQuestion} disabled={currentQuestionIndex === 0}>
-              &lt; Previous
-            </button>
-            <button onClick={goToNextQuestion} disabled={currentQuestionIndex === questions[0].Questions.length - 1}>
-              Next &gt;
-            </button>
+          <div className="navigation-buttons-container">
+            <div className="navigation-buttons">
+              <div className="question-buttons">
+              {questions[0].Questions.map((question, index) => (
+                <button
+                  key={index}
+                  onClick={() => navigateToQuestion(index)}
+                  className={currentQuestionIndex === index ? "active" : ""}
+                >
+                  {question.Question_Number.slice(2)} {/* Remove the first 2 digits */}
+                </button>
+              ))}                
+              </div>
+
+              <button
+                className="next-button"
+                onClick={goToNextQuestion}
+                disabled={currentQuestionIndex === questions[0].Questions.length - 1}
+              >
+              &gt;
+              </button>
+              </div>
           </div>
 
-          <div className="navigation-buttons">
-            {/* Button navigation for questions 1 and 2 */}
-            <button 
-              onClick={() => navigateToQuestion(0)} 
-              className={currentQuestionIndex === 0 ? "active" : ""}>
-              1
-            </button>
-            <button 
-              onClick={() => navigateToQuestion(1)} 
-              className={currentQuestionIndex === 1 ? "active" : ""}>
-              2
-            </button>
-          </div>
-
-        </div>
       </div>
+    </div>
   );
 }
 export { Elements };
@@ -123,15 +120,16 @@ function Compliance({ question }) {
   };
 
   const options = [
-    { value: '5', label: 'Exceptional Compliance (Score 5)', className: 'exceptional' },
-    { value: '4', label: 'Good Compliance (Score 4)', className: 'good' },
-    { value: '3', label: 'Basic Compliance (Score 3)', className: 'basic' },
-    { value: '2', label: 'Needs Improvement (Score 2)', className: 'improvement' },
-    { value: '1', label: 'Unsatisfactory (Score 1)', className: 'unsatisfactory' }
+    { value: '5', label: ( <> Exceptional Compliance<br /> (Score 5) </> ), className: 'exceptional', color: '#006613'},
+    { value: '4', label: ( <> Good Compliance<br /> (Score 4) </> ), className: 'good', color: '#42C259' },
+    { value: '3', label: ( <> Basic Compliance<br /> (Score 3) </> ), className: 'basic', color: '#7CCC8B'},
+    { value: '2', label: ( <> Needs Improvement<br /> (Score 2) </> ), className: 'improvement', color: '#FFC546'},
+    { value: '1', label:  ( <> Unsatisfactory<br /> (Score 1) </> ), className: 'unsatisfactory', color: '#FF0B0B'},
   ];
 
   return (
     <div className="compliance-container">
+      <div className="compliance-row">
       {options.map(option => (
         <div className="compliance-option" key={option.value}>
           <input
@@ -144,32 +142,49 @@ function Compliance({ question }) {
           />
           <label htmlFor={`question_${question.Question_Number}_${option.value}`} className={`compliance ${option.className}`}>
             {option.label}
+            <span
+              style={{
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                width: '100%',
+                height: '50%',
+                backgroundColor: option.color, // Background color dynamically set
+                borderTopLeftRadius: '5px',
+                borderTopRightRadius: '5px',
+                zIndex: '-1',  // Ensures it's behind the label
+              }}
+            />
           </label>
         </div>
       ))}
+      </div>
 
       {/* Evidence Textarea */}
-      <div>
-        <label htmlFor={`evidence_${question.Question_Number}`}>Evidence:</label>
+  <div className="textareas-row">
+    <div className="textarea-container">
+      <label htmlFor={`evidence_${question.Question_Number}`} className="textarea-label">Evidence</label>
+      <div className="textarea-wrapper">
         <textarea
           id={`evidence_${question.Question_Number}`}
           value={evidence[question.Question_Number] || ''}
           onChange={(e) => handleEvidenceChange(question.Question_Number, e.target.value)}
-          placeholder="Enter evidence here..."
         />
       </div>
+    </div>
 
-      {/* Improvement Textarea */}
-      <div>
-        <label htmlFor={`improvement_${question.Question_Number}`}>Improvement:</label>
+    <div className="textarea-container">
+      <label htmlFor={`improvement_${question.Question_Number}`} className="textarea-label">Improvement</label>
+      <div className="textarea-wrapper">
         <textarea
           id={`improvement_${question.Question_Number}`}
           value={improvement[question.Question_Number] || ''}
           onChange={(e) => handleImprovementChange(question.Question_Number, e.target.value)}
-          placeholder="Enter improvement here..."
         />
       </div>
     </div>
+  </div>
+</div>
   );
 }
 export {Compliance};
