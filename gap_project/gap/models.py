@@ -19,6 +19,7 @@ class GapAnalysis(models.Model):
     title = models.CharField(max_length=50, default = f"Gap Analysis : {date}")
     consultant = models.CharField(max_length=128, unique=False)
     gap_data = models.JSONField(default=dict)
+    improvement_plan = models.JSONField(default=dict)
 
     
     class Meta:
@@ -26,4 +27,12 @@ class GapAnalysis(models.Model):
     
     def __str__(self):
         return self.date.strftime(format="%d/%m/%Y")
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
+    is_admin = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return self.user.username
+    
     
