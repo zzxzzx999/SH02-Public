@@ -19,7 +19,6 @@
     font-size: 16px;
 }
 
-
 .compliance-option input[type="radio"] {
     display: none;
 }
@@ -195,6 +194,7 @@ textarea:focus {
     margin-left:80px;
     width:40%;
     height: 40%;
+    font-size: 14px;
 }
 
 .purpose {
@@ -213,7 +213,7 @@ textarea:focus {
 }
 
 .purpose-text, .benchmarking-text {
-    font-size:18px;
+    font-size:16px;
     color: #5B5B5B;
     font-weight: 550;
     padding:20px;
@@ -237,7 +237,6 @@ textarea:focus {
 
 .gap-outputs {
     margin-top:0;
-    margin-left:80px;
     margin-bottom:0;
 }
 
@@ -245,9 +244,9 @@ textarea:focus {
     margin-top:0;
     color: #5B5B5B;
     font-weight: 550;
-    width:200px;
-    margin-right: 100px;
-    padding: 20px;
+    width:250px;
+    margin-right: 40px;
+    padding: 10px;
     background-color: white;
     border-radius: 20px;
     display:inline-block;

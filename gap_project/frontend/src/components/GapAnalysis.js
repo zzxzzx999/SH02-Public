@@ -225,7 +225,8 @@ function GapAnalysis() {
         <p className="gap-intro-outputs">The Gap Analysis process produces <b>3 main outputs:</b></p>
         <div className="gap-outputs">
           <ul>
-            <li className="output">A detailed review as an outcome of the 12 key theme question sets</li>
+            <li className="output">A detailed review as an outcome of the 12 key theme question sets
+            </li>
             <li className="output">A benchmarking scorecard and dashboard</li>
             <li className="output">A phased improvement plan</li>
           </ul>
