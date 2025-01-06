@@ -24,7 +24,12 @@ function Login(){
             localStorage.setItem('authToken', token);
             localStorage.setItem('username', loggedInUsername);
             localStorage.setItem('isAdmin', is_admin);
-            navigate('/home')
+            if (is_admin === true) {
+                navigate('/list-of-companies')
+            }
+            else {
+                navigate('/home')
+            }
         } catch (err) {
             console.error("Login error:", err);
             setError("Invalid username or password.");

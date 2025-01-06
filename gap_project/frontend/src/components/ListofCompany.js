@@ -6,7 +6,7 @@ import axios from "axios";
 
 function ListofCompany(){
     const linksForPage2 = [
-        { name: 'Create New Company', path: '/new-company' , image:'/add-new-company.png'},
+        { name: 'Add New Company', path: '/new-company' , image:'/add-new-company.png'},
         
       ];
 
