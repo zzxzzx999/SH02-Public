@@ -7,6 +7,7 @@ import GapAnalysis, {Elements} from './GapAnalysis';
 import ListofCompany from './ListofCompany';
 import Login from './Login';
 import Template from './Template';
+import ListOfCompany from './ListofCompany';
 import GapAnalysisConfirm, {GapInformation} from './GapAnalysisInformation';
 import PrivateRoute from './PrivateRoute';
 
@@ -36,6 +37,8 @@ function App() {
               <Route path="/gap-analysis/audit-and-inspection-process" element={<PrivateRoute element={Elements} />} />
               <Route path="/gap-analysis/improvement-planning" element={<PrivateRoute element={Elements} />} />
             <Route path="/results" element={<PrivateRoute element={Results} />}/>
+
+            <Route path="/list-of-companies" element={<PrivateRoute element={ListOfCompany} />}/>
           </Routes>
         </div>
       </Template>
