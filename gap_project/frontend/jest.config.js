@@ -9,5 +9,6 @@ module.exports = {
         '^.+\\.jsx?$': 'babel-jest', // Transpile JavaScript files using Babel
     },
     extensionsToTreatAsEsm: ['.jsx'],
+    testEnvironment: 'jsdom',
   };
   
