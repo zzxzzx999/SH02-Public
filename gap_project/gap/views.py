@@ -64,5 +64,5 @@ class CompanyViewSet(viewsets.ModelViewSet):
         name = self.request.query_params.get('name')
 
         if name is not None:
-            query_set = query_set.filter(name__icontains=name)
+            query_set = query_set.filter(name__iexact=name)
         return query_set
