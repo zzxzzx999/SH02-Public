@@ -6,7 +6,6 @@ import debounce from 'lodash/debounce'; //debounce to prevent search everytime s
 
 const url = 'http://127.0.0.1:8000/api'
 
-
 function AboutUs() {
   const linksForPage1 = [
     { name: 'Add New Company', path: '/new-company' , image:'/add-new-company.png'},
@@ -40,18 +39,18 @@ function AboutUs() {
     }
   }
 
-  useEffect(()=> {
-    fetchData()
-  }, [searchText])
-
-  const handleSearch = debounce((value) => setSearchText(value), 500); //500ms seach delay
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {  //check if the enter key was pressed
+      fetchData();
+    }
+  };
 
   return (
     <div className="main-content">
       <NavBar links={linksForPage1} logout={true}/> {/* Passing the links to the Navbar component */}
       <div className="about-us-search">
         <h2>Search for Company</h2>
-        <input type="search" placeholder="search for company" value={searchText} onChange={e => setSearchText(e.target.value)}/>
+        <input type="search" placeholder="search for company" value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={handleKeyDown}/>
         <ul>
           {Array.isArray(data) && data.length > 0 ? (
           data.map((company) => (
