@@ -74,7 +74,15 @@ h2 {
     justify-content: space-between;
     align-items: center;
     gap: 25px;
-    margin-left: 15px;
+    background-color: white;
+    border-radius: 15px;
+    margin-top: 10px;
+    padding: 5px;
+    border-color: #5B5B5B;
+  }
+
+  .search-results p{
+    margin: 0;
   }
 
   .about-us-box p {
