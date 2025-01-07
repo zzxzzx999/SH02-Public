@@ -15,6 +15,12 @@ function AboutUs() {
   const [searchText, setSearchText] = useState('')
 
   const fetchData = async() => {
+    //dont fetch if search bar is empty
+    if (searchText.trim() === '') {
+      setData([]);
+      return;
+    }
+
     const token = localStorage.getItem("authToken");
     const endpoint = `${url}/companies/?name=${searchText}`
 
@@ -45,12 +51,18 @@ function AboutUs() {
     }
   };
 
+  const clearSearch = () => {
+    setSearchText('');  
+    setData([]);   
+  };
+
   return (
     <div className="main-content">
       <NavBar links={linksForPage1} logout={true}/> {/* Passing the links to the Navbar component */}
       <div className="about-us-search">
         <h2>Search for Company</h2>
         <input type="search" placeholder="search for company" value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={handleKeyDown}/>
+        <button onClick={clearSearch} className="clear-button">Clear Results</button>
         <ul>
           {Array.isArray(data) && data.length > 0 ? (
           data.map((company) => (
