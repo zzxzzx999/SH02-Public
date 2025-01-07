@@ -60,7 +60,7 @@ h2 {
   .clear-button {
     padding: 8px 15px; /* Adds padding to the button */
     background-color: white; /* Green background */
-    color: #5B5B5B;
+    color: black;
     border: none;
     border-radius: 20px; /* Rounded button edges */
     cursor: pointer;

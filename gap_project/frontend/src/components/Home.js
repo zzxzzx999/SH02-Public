@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import NavBar from './NavBar'; 
 import '../css/NavBar.css';
 import '../css/Home.css';
-import debounce from 'lodash/debounce'; //debounce to prevent search everytime searchText changes
+import {Link } from "react-router-dom";
 
 const url = 'http://127.0.0.1:8000/api'
 
@@ -68,7 +68,7 @@ function AboutUs() {
           data.map((company) => (
               <div className="search-results">
                 <p key={company.name}>Company name: {company.name}</p>
-                <p className="start-gap">Start GAP Analysis</p>
+                <Link to={`/new-gap-confirm?company=${company.name}`} className="start-gap-link">Start GAP Analysis</Link>
               </div>
           ))
           ) : (
