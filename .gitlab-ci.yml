@@ -43,8 +43,9 @@ setup_frontend:
     - cd gap_project/frontend/
     - rm -rf node_modules package-lock.json  # Remove any old dependencies
     - npm cache clean --force
-    - npm install reactstrap bootstrap react-hook-form axios  # Install React dependencies
-    - npm install  # Install dependencies
+    - npm install reactstrap bootstrap react-hook-form axios  # Install project-specific dependencies
+    - npm install --save-dev jest babel-jest @babel/preset-env @babel/preset-react # Install jest dependencies
+    - npm install identity-obj-proxy --save-dev
 
 # Step 4: Test Frontend (React)
 test_frontend:
