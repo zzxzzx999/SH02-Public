@@ -46,6 +46,7 @@ setup_frontend:
     - npm install reactstrap bootstrap react-hook-form axios  # Install project-specific dependencies
     - npm install --save-dev jest babel-jest @babel/core @babel/preset-env @babel/preset-react # Install jest dependencies
     - npm install identity-obj-proxy --save-dev
+    - npm install react react-dom
 
 # Step 4: Test Frontend (React)
 test_frontend:
