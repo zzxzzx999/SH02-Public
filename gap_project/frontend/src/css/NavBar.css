@@ -15,16 +15,16 @@
   transition: margin-left 0.3s ease; /* Smoot
   h transition */
   width: 100%; /* Ensures full width */
-  width: auto; /* Prevent unwanted centering */
-  height: auto; /* Prevent unwanted vertical centering */
+  height: 100%; /* Prevent unwanted vertical centering */
+  margin-right:5px;
 }
 
-.side-navbar, .main-content * {
+.side-navbar * {
   font-family: 'Poppins', sans-serif;
   font-size:15px;
 }
 
-
+ 
 .side-navbar.collapsed + .main-content {
   margin-left: var(--collapsed-sidebar-width);
 }

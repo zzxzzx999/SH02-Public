@@ -60,28 +60,31 @@ function AboutUs() {
     <div className="main-content">
       <NavBar links={linksForPage1} logout={true}/> {/* Passing the links to the Navbar component */}
       <div className="about-us-search">
-        <h2>Search for Company</h2>
-        <input type="search" placeholder="search for company" value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={handleKeyDown}/>
+        <h2 className = "search-text">Search for Company to Start GAP Analysis</h2>
+        <div className="search-box-and-results">
+        <input className="search-box" type="search" placeholder="search for company" value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={handleKeyDown}/>
         <button onClick={clearSearch} className="clear-button">Clear Results</button>
-        <ul>
           {Array.isArray(data) && data.length > 0 ? (
           data.map((company) => (
-              <li key={company.name}>{company.name}</li>
+              <div className="search-results">
+                <p key={company.name}>Company name: {company.name}</p>
+                <p className="start-gap">Start GAP Analysis</p>
+              </div>
           ))
           ) : (
-          <li>No companies found</li>
+          <p className="search-results">No companies found</p>
           )}
-        </ul>
+        </div>
       </div>
       <div className="about-us-box">
-        <h1>About Us</h1>
+        <h2>About Us</h2>
         <p>
         Gordon-Foley Consulting are a health and safety consultancy business, who work with a range of clients across different industrial sectors. 
         The client range are largely in the SME category with a small number of large multi-national organisations using our services. 
         <br></br><br></br><br></br>
         The services we provide to you include and are not limited to:<br></br>
           - Health and Safety Advice and support<br></br>
-          - Health and safety Inspections<br></br>
+          - Health and Safety Inspections<br></br>
           - Health and Safety Training<br></br>
         </p>
       </div>
