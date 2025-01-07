@@ -1,15 +1,13 @@
 module.exports = {
     transformIgnorePatterns: [
-      "/node_modules/(?!reactstrap/)",
-      "/node_modules/(?!bootstrap/)",
-      "/node_modules/(?!react-hook-form/)",
-      "/node_modules/(?!axios/)",
+      "/node_modules/(?!axios|reactstrap|bootstrap|react-hook-form)/",
     ],
     moduleNameMapper: {
         '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     },
     transform: {
         '^.+\\.jsx?$': 'babel-jest', // Transpile JavaScript files using Babel
-      },
+    },
+    extensionsToTreatAsEsm: ['.js', '.jsx', '.mjs'],
   };
   
