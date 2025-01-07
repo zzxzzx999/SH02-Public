@@ -8,6 +8,6 @@ module.exports = {
     transform: {
         '^.+\\.jsx?$': 'babel-jest', // Transpile JavaScript files using Babel
     },
-    extensionsToTreatAsEsm: ['.jsx', '.mjs'],
+    extensionsToTreatAsEsm: '.jsx',
   };
   
