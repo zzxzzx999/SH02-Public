@@ -1,15 +1,17 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import '../css/App.css';
+import DetailScore from './DetailScore';
+import GapAnalysis, { Elements } from './GapAnalysis';
+import GapAnalysisConfirm, { GapInformation } from './GapAnalysisInformation';
 import Home from './Home';
-import NewCompany from './NewCompany';
-import Results from './Results';
-import GapAnalysis, {Elements} from './GapAnalysis';
-import ListofCompany from './ListofCompany';
+import { default as ListofCompany, default as ListOfCompany } from './ListofCompany';
 import Login from './Login';
-import Template from './Template';
-import ListOfCompany from './ListofCompany';
-import GapAnalysisConfirm, {GapInformation} from './GapAnalysisInformation';
+import NewCompany from './NewCompany';
+import OverallOutput from './OverallOutput';
 import PrivateRoute from './PrivateRoute';
+import RegistedCompany from './RegistedCompany';
+import Results from './Results';
+import Template from './Template';
 
 function App() {
   return (
@@ -21,6 +23,9 @@ function App() {
             <Route path="/home" element={<PrivateRoute element={Home} />} />
             <Route path="/new-company" element={<PrivateRoute element={NewCompany} />} />
             <Route path="/list-of-company" element={<ListofCompany />} />
+            <Route path='/registed-company/:companyName' element={<RegistedCompany/>}/>
+            <Route path='/overall-output/:companyName' element={<OverallOutput/>}/>
+            <Route path='/detail-score/:companyName' element={<DetailScore/>}/>
             <Route path="/new-gap-confirm" element={<PrivateRoute element={GapAnalysisConfirm} />} />
             <Route path="/new-gap-information" element={<PrivateRoute element={GapInformation} />} />
             <Route path="/gap-analysis" element={<PrivateRoute element={GapAnalysis} />}/>

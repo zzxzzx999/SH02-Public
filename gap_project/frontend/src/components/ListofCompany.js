@@ -1,11 +1,13 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
 import '../css/ListofCompany.css';
 import '../css/NavBar.css';
 import NavBar from './NavBar';
-import axios from "axios";
 
 function ListofCompany(){
     const linksForPage2 = [
+        { name: 'Previous Page', path: '/home' , image:'/back-button.png'},
         { name: 'Add New Company', path: '/new-company' , image:'/add-new-company.png'},
         
       ];
@@ -66,7 +68,7 @@ function ListofCompany(){
         setDeleteTarget(null);
       };
     return(
-        <div>
+        <div class="main-content">
              <NavBar links={linksForPage2} logout={true} />
             <div className="bubble-container-list">
                 <h1 className='title'>List of Companies</h1>
@@ -164,9 +166,9 @@ function ListofCompany(){
                     {/*company list*/}
                     {/*React usually use map to iterator the company datas*/}
                     {sortedCompanies.map((company) => (
-                        <div key={company.id} className="table-row">
+                        <div key={company.name} className="table-row">
                         <span>
-                            {company.name}
+                            <Link to={`/registed-company/${company.name}`}>{company.name}</Link>
                             <button
                             className="delete-button"
                             onClick={() => handleDeleteClick(company)}
