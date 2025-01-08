@@ -83,7 +83,7 @@
   width: var(--sidebar-width);
 }
 
-.main-content .side-navbar a, .create-new-company .side-navbar a {
+.main-content .side-navbar a, .create-new-company .side-navbar a{
   display: flex; /* Links span full width for clickability */
   box-sizing: border-box; /* Make sure padding doesn't overflow the link */
   display: flex; /* Use flex to manage link content */
@@ -199,7 +199,7 @@
   height: 30px;
 }
 
-.main-content .logout-button a, .create-new-company .logout-button a, .gap .logout-button a{
+.main-content .logout-button a, .create-new-company .logout-button a, .gap .logout-button a, .gap-intro .logout-button a{
   color: white;
 }
 
