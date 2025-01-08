@@ -1,11 +1,10 @@
-.login-page, .create-new-company, .gap-confirm, .gap-info, .div * {
+.login-page, .create-new-company, .gap-confirm, .main-content, .gap, .gap-info, .about-us-box, .div * {
     font-family: 'Poppins', sans-serif;
 }
   
-.login-page, .create-new-company, .gap-confirm, .gap-info body {
+.login-page, .create-new-company, .gap-confirm, .gap-info, .about-us.box body {
     display: grid;
     height: 100vh;
-    margin: 0;
     place-items: center;
 }
 
@@ -16,7 +15,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     width: 30%;
-    height: 375px;
+    height: 50%;
     padding: 2%;
     border-radius: 35px;
     background-color : white;
@@ -25,7 +24,21 @@
     display: flex; /* Add Flexbox */
     flex-direction: column; /* Stack children vertically */
     align-items: center; /* Center children horizontally */
-    
+
+}
+
+/*for new company title*/
+.bubble-container h2 {
+    font-size: 2rem;
+    margin: 2%;
+  }
+#company-name {
+    font-size: large;
+}
+
+textarea{
+    font-size: large;
+    resize: none;
 }
 
 .bubble-container input[type="text"], input[type="password"]{

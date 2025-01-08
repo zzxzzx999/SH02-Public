@@ -1,0 +1,122 @@
+.detail-output-container {
+    z-index:3;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: auto;
+    padding: 2%;
+    border-radius: 15px;
+    background-color : transparent;
+    text-align: center;
+    display: flex; /* Add Flexbox */
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center children horizontally */
+}
+
+.header{
+    text-align: center;
+    background-color: #7CCC8B;
+    color: white;
+    border-radius: 25px;
+    width: 50%;
+    height: 80%;
+    margin-bottom: 5%;
+}
+.header h1{
+    margin-top: 1%;
+    margin-bottom: 1%;
+    font-size: 1.9rem;
+}
+
+.header span{
+    font-size: 1.9rem;
+    font-weight: 900;
+}
+
+/* separate score parts */
+.compliance-scores {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    align-items: center;
+    width: 100%;
+    gap: 2px;
+}
+
+.block {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 20%;
+    height: 120px;
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    
+}
+
+/* Upper Section with Text */
+.block .upper {
+    height: 50%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: white;
+    font-size: 90%;
+}
+
+.upper span {
+    display: block; /* line break */
+    font-size: 90%
+  }
+
+/* Lower Section with Score */
+.block .lower {
+    height: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: black;
+}
+
+
+.detail-exceptional-compliance .upper{
+    background-color: #006613;
+}
+
+.detail-good-compliance .upper{
+    background-color: #42C259;
+}
+
+.detail-basic-compliance .upper{
+    background-color: #7CCC8B;
+}
+
+.detail-needs-improvement .upper{
+    background-color: #FFC546;
+}
+
+.detail-unsatisfactory .upper{
+    background-color: #FF0B0B;
+}
+
+.pie-chart{
+    height: 300px;
+    background-color: grey;
+    border-radius: 15px;
+    width: 60%;
+    text-align: center;
+
+}

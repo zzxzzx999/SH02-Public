@@ -20,10 +20,16 @@ function Login(){
                 username,
                 password,
             });
-            const { token, username: loggedInUsername} = response.data;
+            const { token, username: loggedInUsername, is_admin} = response.data;
             localStorage.setItem('authToken', token);
             localStorage.setItem('username', loggedInUsername);
-            navigate('/home')
+            localStorage.setItem('isAdmin', is_admin);
+            if (is_admin === true) {
+                navigate('/list-of-companies')
+            }
+            else {
+                navigate('/home')
+            }
         } catch (err) {
             console.error("Login error:", err);
             setError("Invalid username or password.");
