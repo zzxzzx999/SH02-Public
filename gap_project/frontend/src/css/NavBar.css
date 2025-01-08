@@ -199,7 +199,7 @@
   height: 30px;
 }
 
-.main-content .logout-button a, .create-new-company .logout-button a, .gap .logout-button a, .gap-intro .logout-button a{
+.main-content .logout-button a, .create-new-company .logout-button a, .gap .logout-button a, .gap-intro .logout-button a,.gap-confirm .logout-button a, .gap-info .logout-button a{
   color: white;
 }
 

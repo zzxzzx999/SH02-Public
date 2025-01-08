@@ -8,7 +8,7 @@ function GapAnalysisConfirm() {
 
   return (
     <div className="gap-confirm">
-    <NavBar links={links} />
+    <NavBar links={links} logout={true}/>
     <div className = "bubble-container" style={{width:'500px', height:'400px'}}>
       <h2>COMPANY NAME</h2>
         <p>Do you want to start a new GAP analysis?</p>
