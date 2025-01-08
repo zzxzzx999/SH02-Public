@@ -187,10 +187,10 @@ textarea:focus {
 
 .purpose-benchmarking {
     display: flex;
-    justify-content: flex-start; /* Aligns items to the left */
-    align-items: flex-start;    /* Align items to the top */
+    justify-content: flex-start;
+    align-items: flex-start; 
     width: 100%;
-    gap: 50px; /* Add space between boxes */
+    gap: 50px; 
 }
 
 .purpose, .benchmarking {
@@ -235,8 +235,8 @@ textarea:focus {
     background-color: white;
     border-radius: 20px;
     padding: 20px;
-    text-align: left;  /* Aligns text to the left */
-    width: 40%;  /* Limit the width of this element */
+    text-align: left; 
+    width: 40%;  
     clear: both;
     color: #5B5B5B;
     font-weight: 550;
