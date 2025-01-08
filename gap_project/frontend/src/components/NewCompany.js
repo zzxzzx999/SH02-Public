@@ -29,7 +29,7 @@ function NewCompany() {
           });
           setCompanyName("");
           setAdditionalNotes("");
-          navigate("/new-gap-confirm");
+          navigate(`/new-gap-confirm?company=${encodeURIComponent(companyName)}`);
       } catch (error) {
           console.error("Error : ", error.response || error.message);
       }
