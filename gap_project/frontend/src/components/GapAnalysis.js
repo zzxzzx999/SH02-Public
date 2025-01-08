@@ -37,7 +37,6 @@ function Elements() {
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-  // Function to navigate to a specific question
   const navigateToQuestion = (index) => {
     setCurrentQuestionIndex(index);
   };
@@ -70,7 +69,7 @@ function Elements() {
                   onClick={() => navigateToQuestion(index)}
                   className={currentQuestionIndex === index ? "active" : ""}
                 >
-                  {question.Question_Number.slice(2)} {/* Remove the first 2 digits */}
+                  {question.Question_Number.slice(2)}
                 </button>
               ))}                
               </div>
@@ -157,7 +156,6 @@ function Compliance({ question }) {
       ))}
       </div>
 
-      {/* Evidence Textarea */}
   <div className="textareas-row">
     <div className="textarea-container">
       <label htmlFor={`evidence_${question.Question_Number}`} className="textarea-label">Evidence</label>

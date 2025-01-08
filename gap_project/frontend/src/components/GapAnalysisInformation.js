@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import NavBar from './NavBar';  // Import the Navbar component
+import NavBar from './NavBar';
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 
