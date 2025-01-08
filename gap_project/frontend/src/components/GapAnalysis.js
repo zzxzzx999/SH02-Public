@@ -49,14 +49,15 @@ function Elements() {
   };
 
   return (
-    <div>
-      <div className="gap">
+    <div className="gap">
         <NavBar className="elements" links={links} logout={false} />
-          <h1 style={{marginLeft:'16px'}}>{questions[0].Section_Name}</h1>
-          <p style={{marginLeft:'16px'}}>
+          <h1 className="section-title" style={{marginLeft:'16px'}}>{questions[0].Section_Name}</h1>
+          <div className="question-text">
+            <p style={{marginLeft:'16px'}}>
             <strong>{questions[0].Questions[currentQuestionIndex].Question_Number}: </strong>
             {questions[0].Questions[currentQuestionIndex].Question_Name}
-          </p>
+            </p>
+          </div>
 
           <Compliance question={questions[0].Questions[currentQuestionIndex]} />
 
@@ -84,7 +85,6 @@ function Elements() {
               </div>
           </div>
 
-      </div>
     </div>
   );
 }
@@ -95,15 +95,13 @@ function Compliance({ question }) {
   const [evidence, setEvidence] = useState({});
   const [improvement, setImprovement] = useState({});
 
-  // Handle changes in the radio buttons
   const handleRadioChange = (questionNumber, value) => {
     setSelectedRatings(prevState => ({
       ...prevState,
-      [questionNumber]: value // Update rating for the specific question
+      [questionNumber]: value 
     }));
   };
 
-  // Handle evidence input change
   const handleEvidenceChange = (questionNumber, value) => {
     setEvidence(prevState => ({
       ...prevState,
@@ -111,7 +109,6 @@ function Compliance({ question }) {
     }));
   };
 
-  // Handle improvement input change
   const handleImprovementChange = (questionNumber, value) => {
     setImprovement(prevState => ({
       ...prevState,
@@ -135,10 +132,10 @@ function Compliance({ question }) {
           <input
             type="radio"
             id={`question_${question.Question_Number}_${option.value}`}
-            name={`question_${question.Question_Number}`}  // Unique name for each question
+            name={`question_${question.Question_Number}`} 
             value={option.value}
-            checked={selectedRatings[question.Question_Number] === option.value} // Check if selected value for this question matches
-            onChange={() => handleRadioChange(question.Question_Number, option.value)} // Update rating for the specific question
+            checked={selectedRatings[question.Question_Number] === option.value}
+            onChange={() => handleRadioChange(question.Question_Number, option.value)}
           />
           <label htmlFor={`question_${question.Question_Number}_${option.value}`} className={`compliance ${option.className}`}>
             {option.label}
@@ -149,10 +146,10 @@ function Compliance({ question }) {
                 left: '0',
                 width: '100%',
                 height: '50%',
-                backgroundColor: option.color, // Background color dynamically set
+                backgroundColor: option.color,
                 borderTopLeftRadius: '5px',
                 borderTopRightRadius: '5px',
-                zIndex: '-1',  // Ensures it's behind the label
+                zIndex: '-1',
               }}
             />
           </label>

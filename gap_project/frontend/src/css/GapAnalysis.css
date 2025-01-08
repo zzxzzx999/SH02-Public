@@ -1,3 +1,7 @@
+.gap {
+    width: 100%;
+}
+
 .compliance-container {
     display: flex;
     flex-direction: column;
@@ -5,9 +9,11 @@
 }
 
 .compliance-row {
+    margin-top:15px;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
+    width: 100%;
 }
 
 .compliance-option {
@@ -17,6 +23,7 @@
     margin-left: 16px;
     margin-bottom: 10px;
     font-size: 16px;
+    width: 18%;
 }
 
 .compliance-option input[type="radio"] {
@@ -25,7 +32,7 @@
 
 .compliance-option .compliance {
     position: relative;
-    width: 200px;
+    width: 100%;
     height: 90px;
     background-color: white;
     border-radius: 5px;
@@ -60,14 +67,14 @@
 .textareas-row {
     display: flex;
     gap: 100px;
-    width: auto;
+    width: 100%;
 }
 
 .textarea-container {
     margin-top: 10px;
     margin-left: 16px;
     position: relative;
-    width: 475px;
+    width: 43%;
 }
 
 .textarea-wrapper {
