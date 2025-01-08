@@ -248,10 +248,12 @@ textarea:focus {
 }
 
 .output {
+    margin-left:45px;
     margin-top:0;
     color: #5B5B5B;
     font-weight: 550;
-    width:250px;
+    width:25%;
+    height:100px;
     margin-right: 40px;
     padding: 10px;
     background-color: white;
@@ -261,4 +263,13 @@ textarea:focus {
   
   .output:last-child {
     margin-right: 0; 
+  }
+
+  .output li {
+    margin-left:5px;
+    text-wrap: wrap;
+    list-style-type: none
+  }
+  .output-img {
+    float:right;
   }

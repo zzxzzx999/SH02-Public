@@ -219,13 +219,28 @@ function GapAnalysis() {
             <p className="benchmarking-text">The Gap Analysis benchmarks the organization against Gordon Foley’s ‘best in class’ standards and creates a phased improvement plan for health and safety, with options for periodic progress checks.</p>
           </div>
         </div>
-        <p className="gap-intro-outputs">The Gap Analysis process produces <b>3 main outputs:</b></p>
+        <p className="gap-intro-outputs">The Gap Analysis process produces 3 main outputs:</p>
         <div className="gap-outputs">
           <ul>
-            <li className="output">A detailed review as an outcome of the 12 key theme question sets
-            </li>
-            <li className="output">A benchmarking scorecard and dashboard</li>
-            <li className="output">A phased improvement plan</li>
+            <div className="output">
+              <li className="output-text">
+                  A detailed review as an outcome of the 12 key theme question sets.
+              </li>
+              <img src='/review.png' className="output-img" alt="Review Image" style={{width:"15%", height:"40%"}}/>
+            </div>
+            <div className="output">
+              <li className="output-text">
+                  A benchmarking scorecard and dashboard.
+              </li>
+              <img src='/benchmarking.png' className="output-img" alt="Benchmarking Image" style={{width:"30%", height: "50%"}}/>
+            </div>
+
+            <div className="output">
+              <li className="output-text">
+                  A phased improvement plan to promote improvement.
+              </li>
+              <img src='/improvement.png' className="output-img" alt="Improvement Image" style={{width:"30%", height: "50%"}}/>
+            </div>
           </ul>
         </div>
       </div>
