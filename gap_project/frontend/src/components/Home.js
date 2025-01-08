@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-import React from "react";
-import '../css/Home.css';
-import '../css/NavBar.css';
-import NavBar from './NavBar'; // Import the Navbar component
-=======
+import NavBar from './NavBar';
 import React, {useEffect, useState} from "react";
 import NavBar from './NavBar'; 
 import '../css/NavBar.css';
@@ -11,7 +6,6 @@ import '../css/Home.css';
 import {Link } from "react-router-dom";
 
 const url = 'http://127.0.0.1:8000/api'
->>>>>>> d54803e (basic search bar complete)
 
 function AboutUs() {
   const linksForPage1 = [
@@ -83,8 +77,24 @@ function AboutUs() {
           <p className="search-results">No companies found</p>
           )}
         </div>
+        <h2 className = "search-text">Search for Company to Start GAP Analysis</h2>
+        <div className="search-box-and-results">
+        <input className="search-box" type="search" placeholder="search for company" value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={handleKeyDown}/>
+        <button onClick={clearSearch} className="clear-button">Clear Results</button>
+          {Array.isArray(data) && data.length > 0 ? (
+          data.map((company) => (
+              <div className="search-results">
+                <p key={company.name}>Company name: {company.name}</p>
+                <Link to={`/new-gap-confirm?company=${company.name}`} className="start-gap-link">Start GAP Analysis</Link>
+              </div>
+          ))
+          ) : (
+          <p className="search-results">No companies found</p>
+          )}
+        </div>
       </div>
       <div className="about-us-box">
+        <h2>About Us</h2>
         <h2>About Us</h2>
         <p>
         Gordon-Foley Consulting are a health and safety consultancy business, who work with a range of clients across different industrial sectors. 
@@ -92,6 +102,7 @@ function AboutUs() {
         <br></br><br></br><br></br>
         The services we provide to you include and are not limited to:<br></br>
           - Health and Safety Advice and support<br></br>
+          - Health and Safety Inspections<br></br>
           - Health and Safety Inspections<br></br>
           - Health and Safety Training<br></br>
         </p>
