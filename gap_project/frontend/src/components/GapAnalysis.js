@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import NavBar from './NavBar';
 import '../css/GapAnalysis.css';
+import {useLocation } from 'react-router-dom';
 
 function Elements() {
+  const companyName = localStorage.getItem("companyName");
   const links = [
     { name: 'Policy', path: '/gap-analysis/policy', image: '' },
     { name: 'Management', path: '/gap-analysis/management', image: '' },
@@ -199,6 +201,11 @@ function GapAnalysis() {
     { name: 'Audit & Inspection Process', path: '/gap-analysis/audit-and-inspection-process', image: '' },
     { name: 'Improvement Planning', path: '/gap-analysis/improvement-planning', image: '' },
   ];
+
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const companyName = params.get('company');
+  localStorage.setItem("companyName", companyName);
 
   return (
     <div>

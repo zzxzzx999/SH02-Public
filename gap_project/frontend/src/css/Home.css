@@ -1,21 +1,94 @@
+h2 {
+    font-size: 24px;
+}
 .about-us-box {
     z-index: 0;
     background-color: white;
     border-radius: 30px;
     text-align: center;
-    width: 1050px;
-    height: 300px;
+    width: 100%;
+    height: 70%;
 }
 
 .search-box{
     background-color:white;
-    width:100px;
-    height:100px;
+    width:200px;
+    height:50px;
     clear:both;
 }
 
 .about-us-search{
+    margin-top: 5px;
     background-color: #296E8F;
-    width: 1050px;
+    border-radius: 30px;
+    width: 100%;
+    height:25%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
+.search-text {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: left;
+    flex: 1; 
+    margin-left:15px;
+    margin-top:0;
+}
+
+.search-box-and-results {
+    margin-top:15px;
+    margin-right: 15px;
+}
+
+.search-box-and-results input {
+    padding: 10px 15px; /* Adds padding inside the input for better spacing */
+    border: 2px solid #ddd;  /* Light border around the input */
+    border-radius: 25px; /* Round the edges */
+    font-size: 16px;
+    width: 400px; /* Set width for consistency */
+    margin-right: 10px; /* Adds space between the search box and the clear button */
+    transition: all 0.3s ease; /* Smooth transition for effects */
+  }
+
+  .search-box-and-results input:focus {
+    border-color: #5B5B5B; /* Green color when focused */
+    outline: none; /* Removes default outline */
+  }
+
+  .clear-button {
+    padding: 8px 15px; /* Adds padding to the button */
+    background-color: white; /* Green background */
+    color: black;
+    border: none;
+    border-radius: 20px; /* Rounded button edges */
+    cursor: pointer;
+    font-size: 14px;
+    border-color: #5B5B5B;
+    transition: background-color 0.3s ease; /* Smooth background transition */
+  }
+
+  .search-results {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+    background-color: white;
+    border-radius: 15px;
+    margin-top: 10px;
+    padding: 5px;
+    border-color: #5B5B5B;
+  }
+
+  .search-results p{
+    margin: 0;
+  }
+
+  .about-us-box p {
+    font-size: 20px;
+  }
+
+  .about-us-box h2 {
+    font-size: 25px;
+  }

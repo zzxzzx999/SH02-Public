@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from .models import Company
 from rest_framework.authtoken.models import Token
 from rest_framework import generics
+from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -11,7 +12,7 @@ from django.contrib.auth import authenticate
 from rest_framework.decorators import permission_classes
 from django.contrib.auth.models import User
 from .serializers import IndexSerializer
-
+from .serializers import CompanySerializer
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -52,3 +53,16 @@ def company_list(request):
             return Response(serializer.data, status = 201)
         return Response(serializer.errors, status=400)
 
+@permission_classes([AllowAny])
+class CompanyViewSet(viewsets.ModelViewSet):
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
+
+    #override predefined method
+    def get_queryset(self):
+        query_set = Company.objects.all()
+        name = self.request.query_params.get('name')
+
+        if name is not None:
+            query_set = query_set.filter(name__iexact=name)
+        return query_set
