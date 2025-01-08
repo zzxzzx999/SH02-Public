@@ -172,7 +172,7 @@ function Compliance({ question }) {
     </div>
   );
 }
-export {Compliance};
+export { Compliance };
 
 function GapAnalysis() {
   const links = [

@@ -1,12 +1,13 @@
 import React from "react";
-import NavBar from './NavBar';  // Import the Navbar component
-import '../css/NavBar.css';
 import '../css/Home.css';
+import '../css/NavBar.css';
+import NavBar from './NavBar'; // Import the Navbar component
 
 
 function AboutUs() {
   const linksForPage1 = [
     { name: 'Add New Company', path: '/new-company' , image:'/add-new-company.png'},
+    { name: 'List of Company', path: '/list-of-company', image: '/company-list.png'}
   ];
 
   return (
