@@ -1,6 +1,6 @@
 module.exports = {
     transformIgnorePatterns: [
-      "/node_modules/(?!axios|reactstrap|bootstrap|react-hook-form)/",
+      "/node_modules/(?!(axios|reactstrap|bootstrap|react-hook-form)/)",
     ],
     moduleNameMapper: {
         '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
