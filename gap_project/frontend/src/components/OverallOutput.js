@@ -2,7 +2,7 @@
 //import { Line } from 'react-chartjs-2'; 
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import '../css/NavBar.css';
 import '../css/OverallOutput.css';
 import NavBar from "./NavBar";
@@ -19,8 +19,9 @@ function OverallOutput() {
       unsatisfactory: 0,
     });
     const [categories, setCategories] = useState([]); // API fetched categories
-    const { companyName } = useParams(); 
     const location = useLocation();
+    const params = new URLSearchParams(location.search);
+    const companyName = params.get('company');
 
     // cal total score
     useEffect(() => {
@@ -38,27 +39,26 @@ function OverallOutput() {
         });
 }, [companyName]);
 
-    const linksForPage3 = [
-      { name: 'Previous Page', path: `/registed-company/${companyName}` , image:'/back-button.png'}, 
-      { name: 'Policy', path:  `/detail-score/${companyName}?title=Policy`},
-      { name: 'Management', path:  `/detail-score/${companyName}?title=Management`},
-      { name: 'Documented', path:  `/detail-score/${companyName}?title=Document`},
-      { name: 'Meetings', path:  `/detail-score/${companyName}?title=Meeting`},
-      { name: 'Performance Measurement', path:  `/detail-score/${companyName}?title=Performance Measurement`},
-      { name: 'Committee & Representatives', path:  `/detail-score/${companyName}?title=Committee & Representatives`},
-      { name: 'Investiagtion Process', path:  `/detail-score/${companyName}?title=Investiagtion Process`},
-      { name: 'Incident Reporting', path:  `/detail-score/${companyName}?title=Incident Reporting`},
-      { name: 'Training Plan', path:  `/detail-score/${companyName}?title=Training Plan`},
-      { name: 'Risk Management Process', path:  `/detail-score/${companyName}?title=Risk Management Process`},
-      { name: 'Audit & Inspection Process', path:  `/detail-score/${companyName}?title=Audit & Inspection Process`},
-      { name: 'Improvement Planning', path:  `/detail-score/${companyName}?title=Improvement Planning`}, 
-      
-    ];
+const linksForPage3 = [
+  { name: 'Previous Page', path: `/overall-output?company=${encodeURIComponent(companyName)}`, image: '/back-button.png' },
+  { name: 'Policy', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Policy')}` },
+  { name: 'Management', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Management')}` },
+  { name: 'Documented System', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Documented System')}` },
+  { name: 'Meetings', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Meeting')}` },
+  { name: 'Performance Measurement', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Performance Measurement')}` },
+  { name: 'Committee & Representatives', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Committee & Representatives')}` },
+  { name: 'Investigation Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Investigation Process')}` },
+  { name: 'Incident Reporting', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Incident Reporting')}` },
+  { name: 'Training Plan', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Training Plan')}` },
+  { name: 'Risk Management Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Risk Management Process')}` },
+  { name: 'Audit & Inspection Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Audit & Inspection Process')}` },
+  { name: 'Improvement Planning', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Improvement Planning')}` },
+];
   
     return (
       // force refresh
       <div key={location.pathname} class="main-content" className="gap-intro"> 
-        <NavBar links={linksForPage3} />
+        <NavBar links={linksForPage3} logout={true} />
         <div className="output-container">
           
           {/* Top Score Blocks */}
