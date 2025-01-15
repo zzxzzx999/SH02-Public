@@ -1,7 +1,7 @@
 .pyc
 .DS_Store
 __pycache__/
-*.sqlite3
+gap_project/db.sqlite3
 *.key
 thumbs.db
 gapenv/
