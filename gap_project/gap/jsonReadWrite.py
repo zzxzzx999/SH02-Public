@@ -2,6 +2,9 @@ import json
 
 def getAnswer(set, question, gapAnalysis):
     return json.loads(gapAnalysis.gap_data)[str(set)][question-1]
+
+def getElementAnswers(set, gapAnalysis):
+    return json.loads(gapAnalysis.gap_data)[str(set)]
     
 def writeAnswer(answer, set, question, gapAnalysis):
     data = json.loads(gapAnalysis.gap_data)

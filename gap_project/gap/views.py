@@ -16,7 +16,7 @@ from django.contrib.auth.models import User
 from .serializers import *
 from .models import Company, GapAnalysis
 from .pdfGeneration import generateImprovementPlan
-import jsonReadWrite
+from .jsonReadWrite import *
 import os
 
 @api_view(['GET'])
@@ -81,13 +81,13 @@ class PdfView(APIView):
 def getQuestionOrWriteAnswer(self, request):
     data = request.data
     if (data.get("GetOrWrite") == "GET"):
-        question_info = jsonReadWrite.getQuestion(data.get("Set"), data.get("Number"))
+        question_info = getQuestion(data.get("Set"), data.get("Number"))
         return Response(question_info)
 
     else:
         print("Incoming request data:", data)
-        gapAnalysis = GapAnalysis.objects.get(title = data.get("title"))
-        jsonReadWrite.writeAnswer(data.get("answer"), data.get("set"), data.get("question"), gapAnalysis)
+        gapAnalysis = GapAnalysis.objects.get(id = data.get("id"))
+        writeAnswer(data.get("answer"), data.get("set"), data.get("question"), gapAnalysis)
         serializer = QuestionsSerializer(data=gapAnalysis)
         if serializer.is_valid():
             serializer.save()
@@ -107,3 +107,14 @@ class CompanyViewSet(viewsets.ModelViewSet):
         if name is not None:
             query_set = query_set.filter(name__iexact=name)
         return query_set
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def getElementOverview(self, request):
+    data = request.data
+    gapAnalysis = GapAnalysis.objects.get(id = data.get("id"))
+    element_data = getElementAnswers(data.get("set"), gapAnalysis)
+    return Response(element_data)
+
+
+
