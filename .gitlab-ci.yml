@@ -24,6 +24,8 @@ test:
     POSTGRES_USER: user
     POSTGRES_PASSWORD: password
   before_script:
+    - apt-get update
+    - apt-get install -y python3 python3-pip
     - pip install -r requirements.txt
     - python manage.py migrate
   script:
