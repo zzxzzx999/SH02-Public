@@ -22,7 +22,7 @@ function OverallOutput() {
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const companyName = params.get('company');
-    localStorage.setItem("companyName", companyName);
+
     // cal total score
     useEffect(() => {
       axios.get(`http://localhost:8000/api/overall-scores/${companyName}/`)
