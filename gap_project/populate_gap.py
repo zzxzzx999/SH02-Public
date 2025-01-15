@@ -9,9 +9,24 @@ import json
 
 #Set up answer set template
 singular_set_answers = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+improvment_plan_set_answers = [
+    "Hello, this should be question one of a set",
+    "Me again, this is question 2",
+    "sOrry for inconsistiency in numbering- 3 three",
+    "that last one was just question 3, not thirty three. This is qFour",
+    "Five. I am bored",
+    "6666666666",
+    "SEvvvennnnn",
+    "eigh",
+    "t. Nine",
+    "fjkdlsjfdklfjk10101010101001",
+]
 question_answer_set = {}
+improvment_plan = {}
 for i in range(1, 13):
     question_answer_set[i] = singular_set_answers.copy()
+    improvment_plan[i] = improvment_plan_set_answers.copy()
+    
 
 def populate():
     joes_gap_analyses = [
@@ -54,6 +69,7 @@ def add_gap(date, c, i):
     print(date)
     g.title = f"Gap Analysis{i} : {date}"
     g.gap_data = json.dumps(question_answer_set.copy())
+    g.improvement_plan = json.dumps(improvment_plan.copy())
     g.save()
     
 if __name__ == '__main__':

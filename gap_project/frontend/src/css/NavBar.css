@@ -83,6 +83,18 @@
   width: var(--sidebar-width);
 }
 
+.gap-intro .side-navbar a {
+  display: flex; /* Links span full width for clickability */
+  box-sizing: border-box; /* Make sure padding doesn't overflow the link */
+  display: flex; /* Use flex to manage link content */
+  align-items: center; /* Vertically align text */
+  font-size: 13.5px;
+  padding-left: 2px;
+  color: black;
+  text-decoration: none;
+  width: var(--sidebar-width);
+}
+
 .main-content .side-navbar a, .create-new-company .side-navbar a{
   display: flex; /* Links span full width for clickability */
   box-sizing: border-box; /* Make sure padding doesn't overflow the link */
