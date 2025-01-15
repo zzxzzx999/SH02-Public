@@ -168,7 +168,7 @@ function ListofCompany(){
                     {sortedCompanies.map((company) => (
                         <div key={company.name} className="table-row">
                         <span>
-                            <Link to={`/registed-company/${company.name}`}>{company.name}</Link>
+                            <Link to={`/registed-company?company=${company.name}`}>{company.name}</Link>
                             <button
                             className="delete-button"
                             onClick={() => handleDeleteClick(company)}

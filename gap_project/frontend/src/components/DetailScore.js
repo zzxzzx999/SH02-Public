@@ -7,10 +7,15 @@ import NavBar from "./NavBar";
 
 
 function DetailScore() {
-  const { companyName, elementName } = useParams(); 
   const location = useLocation(); // require para
-  const queryParams = new URLSearchParams(location.search); 
-  const title = queryParams.get('title') || 'Default Title'; // get title para
+  const params = new URLSearchParams(location.search);
+  const companyName = params.get('company');
+  const elementName = params.get('title');
+  localStorage.setItem("companyName", companyName);
+
+  console.log("company name: " + companyName);
+
+  console.log("element name: " + elementName);
 
   const [scores, setScores] = useState({}); // store score
   const [totalScore, setTotalScore] = useState(0);
@@ -39,28 +44,28 @@ function DetailScore() {
   
   //Navbar
   const linksForPage3 = [
-    { name: 'Previous Page', path: `/overall-output/${companyName}` , image:'/back-button.png'},
-    { name: 'Policy', path:  `/detail-score/${companyName}?title=Policy`},
-    { name: 'Management', path:  `/detail-score/${companyName}?title=Management`},
-    { name: 'Documented', path:  `/detail-score/${companyName}?title=Document`},
-    { name: 'Meetings', path:  `/detail-score/${companyName}?title=Meeting`},
-    { name: 'Performance Measurement', path:  `/detail-score/${companyName}?title=Performance Measurement`},
-    { name: 'Committee & Representatives', path:  `/detail-score/${companyName}?title=Committee & Representatives`},
-    { name: 'Investiagtion Process', path:  `/detail-score/${companyName}?title=Investiagtion Process`},
-    { name: 'Incident Reporting', path:  `/detail-score/${companyName}?title=Incident Reporting`},
-    { name: 'Training Plan', path:  `/detail-score/${companyName}?title=Training Plan`},
-    { name: 'Risk Management Process', path:  `/detail-score/${companyName}?title=Risk Management Process`},
-    { name: 'Audit & Inspection Process', path:  `/detail-score/${companyName}?title=Audit & Inspection Process`},
-    { name: 'Improvement Planning', path:  `/detail-score/${companyName}?title=Improvement Planning`}, 
-  ]
+    { name: 'Overall Results', path: `/overall-output?company=${encodeURIComponent(companyName)}`, image: '/back-button.png' },
+    { name: 'Policy', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Policy')}` },
+    { name: 'Management', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Management')}` },
+    { name: 'Documented System', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Documented System')}` },
+    { name: 'Meetings', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Meeting')}` },
+    { name: 'Performance Measurement', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Performance Measurement')}` },
+    { name: 'Committee & Representatives', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Committee & Representatives')}` },
+    { name: 'Investigation Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Investigation Process')}` },
+    { name: 'Incident Reporting', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Incident Reporting')}` },
+    { name: 'Training Plan', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Training Plan')}` },
+    { name: 'Risk Management Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Risk Management Process')}` },
+    { name: 'Audit & Inspection Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Audit & Inspection Process')}` },
+    { name: 'Improvement Planning', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Improvement Planning')}` },
+];
   
   return (
     <div class="main-content" className="gap-intro">
-      <NavBar links={linksForPage3} />
+      <NavBar links={linksForPage3} logout={true}/>
       <div className="detail-output-container">
         {/* Header with Title and Total Score */}
         <div className="header">
-          <h1>{title} </h1>
+          <h1>{elementName} </h1>
           <span id="total-score">{totalScore}/50</span>
         </div>
 

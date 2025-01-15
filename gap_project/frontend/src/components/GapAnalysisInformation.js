@@ -8,6 +8,8 @@ function GapAnalysisConfirm() {
   const location = useLocation();
   const [companyName, setCompanyName] = useState('');
 
+  console.log("company name: " + companyName);
+
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const company = queryParams.get('company');
