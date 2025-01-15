@@ -43,7 +43,7 @@ function OverallOutput() {
 }, [companyName]);
 
 const linksForPage3 = [
-  { name: 'Previous Page', path: `/overall-output/${encodeURIComponent(companyName)}`, image: '/back-button.png' },
+  { name: 'Previous Page', path: `/overall-output?company=${encodeURIComponent(companyName)}`, image: '/back-button.png' },
   { name: 'Policy', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Policy')}` },
   { name: 'Management', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Management')}` },
   { name: 'Documented System', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Documented System')}` },
