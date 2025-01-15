@@ -38,5 +38,3 @@ deploy:
   stage: deploy
   script:
     - echo "Deploy script here"
-    only:
-      - main
