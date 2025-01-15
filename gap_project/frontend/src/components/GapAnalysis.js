@@ -207,6 +207,7 @@ function GapAnalysis() {
   const companyName = params.get('company');
   localStorage.setItem("companyName", companyName);
 
+  console.log("company name: " + companyName);
   return (
     <div>
       <div className="gap-intro">

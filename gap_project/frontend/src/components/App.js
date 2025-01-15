@@ -23,9 +23,9 @@ function App() {
             <Route path="/home" element={<PrivateRoute element={Home} />} />
             <Route path="/new-company" element={<PrivateRoute element={NewCompany} />} />
             <Route path="/list-of-company" element={<ListofCompany />} />
-            <Route path='/registed-company/:companyName' element={<RegistedCompany/>}/>
-            <Route path='/overall-output/:companyName' element={<OverallOutput/>}/>
-            <Route path='/detail-score/:companyName' element={<DetailScore/>}/>
+            <Route path='/registed-company' element={<RegistedCompany/>}/>
+            <Route path='/overall-output' element={<OverallOutput/>}/>
+            <Route path='/detail-score' element={<DetailScore/>}/>
             <Route path="/new-gap-confirm" element={<PrivateRoute element={GapAnalysisConfirm} />} />
             <Route path="/new-gap-information" element={<PrivateRoute element={GapInformation} />} />
             <Route path="/gap-analysis" element={<PrivateRoute element={GapAnalysis} />}/>

@@ -1,17 +1,19 @@
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import '../css/NavBar.css';
 import "../css/RegistedCompany.css";
 import NavBar from "./NavBar";
 
-function RegistedCompany()
-{
-    const navigate = useNavigate();
-    const { companyName } = useParams();
+function RegistedCompany() {
     const linksForPage3 = [
         { name: 'Previous Page', path: '/list-of-company' , image:'/back-button.png'},
-        
-      ];
+    ];
+
+    const location = useLocation();
+    const params = new URLSearchParams(location.search);
+    const companyName = params.get('company');
+
+    const navigate = useNavigate(); 
 
     const handleDownload = () => {
         // achieve easy download function
@@ -82,7 +84,7 @@ function RegistedCompany()
                     </div>
                     {/* View Full Analysis */}
                     <div className="full-analysis">
-                        <button onClick={() => navigate(`/overall-output/${companyName}`)}>View Full Analysis</button>
+                        <button onClick={() => navigate(`/overall-output?company=${companyName}`)}>View Full Analysis</button>
                     </div>               
                 </div>   
             </main>

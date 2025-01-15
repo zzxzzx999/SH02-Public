@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import '../css/NavBar.css';
 
 function NavBar({links, logout}) {
@@ -7,6 +7,11 @@ function NavBar({links, logout}) {
   const navigate = useNavigate();
   const pageRef = useRef(null);
   const popUpRef = useRef(null);
+
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const companyName = params.get('company');
+  localStorage.setItem("companyName", companyName);
 
   const handleOutsideClick = (e) => {
     if (
@@ -104,7 +109,7 @@ function NavBar({links, logout}) {
         <h2>Company Name</h2>
         <p>Are you finished?<br></br>If not, you can save and come back later.</p>
         <button className="submitButton" onClick={() => navigate('/home')}>SAVE AND EXIT</button>
-        <button className="submitButton" style={{margin:'15px'}} onClick={() => navigate('/results')}>FINISHED, GO TO RESULTS</button>
+        <button className="submitButton" style={{margin: '15px'}} onClick={() => navigate(`/overall-output?company=${companyName}`)}>FINISHED, GO TO RESULTS</button>
       </Popup>
     )}
     </div>
