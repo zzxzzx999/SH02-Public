@@ -17,6 +17,7 @@ stages:
 
 test:
   stage: test
+  image: python:3.9
   services:
     - postgres:latest
   variables:
