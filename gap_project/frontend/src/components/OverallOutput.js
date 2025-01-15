@@ -2,7 +2,7 @@
 //import { Line } from 'react-chartjs-2'; 
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import '../css/NavBar.css';
 import '../css/OverallOutput.css';
 import NavBar from "./NavBar";
@@ -19,14 +19,10 @@ function OverallOutput() {
       unsatisfactory: 0,
     });
     const [categories, setCategories] = useState([]); // API fetched categories
-
-
-    const location = useLocation();
     const params = new URLSearchParams(location.search);
     const companyName = params.get('company');
     localStorage.setItem("companyName", companyName);
 
-    console.log("company name: " + companyName);
     // cal total score
     useEffect(() => {
       axios.get(`http://localhost:8000/api/overall-scores/${companyName}/`)
