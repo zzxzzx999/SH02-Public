@@ -1,96 +1,42 @@
 stages:
-  - setup
+  - lint
   - test
-  - build
-  - debug
+  - security
   - deploy
 
-variables:
-  # Specify the paths for cached dependencies
-  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-  NODE_MODULES_CACHE: "$CI_PROJECT_DIR/node_modules"
-
-cache:
-  paths:
-    - .cache/pip/
-    - node_modules/
-
-# Step 1: Setup Backend (Django)
-setup_backend:
-  stage: setup
-  image: python:3.12  # Use your desired Python version
-  before_script:
-    - pip install django djangorestframework django-cors-headers
+lint: # check code styles and type hints
+  stage: lint
   script:
-    - cd gap_project/
-    - python manage.py migrate  # Run migrations to set up the database
+    - pip install flake8 mypy
+    - flake8 .
+    - mypy .
 
-# Step 2: Test Backend (Django)
-test_backend:
+test:
   stage: test
-  image: python:3.12
+  services:
+    - postgres:latest
+  variables:
+    POSTGRES_DB: test_db
+    POSTGRES_USER: user
+    POSTGRES_PASSWORD: password
   before_script:
-    - pip install django djangorestframework django-cors-headers
+    - pip install -r requirements.txt
+    - python manage.py migrate
   script:
-    - cd gap_project/
-    - python manage.py test  # Run Django tests
+    - python manage.py test
+    - coverage run --source='.' manage.py test
+    - coverage report
 
-# Step 3: Setup Frontend (React)
-setup_frontend:
-  stage: setup
-  image: node:22.11  # Use your desired Node.js version
+security:
+  stage: security
   script:
-    - cd gap_project/frontend/
-    - rm -rf node_modules package-lock.json  # Remove any old dependencies
-    - npm cache clean --force
-    - npm install reactstrap bootstrap react-hook-form axios  # Install project-specific dependencies
-    - npm install --save-dev jest babel-jest @babel/core @babel/preset-env @babel/preset-react # Install babel presets
-    - npm install identity-obj-proxy --save-dev
+    - pip install bandit safety
+    - bandit -r .
+    - safety check
 
-# Step 4: Test Frontend (React)
-test_frontend:
-  stage: test
-  image: node:22.11
-  cache:
-    paths:
-      - gap_project/frontend/node_modules/
-  script:
-    - cd gap_project/frontend/
-    - npm ci  # Install dependencies
-    - npm run test #-- --watchAll=false  # Run React tests
-
-# Step 5: Build Frontend (React)
-build_frontend:
-  stage: build
-  image: node:22.11
-  script:
-   - cd gap_project/frontend/
-    - npm run build  # Build React for production
-  artifacts:
-    paths:
-      - build/
-
-# Step 5.5: Debugging React Script
-debug_react_scripts:
-  stage: debug
-  image: node:22.11
-  script:
-    - cd gap_project/frontend/
-    #- npm ls react-scripts  # Check if react-scripts is installed and its version
-    - rm -rf node_modules package-lock.json  # Remove node_modules and lock file
-    - npm cache clean --force                # Clear npm cache
-    - npm install                            # Reinstall dependencies
-    - ls -l node_modules/react-scripts/bin/  # Check if the react-scripts binary exists
-
-# Step 6: Deploy (Optional)
 deploy:
   stage: deploy
-  image: python:3.12
-  before_script:
-    - pip install django djangorestframework django-cors-headers
   script:
-    - cd gap_project/
-    - python manage.py collectstatic --noinput  # Collect static files from React build
-    - python manage.py runserver 0.0.0.0:8000  # Start Django server (for demo purposes)
-  only:
-    - main  # Deploy only from the main branch
+    - echo "Deploy script here"
+    only:
+      - main
