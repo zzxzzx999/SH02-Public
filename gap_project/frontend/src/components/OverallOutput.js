@@ -20,6 +20,7 @@ function OverallOutput() {
     });
     const [categories, setCategories] = useState([]); // API fetched categories
 
+
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const companyName = params.get('company');
