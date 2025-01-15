@@ -1,5 +1,6 @@
 //import { CategoryScale, Chart as ChartJS, LinearScale, LineElement, PointElement } from 'chart.js';
 //import { Line } from 'react-chartjs-2'; 
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import '../css/NavBar.css';
@@ -17,69 +18,46 @@ function OverallOutput() {
       needsImprovement: 0,
       unsatisfactory: 0,
     });
+    const [categories, setCategories] = useState([]); // API fetched categories
     const { companyName } = useParams(); 
     const location = useLocation();
 
-      // exapmle data
-    const categories = [
-      {
-        name: "H&S Policy",
-        scores: { exceptional: 10, good: 8, basic: 6, needsImprovement: 4, unsatisfactory: 2 },
-      },
-      {
-        name: "Training",
-        scores: { exceptional: 5, good: 10, basic: 7, needsImprovement: 4, unsatisfactory: 3 },
-      },
-      {
-        name: "Risk Management",
-        scores: { exceptional: 6, good: 9, basic: 5, needsImprovement: 5, unsatisfactory: 5 },
-      },
-      {
-        name: "Incident Reporting",
-        scores: { exceptional: 7, good: 10, basic: 6, needsImprovement: 3, unsatisfactory: 4 },
-      },
-    ];
-
     // cal total score
     useEffect(() => {
-      let total = 0; 
-      const totals = { basic: 0, needsImprovement: 0, unsatisfactory: 0 }; 
-      categories.forEach((category) => {
-        const { scores } = category;
-        totals.basic += scores.basic;
-        totals.needsImprovement += scores.needsImprovement;
-        totals.unsatisfactory += scores.unsatisfactory;
-        total += Object.values(scores).reduce((a, b) => a + b, 0);
-    });
-    setTotalScore(total);
-
-    setPercentages({
-      basic: ((totals.basic / total) * 100).toFixed(2),
-      needsImprovement: ((totals.needsImprovement / total) * 100).toFixed(2),
-      unsatisfactory: ((totals.unsatisfactory / total) * 100).toFixed(2),
-    });
-  }, [companyName, location.pathname]);
+      axios.get(`http://localhost:8000/api/overall-scores/${companyName}/`)
+        .then((response) => {
+          console.log( response.data);
+          const { totals, percentages, total_score } = response.data;
+          setCategories(Object.entries(totals))
+          setTotalScore(total_score)
+          setPercentages(percentages)
+        })
+    
+        .catch((error) => {
+          console.error("Error fetching categories:", error);
+        });
+}, [companyName]);
 
     const linksForPage3 = [
       { name: 'Previous Page', path: `/registed-company/${companyName}` , image:'/back-button.png'}, 
-      { name: 'Policy', path:  `/detail-score/${companyName}`},
-      { name: 'Management', path:  `/detail-score/${companyName}`},
-      { name: 'Documented', path:  `/detail-score/${companyName}`},
-      { name: 'Meetings', path:  `/detail-score/${companyName}`},
-      { name: 'performance Measurement', path:  `/detail-score/${companyName}`},
-      { name: 'Committee & Representatives', path:  `/detail-score/${companyName}`},
-      { name: 'Investiagtion Process', path:  `/detail-score/${companyName}`},
-      { name: 'Incident Reporting', path:  `/detail-score/${companyName}`},
-      { name: 'Training Plan', path:  `/detail-score/${companyName}`},
-      { name: 'Risk Management Process', path:  `/detail-score/${companyName}`},
-      { name: 'Audit & Inspection Process', path:  `/detail-score/${companyName}`},
-      { name: 'Improvement Planning', path:  `/detail-score/${companyName}`},
+      { name: 'Policy', path:  `/detail-score/${companyName}?title=Policy`},
+      { name: 'Management', path:  `/detail-score/${companyName}?title=Management`},
+      { name: 'Documented', path:  `/detail-score/${companyName}?title=Document`},
+      { name: 'Meetings', path:  `/detail-score/${companyName}?title=Meeting`},
+      { name: 'Performance Measurement', path:  `/detail-score/${companyName}?title=Performance Measurement`},
+      { name: 'Committee & Representatives', path:  `/detail-score/${companyName}?title=Committee & Representatives`},
+      { name: 'Investiagtion Process', path:  `/detail-score/${companyName}?title=Investiagtion Process`},
+      { name: 'Incident Reporting', path:  `/detail-score/${companyName}?title=Incident Reporting`},
+      { name: 'Training Plan', path:  `/detail-score/${companyName}?title=Training Plan`},
+      { name: 'Risk Management Process', path:  `/detail-score/${companyName}?title=Risk Management Process`},
+      { name: 'Audit & Inspection Process', path:  `/detail-score/${companyName}?title=Audit & Inspection Process`},
+      { name: 'Improvement Planning', path:  `/detail-score/${companyName}?title=Improvement Planning`}, 
       
     ];
   
     return (
       // force refresh
-      <div key={location.pathname} class="main-content"> 
+      <div key={location.pathname} class="main-content" className="gap-intro"> 
         <NavBar links={linksForPage3} />
         <div className="output-container">
           

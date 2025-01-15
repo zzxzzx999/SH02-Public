@@ -13,6 +13,8 @@ urlpatterns = [
     path("gap/companies/", views.index, name="index"),  # Add a direct path for the function-based vie
     path("api/login/", login_user, name="login"),
     path("api/companies/", company_list, name="company_list"),
+    path('api/scores/<str:company_name>/<str:element_name>/', views.get_scores, name='get_scores'),
+    path('api/overall-scores/<str:company_name>/', views.overall_scores, name='overall_scores'),
 
 
 ]

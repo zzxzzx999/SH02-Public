@@ -59,7 +59,7 @@
   margin-bottom : 5px;
 }
 
-.gap .side-navbar a {
+.gap-intro .side-navbar a {
   display: flex; /* Links span full width for clickability */
   box-sizing: border-box; /* Make sure padding doesn't overflow the link */
   display: flex; /* Use flex to manage link content */

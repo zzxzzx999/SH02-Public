@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
-import { useNavigate } from "react-router-dom";
-import NavBar from './NavBar';  // Import the Navbar component
-import '../css/Login.css'
 import axios from 'axios';
+import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import '../css/Login.css';
+import NavBar from './NavBar'; // Import the Navbar component
 
 function NewCompany() {
   const linksForPage2 = [
-    { name: 'Previous Page', path: '/home', image:'/back-button.png'},
+    { name: 'Previous Page', path: '/list-of-company', image:'/back-button.png'},
   ];
 
   const [companyName, setCompanyName] = useState("");
