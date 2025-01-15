@@ -18,7 +18,8 @@
   
   /* left part */
   .left-part {
-    height: 100%;
+    height: 98%;
+    width: 22%;
     flex: 0.8;
     background-color: white;
     border-radius: 25px;

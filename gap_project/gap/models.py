@@ -37,3 +37,11 @@ class UserProfile(models.Model):
         return self.user.username
     
     
+
+class Score(models.Model):
+    company_name = models.CharField(max_length=255)
+    category = models.CharField(max_length=255)
+    score = models.DecimalField(max_digits=5, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.company_name} - {self.category}: {self.score}"
