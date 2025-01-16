@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import NavBar from './NavBar';
 import '../css/GapAnalysis.css';
-import {useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 function Elements() {
@@ -14,7 +14,7 @@ function Elements() {
     { name: 'Meetings', path: `/gap-analysis/meetings?company=${encodeURIComponent(companyName)}&element=3`, image: '' },
     { name: 'Performance Measurement', path: `/gap-analysis/performance-measurement?company=${encodeURIComponent(companyName)}&element=4`, image: '' },
     { name: 'Committee & Representatives', path: `/gap-analysis/committee-and-representatives?company=${encodeURIComponent(companyName)}&element=5`, image: '' },
-    { name: 'Investiagtion Process', path: `/gap-analysis/investigation-process?company=${encodeURIComponent(companyName)}&element=6`, image: '' },
+    { name: 'Investigation Process', path: `/gap-analysis/investigation-process?company=${encodeURIComponent(companyName)}&element=6`, image: '' },
     { name: 'Incident Reporting', path: `/gap-analysis/incident-reporting?company=${encodeURIComponent(companyName)}&element=7`, image: '' },
     { name: 'Training Plan', path: `/gap-analysis/training-plan?company=${encodeURIComponent(companyName)}&element=8`, image: '' },
     { name: 'Risk Management Process', path: `/gap-analysis/risk-management-process?company=${encodeURIComponent(companyName)}&element=9`, image: '' },
@@ -28,9 +28,9 @@ function Elements() {
 
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState({});
+  const [answers, setAnswers] = useState({});  // To manage saved answers
 
-  // Effect to fetch questions
+  // Effect to fetch questions from the API when 'set' changes
   useEffect(() => {
     const fetchQuestion = async (set, number) => {
       try {
@@ -39,8 +39,6 @@ function Elements() {
           Set: set,
           Number: number
         });
-        console.log('Fetched Questions:', response.data);
-
         return response.data.Questions ? [response.data] : [];
       } catch (error) {
         console.error('Error fetching question:', error.response?.data || error.message);
@@ -51,39 +49,39 @@ function Elements() {
     const fetchData = async () => {
       let allQuestions = [];
       for (let i = 1; i <= 10; i++) {
-        const questionData = await fetchQuestion(set+1, i);
+        const questionData = await fetchQuestion(set + 1, i);
         allQuestions = [...allQuestions, ...questionData];
       }
       setQuestions(allQuestions);
+      setCurrentQuestionIndex(0); // Reset to the first question when set changes
     };
 
     fetchData();
-    setCurrentQuestionIndex(0); // Reset to first question whenever set changes
-  }, [set]); // Dependent on 'set', to refetch when element changes
+  }, [set]);
 
-  // Effect to load saved answers from localStorage
+  // Effect to load saved answers from localStorage on initial load
   useEffect(() => {
     const savedAnswers = JSON.parse(localStorage.getItem('answers'));
     if (savedAnswers) {
-      setAnswers(savedAnswers);
+      setAnswers(savedAnswers); // Load answers into state
     }
-  }, []); // Runs only once when the component mounts
+  }, []);  // Run once when the component mounts
 
-  // Function to handle changes in question answers
+  // Handle the answer change and store it in localStorage
   const handleAnswerChange = (questionId, answer) => {
-    setAnswers((prevAnswers) => {
+    setAnswers(prevAnswers => {
       const updatedAnswers = { ...prevAnswers, [questionId]: answer };
-      localStorage.setItem('answers', JSON.stringify(updatedAnswers)); // Save answers to localStorage
+      localStorage.setItem('answers', JSON.stringify(updatedAnswers));  // Persist the answers to localStorage
       return updatedAnswers;
     });
   };
 
-  // Function to navigate to a specific question by its index
+  // Navigate to a specific question
   const navigateToQuestion = (index) => {
     setCurrentQuestionIndex(index);
   };
 
-  // Function to go to the next question
+  // Go to the next question
   const goToNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -109,10 +107,10 @@ function Elements() {
           </div>
 
           {/* Render the Compliance component */}
-          <Compliance 
+          <Compliance
             question={questions[currentQuestionIndex]?.Questions}
-            onAnswerChange={handleAnswerChange}
-            savedAnswer={answers[questions[currentQuestionIndex]?.Questions?.Question_Number]}
+            handleAnswerChange={handleAnswerChange}  // Use answer change handler
+            savedAnswer={answers[questions[currentQuestionIndex]?.Questions?.Question_Number]}  // Retrieve the saved answer
           />
 
           <div className="navigation-buttons-container">
@@ -145,16 +143,34 @@ function Elements() {
 }
 export { Elements };
 
-function Compliance({ question }) {
+
+
+
+function Compliance({ question, handleAnswerChange, savedAnswer }) {
   const [selectedRatings, setSelectedRatings] = useState({});
   const [evidence, setEvidence] = useState({});
   const [improvement, setImprovement] = useState({});
+
+  useEffect(() => {
+    if (savedAnswer) {
+      // If the savedAnswer exists, set it for the specific question
+      setSelectedRatings({ [question.Question_Number]: savedAnswer.selectedRating });
+      setEvidence({ [question.Question_Number]: savedAnswer.evidence });
+      setImprovement({ [question.Question_Number]: savedAnswer.improvement });
+    }
+  }, [savedAnswer, question.Question_Number]);
 
   const handleRadioChange = (questionNumber, value) => {
     setSelectedRatings(prevState => ({
       ...prevState,
       [questionNumber]: value 
     }));
+
+    handleAnswerChange(questionNumber, { 
+      selectedRating: value, 
+      evidence: evidence[questionNumber], 
+      improvement: improvement[questionNumber] 
+      });
   };
 
   const handleEvidenceChange = (questionNumber, value) => {
@@ -162,6 +178,10 @@ function Compliance({ question }) {
       ...prevState,
       [questionNumber]: value
     }));
+    handleAnswerChange(questionNumber, { 
+      selectedRating: selectedRatings[questionNumber], 
+      evidence: value, 
+      improvement: improvement[questionNumber] });
   };
 
   const handleImprovementChange = (questionNumber, value) => {
@@ -169,6 +189,11 @@ function Compliance({ question }) {
       ...prevState,
       [questionNumber]: value
     }));
+    handleAnswerChange(questionNumber, { 
+      selectedRating: selectedRatings[questionNumber], 
+      evidence: evidence[questionNumber] , 
+      improvement: value
+    });
   };
 
   const options = [
