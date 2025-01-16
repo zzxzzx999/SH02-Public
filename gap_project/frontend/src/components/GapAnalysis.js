@@ -150,6 +150,44 @@ function Compliance({ question, handleAnswerChange, savedAnswer }) {
   const [selectedRatings, setSelectedRatings] = useState({});
   const [evidence, setEvidence] = useState({});
   const [improvement, setImprovement] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    setError('');
+
+    const answersPayload = Object.keys(selectedRatings).map(questionId => ({
+      question: questionId,
+      selectedRating: selectedRatings[questionId],
+      evidence: evidence[questionId] || '',
+      improvement: improvement[questionId] || ''
+    }));
+
+    console.log("gapid: " + gapAnalysisId);
+
+    // POST request to save answers
+    try {
+      const response = await axios.post(
+        'http://127.0.0.1:8000/api/getQuestionOrWriteAnswer/', 
+        {
+          GetOrWrite: "WRITE",
+          id: gapAnalysisId,
+          answers: answersPayload,
+        }
+      );
+
+      if (response.status === 201) {
+        alert('Answers saved successfully');
+      }
+    } catch (err) {
+      setError('Failed to save answers: ' + (err.response?.data?.error || err.message));
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   useEffect(() => {
     if (savedAnswer) {
