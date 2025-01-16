@@ -14,7 +14,7 @@ function Elements() {
     { name: 'Meetings', path: `/gap-analysis/meetings?company=${encodeURIComponent(companyName)}&element=3`, image: '' },
     { name: 'Performance Measurement', path: `/gap-analysis/performance-measurement?company=${encodeURIComponent(companyName)}&element=4`, image: '' },
     { name: 'Committee & Representatives', path: `/gap-analysis/committee-and-representatives?company=${encodeURIComponent(companyName)}&element=5`, image: '' },
-    { name: 'Investiagtion Process', path: `/gap-analysis/investigation-process?company=${encodeURIComponent(companyName)}&element=6`, image: '' },
+    { name: 'Investigation Process', path: `/gap-analysis/investigation-process?company=${encodeURIComponent(companyName)}&element=6`, image: '' },
     { name: 'Incident Reporting', path: `/gap-analysis/incident-reporting?company=${encodeURIComponent(companyName)}&element=7`, image: '' },
     { name: 'Training Plan', path: `/gap-analysis/training-plan?company=${encodeURIComponent(companyName)}&element=8`, image: '' },
     { name: 'Risk Management Process', path: `/gap-analysis/risk-management-process?company=${encodeURIComponent(companyName)}&element=9`, image: '' },
@@ -30,7 +30,7 @@ function Elements() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});  // To manage saved answers
 
-  // Effect to fetch questions
+  // Effect to fetch questions from the API when 'set' changes
   useEffect(() => {
     const fetchQuestion = async (set, number) => {
       try {
@@ -39,8 +39,6 @@ function Elements() {
           Set: set,
           Number: number
         });
-        console.log('Fetched Questions:', response.data);
-
         return response.data.Questions ? [response.data] : [];
       } catch (error) {
         console.error('Error fetching question:', error.response?.data || error.message);
@@ -59,10 +57,9 @@ function Elements() {
     };
 
     fetchData();
-    setCurrentQuestionIndex(0); // Reset to first question whenever set changes
-  }, [set]); // Dependent on 'set', to refetch when element changes
+  }, [set]);
 
-  // Effect to load saved answers from localStorage
+  // Effect to load saved answers from localStorage on initial load
   useEffect(() => {
     const savedAnswers = JSON.parse(localStorage.getItem('answers'));
     if (savedAnswers) {
@@ -188,6 +185,15 @@ function Compliance({ question, handleAnswerChange, savedAnswer }) {
     }
   };
 
+
+  useEffect(() => {
+    if (savedAnswer) {
+      // If the savedAnswer exists, set it for the specific question
+      setSelectedRatings({ [question.Question_Number]: savedAnswer.selectedRating });
+      setEvidence({ [question.Question_Number]: savedAnswer.evidence });
+      setImprovement({ [question.Question_Number]: savedAnswer.improvement });
+    }
+  }, [savedAnswer, question.Question_Number]);
 
   useEffect(() => {
     if (savedAnswer) {
