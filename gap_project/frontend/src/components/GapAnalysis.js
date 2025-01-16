@@ -57,27 +57,26 @@ function Elements() {
     };
 
     fetchData();
-    setCurrentQuestionIndex(0); // Reset to first question whenever set changes
-  }, [set]); // Dependent on 'set', to refetch when element changes
+  }, [set]);
 
-  // Effect to load saved answers from localStorage
+  // Effect to load saved answers from localStorage on initial load
   useEffect(() => {
     const savedAnswers = JSON.parse(localStorage.getItem('answers'));
     if (savedAnswers) {
-      setAnswers(savedAnswers);
+      setAnswers(savedAnswers); // Load answers into state
     }
-  }, []); // Runs only once when the component mounts
+  }, []);  // Run once when the component mounts
 
-  // Function to handle changes in question answers
+  // Handle the answer change and store it in localStorage
   const handleAnswerChange = (questionId, answer) => {
-    setAnswers((prevAnswers) => {
+    setAnswers(prevAnswers => {
       const updatedAnswers = { ...prevAnswers, [questionId]: answer };
-      localStorage.setItem('answers', JSON.stringify(updatedAnswers)); // Save answers to localStorage
+      localStorage.setItem('answers', JSON.stringify(updatedAnswers));  // Persist the answers to localStorage
       return updatedAnswers;
     });
   };
 
-  // Function to navigate to a specific question by its index
+  // Navigate to a specific question
   const navigateToQuestion = (index) => {
     setCurrentQuestionIndex(index);
   };
@@ -187,6 +186,15 @@ function Compliance({ question, handleAnswerChange, savedAnswer }) {
     }
   };
 
+
+  useEffect(() => {
+    if (savedAnswer) {
+      // If the savedAnswer exists, set it for the specific question
+      setSelectedRatings({ [question.Question_Number]: savedAnswer.selectedRating });
+      setEvidence({ [question.Question_Number]: savedAnswer.evidence });
+      setImprovement({ [question.Question_Number]: savedAnswer.improvement });
+    }
+  }, [savedAnswer, question.Question_Number]);
 
   useEffect(() => {
     if (savedAnswer) {
