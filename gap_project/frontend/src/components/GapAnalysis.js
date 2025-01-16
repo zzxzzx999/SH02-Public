@@ -57,26 +57,27 @@ function Elements() {
     };
 
     fetchData();
-  }, [set]);
+    setCurrentQuestionIndex(0); // Reset to first question whenever set changes
+  }, [set]); // Dependent on 'set', to refetch when element changes
 
-  // Effect to load saved answers from localStorage on initial load
+  // Effect to load saved answers from localStorage
   useEffect(() => {
     const savedAnswers = JSON.parse(localStorage.getItem('answers'));
     if (savedAnswers) {
-      setAnswers(savedAnswers); // Load answers into state
+      setAnswers(savedAnswers);
     }
-  }, []);  // Run once when the component mounts
+  }, []); // Runs only once when the component mounts
 
-  // Handle the answer change and store it in localStorage
+  // Function to handle changes in question answers
   const handleAnswerChange = (questionId, answer) => {
-    setAnswers(prevAnswers => {
+    setAnswers((prevAnswers) => {
       const updatedAnswers = { ...prevAnswers, [questionId]: answer };
-      localStorage.setItem('answers', JSON.stringify(updatedAnswers));  // Persist the answers to localStorage
+      localStorage.setItem('answers', JSON.stringify(updatedAnswers)); // Save answers to localStorage
       return updatedAnswers;
     });
   };
 
-  // Navigate to a specific question
+  // Function to navigate to a specific question by its index
   const navigateToQuestion = (index) => {
     setCurrentQuestionIndex(index);
   };
