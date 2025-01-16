@@ -22,44 +22,61 @@ function Elements() {
     { name: 'Improvement Planning', path: `/gap-analysis/policy?improvement-planning=${encodeURIComponent(companyName)}&element=11`, image: '' },
   ];
 
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const set = parseInt(params.get('element'));
+
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState({});
 
-  const fetchQuestion = async (set, number) => {
-    try {
-      const response = await axios.post("http://127.0.0.1:8000/api/getQuestionOrWriteAnswer/", {
-        GetOrWrite: "GET",
-        Set: set,
-        Number: number
-      });
-      console.log('Question Info:', response.data);
-
-      if (response.data.Questions) {
-        return [response.data];
-      }
-      return [];
-      
-    } catch (error) {
-      console.error('Error fetching question:', error.response?.data || error.message);
-      return [];
-    }
-  };
-
-  const fetchData = async () => {
-    let allQuestions = [];
-
-    for (let i = 1; i <= 10; i++) {
-      const questionData = await fetchQuestion(1, i);
-      console.log(`Question data for set ${i}:`, questionData);
-      allQuestions = [...allQuestions, ...questionData];
-    }
-
-    setQuestions(allQuestions);
-  };
-
+  // Effect to fetch questions
   useEffect(() => {
+    const fetchQuestion = async (set, number) => {
+      try {
+        const response = await axios.post("http://127.0.0.1:8000/api/getQuestionOrWriteAnswer/", {
+          GetOrWrite: "GET",
+          Set: set,
+          Number: number
+        });
+        console.log('Fetched Questions:', response.data);
+
+        return response.data.Questions ? [response.data] : [];
+      } catch (error) {
+        console.error('Error fetching question:', error.response?.data || error.message);
+        return [];
+      }
+    };
+
+    const fetchData = async () => {
+      let allQuestions = [];
+      for (let i = 1; i <= 10; i++) {
+        const questionData = await fetchQuestion(set+1, i);
+        allQuestions = [...allQuestions, ...questionData];
+      }
+      setQuestions(allQuestions);
+    };
+
     fetchData();
-  }, []);
+    setCurrentQuestionIndex(0); // Reset to first question whenever set changes
+  }, [set]); // Dependent on 'set', to refetch when element changes
+
+  // Effect to load saved answers from localStorage
+  useEffect(() => {
+    const savedAnswers = JSON.parse(localStorage.getItem('answers'));
+    if (savedAnswers) {
+      setAnswers(savedAnswers);
+    }
+  }, []); // Runs only once when the component mounts
+
+  // Function to handle changes in question answers
+  const handleAnswerChange = (questionId, answer) => {
+    setAnswers((prevAnswers) => {
+      const updatedAnswers = { ...prevAnswers, [questionId]: answer };
+      localStorage.setItem('answers', JSON.stringify(updatedAnswers)); // Save answers to localStorage
+      return updatedAnswers;
+    });
+  };
 
   // Function to navigate to a specific question by its index
   const navigateToQuestion = (index) => {
@@ -91,23 +108,25 @@ function Elements() {
             </p>
           </div>
 
-          {/* Assuming Compliance component accepts the question directly */}
-          <Compliance question={questions[currentQuestionIndex]?.Questions} />
+          {/* Render the Compliance component */}
+          <Compliance 
+            question={questions[currentQuestionIndex]?.Questions}
+            onAnswerChange={handleAnswerChange}
+            savedAnswer={answers[questions[currentQuestionIndex]?.Questions?.Question_Number]}
+          />
 
           <div className="navigation-buttons-container">
             <div className="navigation-buttons">
-              <div className="question-buttons">
-                {/* Generate buttons for each question */}
-                {questions.map((question, index) => (
-                  <button
-                    key={index}
-                    onClick={() => navigateToQuestion(index)}
-                    className={currentQuestionIndex === index ? "active" : ""}
-                  >
-                    {question.Questions.Question_Number} {/* Directly use the Question_Number here */}
-                  </button>
-                ))}
-              </div>
+              {/* Generate buttons for each question */}
+              {questions.map((question, index) => (
+                <button
+                  key={index}
+                  onClick={() => navigateToQuestion(index)}
+                  className={currentQuestionIndex === index ? "active" : ""}
+                >
+                  {question.Questions.Question_Number}
+                </button>
+              ))}
 
               {/* "Next" button */}
               <button
