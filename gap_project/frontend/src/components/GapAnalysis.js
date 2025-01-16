@@ -30,7 +30,7 @@ function Elements() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});  // To manage saved answers
 
-  // Effect to fetch questions from the API when 'set' changes
+  // Effect to fetch questions
   useEffect(() => {
     const fetchQuestion = async (set, number) => {
       try {
@@ -39,6 +39,8 @@ function Elements() {
           Set: set,
           Number: number
         });
+        console.log('Fetched Questions:', response.data);
+
         return response.data.Questions ? [response.data] : [];
       } catch (error) {
         console.error('Error fetching question:', error.response?.data || error.message);
@@ -57,9 +59,10 @@ function Elements() {
     };
 
     fetchData();
-  }, [set]);
+    setCurrentQuestionIndex(0); // Reset to first question whenever set changes
+  }, [set]); // Dependent on 'set', to refetch when element changes
 
-  // Effect to load saved answers from localStorage on initial load
+  // Effect to load saved answers from localStorage
   useEffect(() => {
     const savedAnswers = JSON.parse(localStorage.getItem('answers'));
     if (savedAnswers) {
