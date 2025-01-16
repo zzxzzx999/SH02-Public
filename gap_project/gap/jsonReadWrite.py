@@ -1,4 +1,6 @@
 import json
+import os
+from django.conf import settings
 
 def getAnswer(set, question, gapAnalysis):
     return json.loads(gapAnalysis.gap_data)[str(set)][question-1]
@@ -17,8 +19,9 @@ def getImprovementAnswer(set, question, gapAnalysis):
     return json.loads(str(gapAnalysis.improvement_plan))[str(set)][question-1]
 
 def getQuestion(set, question):
-    with open('src/elements-questions.json', 'r') as file:
-        data = json.loads(file)[set-1]
+    file_path = os.path.join(settings.BASE_DIR, 'gap/src/elements-questions.json')
+    with open(file_path, 'r', encoding='UTF-8') as file:
+        data = json.load(file)[set-1]
     
     data["Questions"] = data["Questions"][question-1]
     return data

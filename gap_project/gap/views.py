@@ -81,11 +81,19 @@ class PdfView(APIView):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-def getQuestionOrWriteAnswer(self, request):
+def getQuestionOrWriteAnswer(request):
+    serializer = QuestionsSerializer(data=request.data)
     data = request.data
+
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=400)
+
     if (data.get("GetOrWrite") == "GET"):
         question_info = getQuestion(data.get("Set"), data.get("Number"))
-        return Response(question_info)
+        if question_info:
+            return Response(question_info, status=200)
+        else:
+            return Response({"error": "Question not found"}, status=404)
 
     else:
         print("Incoming request data:", data)
