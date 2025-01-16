@@ -25,9 +25,6 @@ class GapAnalysisSerializer(serializers.ModelSerializer):
         model = GapAnalysis
         fields = ['title', 'improvement_plan']
 
-class QuestionsSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = GapAnalysis
-        fields = '__all__'
+class QuestionsSerializer(serializers.Serializer):
+    GetOrWrite = serializers.CharField(max_length=10, required=False)
     
