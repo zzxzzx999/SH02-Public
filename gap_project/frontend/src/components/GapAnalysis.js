@@ -6,6 +6,7 @@ import axios from 'axios';
 
 function Elements() {
   const companyName = localStorage.getItem("companyName");
+
   const links = [
     { name: 'Policy', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}`, image: '' },
     { name: 'Management', path: `/gap-analysis/management?company=${encodeURIComponent(companyName)}`, image: '' },
@@ -13,13 +14,17 @@ function Elements() {
     { name: 'Meetings', path: `/gap-analysis/meetings?company=${encodeURIComponent(companyName)}`, image: '' },
     { name: 'Performance Measurement', path: `/gap-analysis/performance-measurement?company=${encodeURIComponent(companyName)}`, image: '' },
     { name: 'Committee & Representatives', path: `/gap-analysis/committee-and-representatives?company=${encodeURIComponent(companyName)}`, image: '' },
-    { name: 'Investiagtion Process', path: `/gap-analysis/investigation-process?company=${encodeURIComponent(companyName)}`, image: '' },
+    { name: 'Investigation Process', path: `/gap-analysis/investigation-process?company=${encodeURIComponent(companyName)}`, image: '' },
     { name: 'Incident Reporting', path: `/gap-analysis/incident-reporting?company=${encodeURIComponent(companyName)}`, image: '' },
     { name: 'Training Plan', path: `/gap-analysis/training-plan?company=${encodeURIComponent(companyName)}`, image: '' },
     { name: 'Risk Management Process', path: `/gap-analysis/risk-management-process?company=${encodeURIComponent(companyName)}`, image: '' },
     { name: 'Audit & Inspection Process', path: `/gap-analysis/audit-and-inspection-process?company=${encodeURIComponent(companyName)}`, image: '' },
     { name: 'Improvement Planning', path: `/gap-analysis/policy?improvement-planning=${encodeURIComponent(companyName)}`, image: '' },
   ];
+
+  const [questions, setQuestions] = useState([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
   const fetchQuestion = async (set, number) => {
     try {
       const response = await axios.post("http://127.0.0.1:8000/api/getQuestionOrWriteAnswer/", {
@@ -28,90 +33,94 @@ function Elements() {
         Number: number
       });
       console.log('Question Info:', response.data);
-      return response.data;
+
+      if (response.data.Questions) {
+        return [response.data];
+      }
+      return [];
+      
     } catch (error) {
       console.error('Error fetching question:', error.response?.data || error.message);
+      return [];
     }
   };
 
-  const [question, setQuestion] = useState(null);
+  const fetchData = async () => {
+    let allQuestions = [];
+
+    for (let i = 1; i <= 10; i++) {
+      const questionData = await fetchQuestion(1, i);
+      console.log(`Question data for set ${i}:`, questionData);
+      allQuestions = [...allQuestions, ...questionData];
+    }
+
+    setQuestions(allQuestions);
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const questionData = await fetchQuestion(1, 1);
-      setQuestion(questionData);
-    };
-
     fetchData();
   }, []);
 
-
-  const questions = [
-    {
-      Section_Number: 1,
-      Section_Name: "Health and Safety Policy",
-      Questions: [
-        {
-          Question_Number: "1.1",
-          Question_Name: "The organisation has a valid written health and safety policy in place, signed within 12 months, and distributed to all employees."
-        },
-        {
-          Question_Number: "1.2",
-          Question_Name: "The organisation understands its responsibilities for H&S towards employees, customers, visitors, and members of the public and this is made clear within the written health and safety policy."
-        }
-      ]
-    }
-  ];
-
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-
+  // Function to navigate to a specific question by its index
   const navigateToQuestion = (index) => {
     setCurrentQuestionIndex(index);
   };
 
+  // Function to go to the next question
   const goToNextQuestion = () => {
-    if (currentQuestionIndex < questions[0].Questions.length - 1) {
+    if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     }
   };
 
   return (
     <div className="gap">
-        <NavBar className="elements" links={links} logout={false} />
-          <h1 className="section-title" style={{marginLeft:'16px'}}>{questions[0].Section_Name}</h1>
+      {/* Navigation Bar */}
+      <NavBar className="elements" links={links} logout={false} />
+
+      {questions.length > 0 && (
+        <div>
+          <h1 className="section-title" style={{ marginLeft: '16px' }}>
+            {questions[currentQuestionIndex]?.Section_Name}
+          </h1>
+
           <div className="question-text">
-            <p style={{marginLeft:'16px'}}>
-            <strong>{questions[0].Questions[currentQuestionIndex].Question_Number}: </strong>
-            {questions[0].Questions[currentQuestionIndex].Question_Name}
+            <p style={{ marginLeft: '16px' }}>
+              <strong>{questions[currentQuestionIndex]?.Questions?.Question_Number}: </strong>
+              {questions[currentQuestionIndex]?.Questions?.Question_Name}
             </p>
           </div>
 
-          <Compliance question={questions[0].Questions[currentQuestionIndex]} />
+          {/* Assuming Compliance component accepts the question directly */}
+          <Compliance question={questions[currentQuestionIndex]?.Questions} />
 
           <div className="navigation-buttons-container">
             <div className="navigation-buttons">
               <div className="question-buttons">
-              {questions[0].Questions.map((question, index) => (
-                <button
-                  key={index}
-                  onClick={() => navigateToQuestion(index)}
-                  className={currentQuestionIndex === index ? "active" : ""}
-                >
-                  {question.Question_Number.slice(2)}
-                </button>
-              ))}                
+                {/* Generate buttons for each question */}
+                {questions.map((question, index) => (
+                  <button
+                    key={index}
+                    onClick={() => navigateToQuestion(index)}
+                    className={currentQuestionIndex === index ? "active" : ""}
+                  >
+                    {question.Questions.Question_Number} {/* Directly use the Question_Number here */}
+                  </button>
+                ))}
               </div>
 
+              {/* "Next" button */}
               <button
                 className="next-button"
                 onClick={goToNextQuestion}
-                disabled={currentQuestionIndex === questions[0].Questions.length - 1}
+                disabled={currentQuestionIndex === questions.length - 1}
               >
-              &gt;
+                &gt;
               </button>
-              </div>
+            </div>
           </div>
-
+        </div>
+      )}
     </div>
   );
 }
