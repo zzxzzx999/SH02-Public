@@ -1,24 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import NavBar from './NavBar';
 import '../css/GapAnalysis.css';
 import {useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 function Elements() {
   const companyName = localStorage.getItem("companyName");
   const links = [
-    { name: 'Policy', path: '/gap-analysis/policy', image: '' },
-    { name: 'Management', path: '/gap-analysis/management', image: '' },
-    { name: 'Documented System', path: '/gap-analysis/documented-system', image: '' },
-    { name: 'Meetings', path: '/gap-analysis/meetings', image: '' },
-    { name: 'Performance Measurement', path: '/gap-analysis/performance-measurement', image: '' },
-    { name: 'Committee & Representatives', path: '/gap-analysis/committee-and-representatives', image: '' },
-    { name: 'Investiagtion Process', path: '/gap-analysis/investigation-process', image: '' },
-    { name: 'Incident Reporting', path: '/gap-analysis/incident-reporting', image: '' },
-    { name: 'Training Plan', path: '/gap-analysis/training-plan', image: '' },
-    { name: 'Risk Management Process', path: '/gap-analysis/risk-management-process', image: '' },
-    { name: 'Audit & Inspection Process', path: '/gap-analysis/audit-and-inspection-process', image: '' },
-    { name: 'Improvement Planning', path: '/gap-analysis/improvement-planning', image: '' },
+    { name: 'Policy', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}`, image: '' },
+    { name: 'Management', path: `/gap-analysis/management?company=${encodeURIComponent(companyName)}`, image: '' },
+    { name: 'Documented System', path: `/gap-analysis/documented-system?company=${encodeURIComponent(companyName)}`, image: '' },
+    { name: 'Meetings', path: `/gap-analysis/meetings?company=${encodeURIComponent(companyName)}`, image: '' },
+    { name: 'Performance Measurement', path: `/gap-analysis/performance-measurement?company=${encodeURIComponent(companyName)}`, image: '' },
+    { name: 'Committee & Representatives', path: `/gap-analysis/committee-and-representatives?company=${encodeURIComponent(companyName)}`, image: '' },
+    { name: 'Investiagtion Process', path: `/gap-analysis/investigation-process?company=${encodeURIComponent(companyName)}`, image: '' },
+    { name: 'Incident Reporting', path: `/gap-analysis/incident-reporting?company=${encodeURIComponent(companyName)}`, image: '' },
+    { name: 'Training Plan', path: `/gap-analysis/training-plan?company=${encodeURIComponent(companyName)}`, image: '' },
+    { name: 'Risk Management Process', path: `/gap-analysis/risk-management-process?company=${encodeURIComponent(companyName)}`, image: '' },
+    { name: 'Audit & Inspection Process', path: `/gap-analysis/audit-and-inspection-process?company=${encodeURIComponent(companyName)}`, image: '' },
+    { name: 'Improvement Planning', path: `/gap-analysis/policy?improvement-planning=${encodeURIComponent(companyName)}`, image: '' },
   ];
+  const fetchQuestion = async (set, number) => {
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/api/getQuestionOrWriteAnswer/", {
+        GetOrWrite: "GET",
+        Set: set,
+        Number: number
+      });
+      console.log('Question Info:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching question:', error.response?.data || error.message);
+    }
+  };
+
+  const [question, setQuestion] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const questionData = await fetchQuestion(1, 1);
+      setQuestion(questionData);
+    };
+
+    fetchData();
+  }, []);
+
 
   const questions = [
     {
@@ -198,8 +224,8 @@ function GapAnalysis() {
     { name: 'Management', path: `/gap-analysis/management?company=${encodeURIComponent(companyName)}`, image: '' },
     { name: 'Documented System', path: `/gap-analysis/documented-system?company=${encodeURIComponent(companyName)}`, image: '' },
     { name: 'Meetings', path: `/gap-analysis/meetings?company=${encodeURIComponent(companyName)}`, image: '' },
-    { name: 'Performance Measurement', path: `/gap-analysis/performance-and-measurement?company=${encodeURIComponent(companyName)}`, image: '' },
-    { name: 'Committee & Representatives', path: `/gap-analysis/policy?committee-and-representatives=${encodeURIComponent(companyName)}`, image: '' },
+    { name: 'Performance Measurement', path: `/gap-analysis/performance-measurement?company=${encodeURIComponent(companyName)}`, image: '' },
+    { name: 'Committee & Representatives', path: `/gap-analysis/committee-and-representatives?company=${encodeURIComponent(companyName)}`, image: '' },
     { name: 'Investiagtion Process', path: `/gap-analysis/investigation-process?company=${encodeURIComponent(companyName)}`, image: '' },
     { name: 'Incident Reporting', path: `/gap-analysis/incident-reporting?company=${encodeURIComponent(companyName)}`, image: '' },
     { name: 'Training Plan', path: `/gap-analysis/training-plan?company=${encodeURIComponent(companyName)}`, image: '' },
