@@ -124,7 +124,7 @@ function Elements() {
                   onClick={() => navigateToQuestion(index)}
                   className={currentQuestionIndex === index ? "active" : ""}
                 >
-                  {question.Questions.Question_Number}
+                  {String(question.Questions.Question_Number).split('.')[1]?.slice(0, 2)}
                 </button>
               ))}
 
