@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import '../css/DetailScore.css';
 import '../css/NavBar.css';
 import NavBar from "./NavBar";
@@ -8,6 +8,7 @@ import NavBar from "./NavBar";
 
 function DetailScore() {
   const location = useLocation(); // require para
+  const navigate = useNavigate();
   const params = new URLSearchParams(location.search);
   const companyName = params.get('company');
   const elementName = params.get('title');
@@ -41,6 +42,27 @@ function DetailScore() {
         console.error("Error fetching scores:", error);
       });
   }, [companyName, elementName]);
+
+    // Handle last and next button click
+    const handlePrevious = () => {
+      const currentIndex = linksForPage3.findIndex(link => link.name === elementName);
+      if (currentIndex > 0 ) {
+        const previousElement = linksForPage3[currentIndex - 1];
+        if (previousElement && previousElement.path) {
+          navigate(previousElement.path);
+        }
+      }
+    };
+    
+    const handleNext = () => {
+      const currentIndex = linksForPage3.findIndex(link => link.name === elementName);
+      if (currentIndex >= 0 && currentIndex < linksForPage3.length - 1) {
+        const nextElement = linksForPage3[currentIndex + 1];
+        if (nextElement && nextElement.path) {
+          navigate(nextElement.path); // Navigate to the next path
+        }
+      }
+    };
   
   //Navbar
   const linksForPage3 = [
@@ -48,7 +70,7 @@ function DetailScore() {
     { name: 'Policy', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Policy')}` },
     { name: 'Management', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Management')}` },
     { name: 'Documented System', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Documented System')}` },
-    { name: 'Meetings', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Meeting')}` },
+    { name: 'Meetings', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Meetings')}` },
     { name: 'Performance Measurement', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Performance Measurement')}` },
     { name: 'Committee & Representatives', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Committee & Representatives')}` },
     { name: 'Investigation Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Investigation Process')}` },
@@ -95,6 +117,9 @@ function DetailScore() {
 
         {/* Pie Chart Placeholder */}
         <div className="pie-chart">[Chart Placeholder]</div>
+
+        <button className="previous-button" onClick={handlePrevious}>&lt;</button>
+        <button className="next-button" onClick={handleNext}>&gt;</button>
       </div>
       </div>
   );
