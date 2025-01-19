@@ -18,7 +18,6 @@ function OverallOutput() {
       needsImprovement: 0,
       unsatisfactory: 0,
     });
-    const [categories, setCategories] = useState([]); // API fetched categories
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const companyName = params.get('company');
@@ -29,7 +28,6 @@ function OverallOutput() {
         .then((response) => {
           console.log( response.data);
           const { totals, percentages, total_score } = response.data;
-          setCategories(Object.entries(totals))
           setTotalScore(total_score)
           setPercentages(percentages)
         })
@@ -40,7 +38,7 @@ function OverallOutput() {
 }, [companyName]);
 
 const linksForPage3 = [
-  { name: 'Previous Page', path: `/overall-output?company=${encodeURIComponent(companyName)}`, image: '/back-button.png' },
+  { name: 'Previous Page', path: `/registed-company?company=${encodeURIComponent(companyName)}`, image: '/back-button.png' },
   { name: 'Policy', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Policy')}` },
   { name: 'Management', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Management')}` },
   { name: 'Documented System', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Documented System')}` },

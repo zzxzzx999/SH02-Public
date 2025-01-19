@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import '../css/NavBar.css';
 import "../css/RegistedCompany.css";
 import NavBar from "./NavBar";
@@ -8,7 +8,7 @@ function RegistedCompany() {
     const linksForPage3 = [
         { name: 'Previous Page', path: '/list-of-company' , image:'/back-button.png'},
     ];
-
+    const { title } = useParams();
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const companyName = params.get('company');
@@ -39,10 +39,9 @@ function RegistedCompany() {
                 <h2>Past GAP Analysis</h2>
                     <div className="analysis-list">
                         <ul>
-                            <li>Overview</li>
-                            <li>2024 Analysis</li>
-                            <li>2023 Analysis</li>
-                           
+                        <li><Link to={`/registed-company/Overview?company=${companyName}`}>Overview</Link></li>
+                        <li><Link to={`/registed-company/2024 Analysis?company=${companyName}`}>2024 Analysis</Link></li>
+                        <li><Link to={`/registed-company/2023 Analysis?company=${companyName}`}>2023 Analysis</Link></li>                          
                         </ul>
                     </div>
                 </div>
@@ -53,7 +52,7 @@ function RegistedCompany() {
                 {/* Overview title and download button */}
                 <div className="o-d-section">
                     <div className="overview-bubble">
-                    <h1>Overview</h1>
+                    <h1>{title || "Overview"}</h1>
                     
                 </div> 
                     <img
