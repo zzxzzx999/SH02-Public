@@ -46,7 +46,7 @@ function DetailScore() {
     // Handle last and next button click
     const handlePrevious = () => {
       const currentIndex = linksForPage3.findIndex(link => link.name === elementName);
-      if (currentIndex > 0 ) {
+      if (currentIndex > 1 ) {
         const previousElement = linksForPage3[currentIndex - 1];
         if (previousElement && previousElement.path) {
           navigate(previousElement.path);
