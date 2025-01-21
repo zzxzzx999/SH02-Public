@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Company, Score
+from .models import Company
 from rest_framework.authtoken.models import Token
 from rest_framework import generics
 from rest_framework import viewsets
@@ -122,44 +122,53 @@ def getElementOverview(self, request):
 
 @csrf_exempt
 def get_scores(request, company_name, element_name):
-    if company_name is None or element_name is None:
-        return JsonResponse({"error": "Invalid parameters"}, status=400)
+    company = Company.objects.get(name=company_name)
+    analysis= GapAnalysis.objects.filter(company=company).first()
+    if not analysis:
+            return JsonResponse({"error": "No analysis found for this company"}, status=404)
+    gap_data = json.loads(analysis.gap_data)
+    element_names = [
+        "Policy", "Management", "Documented System", "Meetings", "Performance Measurement",
+        "Committee & Representatives", "Investigation Process", "Incident Reporting", "Training Plan",
+        "Risk Management Process", "Audit & Inspection Process", "Improvement Planning"
+    ]
+    element_index = str(element_names.index(element_name) + 1)  # index start from 1
+    element_scores = gap_data.get((element_index), [])
 
     scores = {
-        "exceptionalCompliance": 10,
-        "goodCompliance": 8,
-        "basicCompliance": 3,
-        "needsImprovement": 4,
-        "unsatisfactory": 2,
-    }
-    return JsonResponse({"scores": scores})
+            "exceptionalCompliance": element_scores[0],
+            "goodCompliance": element_scores[1],
+            "basicCompliance": element_scores[2],
+            "needsImprovement": element_scores[3],
+            "unsatisfactory": element_scores[4]
+        }
+
+    return JsonResponse({
+        "company_name": company_name,
+        "element_name": element_name,
+        "scores": scores
+    })
+
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def overall_scores(request, company_name):
     # Get all scores for a specified company from the database
-    scores = Score.objects.filter(company_name=company_name)
-
-    element_names = [
-        "policy", "management", "documented", "meetings", "performance measurement",
-        "committee&representatives", "investiagtion process", "incident reporting", "training plan",
-        "risk management process", "audit&inspection process", "improvement planning"
-    ]
+    analysis = GapAnalysis.objects.filter(company__name=company_name).first()
+    gap_data=json.loads(analysis.gap_data)
 
     total_score = 0
-    totals = {"unsatisfactory":0, "needsImprovement":0, "basic":0}
+    totals = {"exceptional":0,"good":0, "basic":0,"needsImprovement":0, "unsatisfactory":0 }
     total=600
 
     #Summarize the scores by category
-    for score in scores:
-        if score.score == 1:  # unsatisfactory
-            totals["unsatisfactory"] += score.score
-        elif score.score == 2:  # needsImprovement
-            totals["needsImprovement"] += score.score
-        elif score.score == 3:  # basic
-            totals["basic"] += score.score
-
-        total_score += score.score
+    for scores in gap_data.values():
+        totals["exceptional"] +=scores[0]
+        totals["good"] += scores[1]
+        totals["basic"] += scores[2]
+        totals["needsImprovement"] += scores[3]
+        totals["unsatisfactory"] += scores[4]
+        total_score += sum(scores)
 
     unsatisfactory_percentage = (totals["unsatisfactory"] / total) * 100
     needs_improvement_percentage = (totals["needsImprovement"] / total) * 100

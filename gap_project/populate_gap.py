@@ -27,8 +27,27 @@ for i in range(1, 13):
     question_answer_set[i] = singular_set_answers.copy()
     improvment_plan[i] = improvment_plan_set_answers.copy()
     
+def create_test_data():
+    company, created = Company.objects.get_or_create(name="test")
+    gap_data={
+        "1":[5,4,3,2,1],"2":[10,8,3,16,6],
+        "3":[20,16,6,2,1], "4":[10,12,9,2,1], "5":[10,16,9,8,3],
+        "6":[5,12,12,8,4], "7":[10,8,12,14,1], "8":[20,16,12,4,2],
+        "9":[10,24,3,2,1],"10":[15,12,18,2,1], 
+        "11":[25,4,3,2,1], "12":[20,16,9,4,1]
+    }
 
+    gap_analysis, created = GapAnalysis.objects.get_or_create(
+        company=company,
+        date="2025-01-01",  
+        consultant="Tester",
+    )
+
+    gap_analysis.gap_data = json.dumps(gap_data)
+    gap_analysis.save()
+    
 def populate():
+    create_test_data()
     joes_gap_analyses = [
         "2016-11-02", "2015-11-03", "2017-06-11", "2018-06-11"
     ]
@@ -77,5 +96,4 @@ if __name__ == '__main__':
     populate()
     
             
-    
     
