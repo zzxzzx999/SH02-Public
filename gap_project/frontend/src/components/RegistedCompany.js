@@ -1,5 +1,5 @@
-import React from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import '../css/NavBar.css';
 import "../css/RegistedCompany.css";
 import NavBar from "./NavBar";
@@ -8,10 +8,11 @@ function RegistedCompany() {
     const linksForPage3 = [
         { name: 'Previous Page', path: '/list-of-company' , image:'/back-button.png'},
     ];
-    const { title } = useParams();
-    const location = useLocation();
-    const params = new URLSearchParams(location.search);
+
+    const location = useLocation();  // get current URL info
+    const params = new URLSearchParams(location.search);  // get and query para
     const companyName = params.get('company');
+    const title = params.get('title') || 'Overview'; 
 
     const navigate = useNavigate(); 
 
@@ -22,6 +23,10 @@ function RegistedCompany() {
         link.download = 'Analysis_Report.pdf'; // default name of download file
         link.click();
       };
+
+    useEffect(() => {
+        document.title = title; // set page's title as title in URL
+    }, [title]);  
 
     return(
         <div class="main-content">
@@ -39,9 +44,9 @@ function RegistedCompany() {
                 <h2>Past GAP Analysis</h2>
                     <div className="analysis-list">
                         <ul>
-                        <li><Link to={`/registed-company/Overview?company=${companyName}`}>Overview</Link></li>
-                        <li><Link to={`/registed-company/2024 Analysis?company=${companyName}`}>2024 Analysis</Link></li>
-                        <li><Link to={`/registed-company/2023 Analysis?company=${companyName}`}>2023 Analysis</Link></li>                          
+                        <li><Link to={`/registed-company?company=${encodeURIComponent(companyName)}`}>Overview</Link></li>
+                        <li><Link to={`/registed-company?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('2024 Analysis')}`}>2024 Analysis</Link></li>
+                        <li><Link to={`/registed-company?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('2023 Analysis')}`}>2023 Analysis</Link></li>                          
                         </ul>
                     </div>
                 </div>
@@ -52,9 +57,8 @@ function RegistedCompany() {
                 {/* Overview title and download button */}
                 <div className="o-d-section">
                     <div className="overview-bubble">
-                    <h1>{title || "Overview"}</h1>
-                    
-                </div> 
+                        <h1>{title}</h1>
+                    </div>              
                     <img
                         src="/download.png" 
                         alt="Download"

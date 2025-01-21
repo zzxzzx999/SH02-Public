@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import '../css/App.css';
 import DetailScore from './DetailScore';
 import GapAnalysis, { Elements } from './GapAnalysis';
@@ -24,7 +24,7 @@ function App() {
             <Route path="/home" element={<PrivateRoute element={Home} />} />
             <Route path="/new-company" element={<PrivateRoute element={NewCompany} />} />
             <Route path="/list-of-company" element={<ListofCompany />} />
-            <Route path='/registed-company/:title' element={<RegistedCompany/>}/>
+            <Route path='/registed-company' element={<RegistedCompany/>}/>
             <Route path='/overall-output' element={<OverallOutput/>}/>
             <Route path='/detail-score' element={<DetailScore/>}/>
             <Route path="/new-gap-confirm" element={<PrivateRoute element={GapAnalysisConfirm} />} />
@@ -45,10 +45,6 @@ function App() {
             <Route path="/results" element={<PrivateRoute element={Results} />}/>
 
             <Route path="/list-of-companies" element={<PrivateRoute element={ListOfCompany} />}/>
-            <Route
-              path="/registed-company"
-              element={<Navigate to={`/registed-company/Overview?company=${new URLSearchParams(window.location.search).get('company')}`} replace />}
-            />
           </Routes>
         </div>
       </Template>
