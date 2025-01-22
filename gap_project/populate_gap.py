@@ -67,7 +67,7 @@ def add_comp(company):
 def add_gap(date, c, i):
     g = GapAnalysis.objects.get_or_create(date = date, company = c, )[0]
     print(date)
-    g.title = f"Gap Analysis{i} : {date}"
+    g.title = f"Gap Analysis{date}"
     g.gap_data = json.dumps(question_answer_set.copy())
     g.improvement_plan = json.dumps(improvment_plan.copy())
     g.save()

@@ -1,51 +1,50 @@
-import React, { Component, useEffect, useState } from "react";
+// Filename - App.js
 import axios from "axios";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
+import improvementPlan from './improvementPlan.pdf';
 
-class PdfPlan extends React.Component {
+const App = () => {
 
-    state = {
-        filename : [],
-    }
-        
-    onButtonClick() {
-        let data ;
+    const[pdfTitle, setPdfTitle] = useState("");
+    const[pdf, getPdf] = useState([]);
 
-        axios.get('http://localhost:8000/gap/pdfplan/')
-        .then(res => {
-            data = res.data;
-            this.setState({
-                filename : data   
+    // Function will execute on click of button
+    const onButtonClick = () => {
+
+        //axios.get("http://localhost:8000/gap/pdfplan/",
+        //    {}).then(response => console.log(response))//(response) => {setPdfTitle(response.data);})
+        //    .catch((error) => {console.error("Error :", error.response || error.message);
+
+        //});
+
+        axios.post("http://localhost:8000/gap/pdfplan/",{id : 1}).then(response => setPdfTitle(response.data))//(response) => {setPdfTitle(response.data);})
+            .catch((error) => {console.error("Error :", error.response || error.message);
             });
-        })
-        .catch(err => {})
-
-
-        const pdfTitle = this.filename;
-        console.log(pdfTitle)
-        const pdfUrl = "../../gap/improvementPlan.pdf";
-        const link = document.createElement("a");
-        link.href = pdfUrl;
-        link.download = pdfTitle; // specify the filename
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        
+            
+        
     };
-    render() {    
-        return (
-            <>
-                <center>
-                    <h3>
-                        Click on below button to download improvement plan
-                        file
-                    </h3>
-                    <button onClick={this.onButtonClick}>
-                        Download PDF
-                    </button>
-                </center>
-            </>
-        );
-    }
+    return (
+        <>
+            <center>
+                <h1>GAP pdf download</h1>
+                <h3>
+                    Click on below button to download PDF
+                    file
+                </h3>
+                    <a
+
+                        href={require('./improvementPlan.pdf')}
+                        download="Example-PDF-document"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        <button onClick={onButtonClick}> Download .pdf file</button>
+                    </a>
+            </center>
+        </>
+    );
 };
 
-export default PdfPlan;
+export default App;

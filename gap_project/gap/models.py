@@ -17,7 +17,7 @@ class Company(models.Model):
 class GapAnalysis(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     date = models.DateField(default = timezone.now)
-    title = models.CharField(max_length=50, default = f"Gap Analysis : {date}")
+    title = models.CharField(max_length=50, default = f"Gap Analysis{date}")
     consultant = models.CharField(max_length=128, unique=False)
     gap_data = models.JSONField(default=dict)
     improvement_plan = models.JSONField(default=dict)
