@@ -171,6 +171,7 @@ function Compliance({ question, handleAnswerChange, savedAnswer }) {
         'http://127.0.0.1:8000/api/getQuestionOrWriteAnswer/', 
         {
           GetOrWrite: "WRITE",
+          //gap id here
           answers: answersPayload,
         }
       );
