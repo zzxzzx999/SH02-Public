@@ -165,15 +165,13 @@ function Compliance({ question, handleAnswerChange, savedAnswer }) {
       improvement: improvement[questionId] || ''
     }));
 
-    console.log("gapid: " + gapAnalysisId);
-
     // POST request to save answers
     try {
       const response = await axios.post(
         'http://127.0.0.1:8000/api/getQuestionOrWriteAnswer/', 
         {
           GetOrWrite: "WRITE",
-          id: gapAnalysisId,
+          //gap id here
           answers: answersPayload,
         }
       );
