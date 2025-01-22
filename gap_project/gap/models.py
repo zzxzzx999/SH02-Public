@@ -37,3 +37,26 @@ class UserProfile(models.Model):
         return self.user.username
     
     
+
+class Section(models.Model):
+    name= models.CharField(max_length=255, unique=True)
+    def __str__(self):
+        return self.name
+
+class Question(models.Model):
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='questions')
+    question_number = models.CharField(max_length=10)
+    question_text = models.TextField()
+    def __str__(self):
+        return f"{self.section.name} - {self.question_number}"
+    
+class Input(models.Model):
+    gap_analysis = models.ForeignKey(GapAnalysis, on_delete=models.CASCADE, related_name='answers')
+    question = models.ForeignKey(Question, on_delete = models.CASCADE)
+    rating = models.PositiveIntegerField(default =0)
+    evidence = models.TextField(blank = True, null= True)
+    improvement = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return (f"{self.gap_analysis} :" f"{self.question.section.name} :" f"{self.question.question_number}")
+    
