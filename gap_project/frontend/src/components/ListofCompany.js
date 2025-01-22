@@ -173,23 +173,27 @@ function ListofCompany(){
                     <span>Date Registered</span>
                     </div>
 
-                    {/*company list*/}
+                      {/*company list*/}
                     {/*React usually use map to iterator the company datas*/}
                     {sortedCompanies.map((company) => (
                         <div key={company.name} className="table-row">
-                        <span>
+                        <span className="company-name">
                             <Link to={`/registed-company?company=${company.name}`}>{company.name}</Link>
-                            <button
+                        </span>
+                        <span className="delete-column">
+                        <button
                             className="delete-button"
                             onClick={() => handleDeleteClick(company)}
                            >
                             Delete
                             </button>
                         </span>
-                        <span>{company.score}</span>
-                        <span>{company.date}</span>
+                            
+                        <span className="score-column">{company.score}</span>
+                        <span className="date-column">{company.date}</span>
                         </div>
                     ))}
+
 
                     
                 </div>
