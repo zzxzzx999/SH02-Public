@@ -1,106 +1,230 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import NavBar from './NavBar';
 import '../css/GapAnalysis.css';
-import {useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 function Elements() {
   const companyName = localStorage.getItem("companyName");
+
   const links = [
-    { name: 'Policy', path: '/gap-analysis/policy', image: '' },
-    { name: 'Management', path: '/gap-analysis/management', image: '' },
-    { name: 'Documented System', path: '/gap-analysis/documented-system', image: '' },
-    { name: 'Meetings', path: '/gap-analysis/meetings', image: '' },
-    { name: 'Performance Measurement', path: '/gap-analysis/performance-measurement', image: '' },
-    { name: 'Committee & Representatives', path: '/gap-analysis/committee-and-representatives', image: '' },
-    { name: 'Investiagtion Process', path: '/gap-analysis/investigation-process', image: '' },
-    { name: 'Incident Reporting', path: '/gap-analysis/incident-reporting', image: '' },
-    { name: 'Training Plan', path: '/gap-analysis/training-plan', image: '' },
-    { name: 'Risk Management Process', path: '/gap-analysis/risk-management-process', image: '' },
-    { name: 'Audit & Inspection Process', path: '/gap-analysis/audit-and-inspection-process', image: '' },
-    { name: 'Improvement Planning', path: '/gap-analysis/improvement-planning', image: '' },
+    { name: 'Policy', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=0`, image: '' },
+    { name: 'Management', path: `/gap-analysis/management?company=${encodeURIComponent(companyName)}&element=1`, image: '' },
+    { name: 'Documented System', path: `/gap-analysis/documented-system?company=${encodeURIComponent(companyName)}&element=2`, image: '' },
+    { name: 'Meetings', path: `/gap-analysis/meetings?company=${encodeURIComponent(companyName)}&element=3`, image: '' },
+    { name: 'Performance Measurement', path: `/gap-analysis/performance-measurement?company=${encodeURIComponent(companyName)}&element=4`, image: '' },
+    { name: 'Committee & Representatives', path: `/gap-analysis/committee-and-representatives?company=${encodeURIComponent(companyName)}&element=5`, image: '' },
+    { name: 'Investigation Process', path: `/gap-analysis/investigation-process?company=${encodeURIComponent(companyName)}&element=6`, image: '' },
+    { name: 'Incident Reporting', path: `/gap-analysis/incident-reporting?company=${encodeURIComponent(companyName)}&element=7`, image: '' },
+    { name: 'Training Plan', path: `/gap-analysis/training-plan?company=${encodeURIComponent(companyName)}&element=8`, image: '' },
+    { name: 'Risk Management Process', path: `/gap-analysis/risk-management-process?company=${encodeURIComponent(companyName)}&element=9`, image: '' },
+    { name: 'Audit & Inspection Process', path: `/gap-analysis/audit-and-inspection-process?company=${encodeURIComponent(companyName)}&element=10`, image: '' },
+    { name: 'Improvement Planning', path: `/gap-analysis/policy?improvement-planning=${encodeURIComponent(companyName)}&element=11`, image: '' },
   ];
 
-  const questions = [
-    {
-      Section_Number: 1,
-      Section_Name: "Health and Safety Policy",
-      Questions: [
-        {
-          Question_Number: "1.1",
-          Question_Name: "The organisation has a valid written health and safety policy in place, signed within 12 months, and distributed to all employees."
-        },
-        {
-          Question_Number: "1.2",
-          Question_Name: "The organisation understands its responsibilities for H&S towards employees, customers, visitors, and members of the public and this is made clear within the written health and safety policy."
-        }
-      ]
-    }
-  ];
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const set = parseInt(params.get('element'));
 
+  const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState({});  // To manage saved answers
 
+  // Effect to fetch questions from the API when 'set' changes
+  useEffect(() => {
+    const fetchQuestion = async (set, number) => {
+      try {
+        const response = await axios.post("http://127.0.0.1:8000/api/getQuestionOrWriteAnswer/", {
+          GetOrWrite: "GET",
+          Set: set,
+          Number: number
+        });
+        return response.data.Questions ? [response.data] : [];
+      } catch (error) {
+        console.error('Error fetching question:', error.response?.data || error.message);
+        return [];
+      }
+    };
+
+    const fetchData = async () => {
+      let allQuestions = [];
+      for (let i = 1; i <= 10; i++) {
+        const questionData = await fetchQuestion(set + 1, i);
+        allQuestions = [...allQuestions, ...questionData];
+      }
+      setQuestions(allQuestions);
+      setCurrentQuestionIndex(0); // Reset to the first question when set changes
+    };
+
+    fetchData();
+  }, [set]);
+
+  // Effect to load saved answers from localStorage on initial load
+  useEffect(() => {
+    const savedAnswers = JSON.parse(localStorage.getItem('answers'));
+    if (savedAnswers) {
+      setAnswers(savedAnswers); // Load answers into state
+    }
+  }, []);  // Run once when the component mounts
+
+  // Handle the answer change and store it in localStorage
+  const handleAnswerChange = (questionId, answer) => {
+    setAnswers(prevAnswers => {
+      const updatedAnswers = { ...prevAnswers, [questionId]: answer };
+      localStorage.setItem('answers', JSON.stringify(updatedAnswers));  // Persist the answers to localStorage
+      return updatedAnswers;
+    });
+  };
+
+  // Navigate to a specific question
   const navigateToQuestion = (index) => {
     setCurrentQuestionIndex(index);
   };
 
+  // Go to the next question
   const goToNextQuestion = () => {
-    if (currentQuestionIndex < questions[0].Questions.length - 1) {
+    if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     }
   };
 
   return (
     <div className="gap">
-        <NavBar className="elements" links={links} logout={false} />
-          <h1 className="section-title" style={{marginLeft:'16px'}}>{questions[0].Section_Name}</h1>
+      {/* Navigation Bar */}
+      <NavBar className="elements" links={links} logout={false} />
+
+      {questions.length > 0 && (
+        <div>
+          <h1 className="section-title" style={{ marginLeft: '16px' }}>
+            {questions[currentQuestionIndex]?.Section_Name}
+          </h1>
+
           <div className="question-text">
-            <p style={{marginLeft:'16px'}}>
-            <strong>{questions[0].Questions[currentQuestionIndex].Question_Number}: </strong>
-            {questions[0].Questions[currentQuestionIndex].Question_Name}
+            <p style={{ marginLeft: '16px' }}>
+              <strong>{questions[currentQuestionIndex]?.Questions?.Question_Number}: </strong>
+              {questions[currentQuestionIndex]?.Questions?.Question_Name}
             </p>
           </div>
 
-          <Compliance question={questions[0].Questions[currentQuestionIndex]} />
+          {/* Render the Compliance component */}
+          <Compliance
+            question={questions[currentQuestionIndex]?.Questions}
+            handleAnswerChange={handleAnswerChange}  // Use answer change handler
+            savedAnswer={answers[questions[currentQuestionIndex]?.Questions?.Question_Number]}  // Retrieve the saved answer
+          />
 
           <div className="navigation-buttons-container">
             <div className="navigation-buttons">
-              <div className="question-buttons">
-              {questions[0].Questions.map((question, index) => (
+              {/* Generate buttons for each question */}
+              {questions.map((question, index) => (
                 <button
                   key={index}
                   onClick={() => navigateToQuestion(index)}
                   className={currentQuestionIndex === index ? "active" : ""}
                 >
-                  {question.Question_Number.slice(2)}
+                  {String(question.Questions.Question_Number).split('.')[1]?.slice(0, 2)}
                 </button>
-              ))}                
-              </div>
+              ))}
 
+              {/* "Next" button */}
               <button
                 className="next-button"
                 onClick={goToNextQuestion}
-                disabled={currentQuestionIndex === questions[0].Questions.length - 1}
+                disabled={currentQuestionIndex === questions.length - 1}
               >
-              &gt;
+                &gt;
               </button>
-              </div>
+            </div>
           </div>
-
+        </div>
+      )}
     </div>
   );
 }
 export { Elements };
 
-function Compliance({ question }) {
+
+
+
+function Compliance({ question, handleAnswerChange, savedAnswer }) {
   const [selectedRatings, setSelectedRatings] = useState({});
   const [evidence, setEvidence] = useState({});
   const [improvement, setImprovement] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    setError('');
+
+    const answersPayload = Object.keys(selectedRatings).map(questionId => ({
+      question: questionId,
+      selectedRating: selectedRatings[questionId],
+      evidence: evidence[questionId] || '',
+      improvement: improvement[questionId] || ''
+    }));
+
+    // POST request to save answers
+    try {
+      const response = await axios.post(
+        'http://127.0.0.1:8000/api/getQuestionOrWriteAnswer/', 
+        {
+          GetOrWrite: "WRITE",
+          //gap id here
+          answers: answersPayload,
+        }
+      );
+
+      if (response.status === 201) {
+        alert('Answers saved successfully');
+      }
+    } catch (err) {
+      setError('Failed to save answers: ' + (err.response?.data?.error || err.message));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  useEffect(() => {
+    if (savedAnswer) {
+      // If the savedAnswer exists, set it for the specific question
+      setSelectedRatings({ [question.Question_Number]: savedAnswer.selectedRating });
+      setEvidence({ [question.Question_Number]: savedAnswer.evidence });
+      setImprovement({ [question.Question_Number]: savedAnswer.improvement });
+    }
+  }, [savedAnswer, question.Question_Number]);
+
+  useEffect(() => {
+    if (savedAnswer) {
+      // If the savedAnswer exists, set it for the specific question
+      setSelectedRatings({ [question.Question_Number]: savedAnswer.selectedRating });
+      setEvidence({ [question.Question_Number]: savedAnswer.evidence });
+      setImprovement({ [question.Question_Number]: savedAnswer.improvement });
+    }
+  }, [savedAnswer, question.Question_Number]);
+
+  useEffect(() => {
+    if (savedAnswer) {
+      // If the savedAnswer exists, set it for the specific question
+      setSelectedRatings({ [question.Question_Number]: savedAnswer.selectedRating });
+      setEvidence({ [question.Question_Number]: savedAnswer.evidence });
+      setImprovement({ [question.Question_Number]: savedAnswer.improvement });
+    }
+  }, [savedAnswer, question.Question_Number]);
 
   const handleRadioChange = (questionNumber, value) => {
     setSelectedRatings(prevState => ({
       ...prevState,
       [questionNumber]: value 
     }));
+
+    handleAnswerChange(questionNumber, { 
+      selectedRating: value, 
+      evidence: evidence[questionNumber], 
+      improvement: improvement[questionNumber] 
+      });
   };
 
   const handleEvidenceChange = (questionNumber, value) => {
@@ -108,6 +232,10 @@ function Compliance({ question }) {
       ...prevState,
       [questionNumber]: value
     }));
+    handleAnswerChange(questionNumber, { 
+      selectedRating: selectedRatings[questionNumber], 
+      evidence: value, 
+      improvement: improvement[questionNumber] });
   };
 
   const handleImprovementChange = (questionNumber, value) => {
@@ -115,6 +243,11 @@ function Compliance({ question }) {
       ...prevState,
       [questionNumber]: value
     }));
+    handleAnswerChange(questionNumber, { 
+      selectedRating: selectedRatings[questionNumber], 
+      evidence: evidence[questionNumber] , 
+      improvement: value
+    });
   };
 
   const options = [
@@ -187,25 +320,26 @@ function Compliance({ question }) {
 export { Compliance };
 
 function GapAnalysis() {
-  const links = [
-    { name: 'Policy', path: '/gap-analysis/policy', image: '' },
-    { name: 'Management', path: '/gap-analysis/management', image: '' },
-    { name: 'Documented System', path: '/gap-analysis/documented-system', image: '' },
-    { name: 'Meetings', path: '/gap-analysis/meetings', image: '' },
-    { name: 'Performance Measurement', path: '/gap-analysis/performance-measurement', image: '' },
-    { name: 'Committee & Representatives', path: '/gap-analysis/committee-and-representatives', image: '' },
-    { name: 'Investiagtion Process', path: '/gap-analysis/investigation-process', image: '' },
-    { name: 'Incident Reporting', path: '/gap-analysis/incident-reporting', image: '' },
-    { name: 'Training Plan', path: '/gap-analysis/training-plan', image: '' },
-    { name: 'Risk Management Process', path: '/gap-analysis/risk-management-process', image: '' },
-    { name: 'Audit & Inspection Process', path: '/gap-analysis/audit-and-inspection-process', image: '' },
-    { name: 'Improvement Planning', path: '/gap-analysis/improvement-planning', image: '' },
-  ];
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const companyName = params.get('company');
   localStorage.setItem("companyName", companyName);
+
+  const links = [
+    { name: 'Policy', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=0`, image: '' },
+    { name: 'Management', path: `/gap-analysis/management?company=${encodeURIComponent(companyName)}&element=1`, image: '' },
+    { name: 'Documented System', path: `/gap-analysis/documented-system?company=${encodeURIComponent(companyName)}&element=2`, image: '' },
+    { name: 'Meetings', path: `/gap-analysis/meetings?company=${encodeURIComponent(companyName)}&element=3`, image: '' },
+    { name: 'Performance Measurement', path: `/gap-analysis/performance-measurement?company=${encodeURIComponent(companyName)}&element=4`, image: '' },
+    { name: 'Committee & Representatives', path: `/gap-analysis/committee-and-representatives?company=${encodeURIComponent(companyName)}&element=5`, image: '' },
+    { name: 'Investiagtion Process', path: `/gap-analysis/investigation-process?company=${encodeURIComponent(companyName)}&element=6`, image: '' },
+    { name: 'Incident Reporting', path: `/gap-analysis/incident-reporting?company=${encodeURIComponent(companyName)}&element=7`, image: '' },
+    { name: 'Training Plan', path: `/gap-analysis/training-plan?company=${encodeURIComponent(companyName)}&element=8`, image: '' },
+    { name: 'Risk Management Process', path: `/gap-analysis/risk-management-process?company=${encodeURIComponent(companyName)}&element=9`, image: '' },
+    { name: 'Audit & Inspection Process', path: `/gap-analysis/audit-and-inspection-process?company=${encodeURIComponent(companyName)}&element=10`, image: '' },
+    { name: 'Improvement Planning', path: `/gap-analysis/policy?improvement-planning=${encodeURIComponent(companyName)}&element=11`, image: '' },
+  ];
 
   console.log("company name: " + companyName);
   return (
