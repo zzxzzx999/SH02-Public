@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import NavBar from './NavBar';
+import { SubmitProvider } from './SubmitContext';
 import '../css/GapAnalysis.css';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -28,9 +29,104 @@ function Elements() {
 
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState({});  // To manage saved answers
+  const [answers, setAnswers] = useState({}); 
+  const [improvementPlan, setImprovementPlan] = useState({});
 
-  // Effect to fetch questions from the API when 'set' changes
+  useEffect(() => {
+    const savedAnswers = localStorage.getItem('answers');
+    const savedImprovementPlan = localStorage.getItem('improvementPlan');
+  
+    console.log("rendered answers: " + savedAnswers);
+    if (savedAnswers) {
+      try {
+        const parsedAnswers = JSON.parse(savedAnswers);
+        setAnswers(parsedAnswers);
+        console.log("parsed answers: " + parsedAnswers);
+      } catch (error) {
+        console.error("Error parsing saved answers:", error);
+        setAnswers(getDefaultAnswers());
+      }
+    } else {
+      setAnswers(getDefaultAnswers());
+    }
+  
+    if (savedImprovementPlan) {
+      try {
+        const parsedImprovementPlan = JSON.parse(savedImprovementPlan); 
+        setImprovementPlan(parsedImprovementPlan); 
+      } catch (error) {
+        setImprovementPlan(getDefaultImprovementPlan());
+      }
+    } else {
+      setImprovementPlan(getDefaultImprovementPlan());
+    }
+  }, []);
+  
+
+  const getDefaultImprovementPlan = () => {
+    return {
+      evidence: Object.fromEntries(
+        Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill("")]) 
+      ),
+      improvement: Object.fromEntries(
+        Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill("")]) 
+      ),
+    };
+  }
+
+  const getDefaultAnswers = () => {
+    return Object.fromEntries(
+      Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill(0)])
+    );
+  };
+   
+  // Format answers for backend
+  const prepareAnswers = () => {
+    const formattedAnswers = {};
+
+    Object.keys(answers).forEach(questionId => {
+      const [set, number] = questionId.split('.');
+      const answer = answers[questionId];
+      
+      const sequentialKey = parseInt(number); 
+
+      if (!formattedAnswers[sequentialKey]) {
+        formattedAnswers[sequentialKey] = 0;
+      }
+
+      if (answer && answer.selectedRating) {
+        formattedAnswers[sequentialKey] = parseInt(answer.selectedRating);
+      } else {
+        formattedAnswers[sequentialKey] = 0;
+      }
+  });
+
+  return formattedAnswers;
+};
+
+  // Send data to API to backend
+  const submitAnswersToAPI = async (clear) => {
+    try {
+      await axios.post("http://127.0.0.1:8000/api/getQuestionOrWriteAnswer/", {
+        GetOrWrite: "WRITE",
+        id: 1, // Change to gap id
+        answers: answers,
+        improvementPlan: improvementPlan,
+      });
+      console.log("Data successfully submitted: ", answers);
+      console.log(improvementPlan);
+    } catch (error) {
+      console.error("Error submitting answers:", error.response?.data || error.message);
+      console.log("Data successfully submitted: ", answers);
+      console.log(improvementPlan);
+    }
+
+    if (clear = true) {
+      //localStorage.removeItem('answers');
+    }
+  };
+  
+  // Effect to fetch questions from the API 
   useEffect(() => {
     const fetchQuestion = async (set, number) => {
       try {
@@ -53,35 +149,38 @@ function Elements() {
         allQuestions = [...allQuestions, ...questionData];
       }
       setQuestions(allQuestions);
-      setCurrentQuestionIndex(0); // Reset to the first question when set changes
+      setCurrentQuestionIndex(0); 
     };
 
     fetchData();
   }, [set]);
 
-  // Effect to load saved answers from localStorage on initial load
-  useEffect(() => {
-    const savedAnswers = JSON.parse(localStorage.getItem('answers'));
-    if (savedAnswers) {
-      setAnswers(savedAnswers); // Load answers into state
+  const handleAnswerChange = (type, key, value, index) => {
+    const updatedAnswers = { ...answers };
+    const updatedImprovementPlan = { ... improvementPlan};
+    index = index - 1
+
+    if (type == 'a'){
+      updatedAnswers[key][index] = value;
+      setAnswers(updatedAnswers);
+      localStorage.setItem('answers', JSON.stringify(updatedAnswers));
     }
-  }, []);  // Run once when the component mounts
-
-  // Handle the answer change and store it in localStorage
-  const handleAnswerChange = (questionId, answer) => {
-    setAnswers(prevAnswers => {
-      const updatedAnswers = { ...prevAnswers, [questionId]: answer };
-      localStorage.setItem('answers', JSON.stringify(updatedAnswers));  // Persist the answers to localStorage
-      return updatedAnswers;
-    });
+    else if (type == 'i'){
+      updatedImprovementPlan.improvement[key][index] = value;
+      setImprovementPlan(updatedImprovementPlan);
+      localStorage.setItem('improvementPlan', JSON.stringify(updatedImprovementPlan));
+    }
+    else {
+      updatedImprovementPlan.evidence[key][index] = value;
+      setImprovementPlan(updatedImprovementPlan);
+      localStorage.setItem('improvementPlan', JSON.stringify(updatedImprovementPlan));
+    }
   };
-
-  // Navigate to a specific question
+  
   const navigateToQuestion = (index) => {
     setCurrentQuestionIndex(index);
   };
 
-  // Go to the next question
   const goToNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -90,8 +189,9 @@ function Elements() {
 
   return (
     <div className="gap">
-      {/* Navigation Bar */}
-      <NavBar className="elements" links={links} logout={false} />
+      <SubmitProvider submitAnswersToAPI={submitAnswersToAPI}>
+        <NavBar className="elements" links={links} logout={false} />
+      </SubmitProvider>
 
       {questions.length > 0 && (
         <div>
@@ -106,16 +206,34 @@ function Elements() {
             </p>
           </div>
 
-          {/* Render the Compliance component */}
           <Compliance
             question={questions[currentQuestionIndex]?.Questions}
-            handleAnswerChange={handleAnswerChange}  // Use answer change handler
-            savedAnswer={answers[questions[currentQuestionIndex]?.Questions?.Question_Number]}  // Retrieve the saved answer
+            handleAnswerChange={handleAnswerChange}  
+            savedAnswer={
+              answers[`${questions[currentQuestionIndex]?.Section_Number}`]?.[questions[currentQuestionIndex]?.Questions?.Question_Number &&
+                String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1] &&
+                String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
+              ]
+            }
+            savedImprovement = {
+              improvementPlan.improvement[
+                String(questions[currentQuestionIndex]?.Section_Number)
+              ]?.[
+                String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
+              ]
+            }
+            savedEvidence = {
+              improvementPlan.evidence[
+                String(questions[currentQuestionIndex]?.Section_Number)
+              ]?.[
+                String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
+              ]
+            }
+            
           />
 
           <div className="navigation-buttons-container">
             <div className="navigation-buttons">
-              {/* Generate buttons for each question */}
               {questions.map((question, index) => (
                 <button
                   key={index}
@@ -126,7 +244,6 @@ function Elements() {
                 </button>
               ))}
 
-              {/* "Next" button */}
               <button
                 className="next-button"
                 onClick={goToNextQuestion}
@@ -143,10 +260,7 @@ function Elements() {
 }
 export { Elements };
 
-
-
-
-function Compliance({ question, handleAnswerChange, savedAnswer }) {
+function Compliance({ question, handleAnswerChange, savedAnswer, savedImprovement, savedEvidence }) {
   const [selectedRatings, setSelectedRatings] = useState({});
   const [evidence, setEvidence] = useState({});
   const [improvement, setImprovement] = useState({});
@@ -161,9 +275,13 @@ function Compliance({ question, handleAnswerChange, savedAnswer }) {
     const answersPayload = Object.keys(selectedRatings).map(questionId => ({
       question: questionId,
       selectedRating: selectedRatings[questionId],
-      evidence: evidence[questionId] || '',
-      improvement: improvement[questionId] || ''
+      improvementPlan: {
+        evidence: evidence[questionId] || '',
+        improvement: improvement[questionId] || ''
+      }
     }));
+    
+    console.log(answersPayload)
 
     // POST request to save answers
     try {
@@ -186,68 +304,59 @@ function Compliance({ question, handleAnswerChange, savedAnswer }) {
     }
   };
 
-
   useEffect(() => {
-    if (savedAnswer) {
-      // If the savedAnswer exists, set it for the specific question
-      setSelectedRatings({ [question.Question_Number]: savedAnswer.selectedRating });
-      setEvidence({ [question.Question_Number]: savedAnswer.evidence });
-      setImprovement({ [question.Question_Number]: savedAnswer.improvement });
-    }
-  }, [savedAnswer, question.Question_Number]);
-
-  useEffect(() => {
-    if (savedAnswer) {
-      // If the savedAnswer exists, set it for the specific question
-      setSelectedRatings({ [question.Question_Number]: savedAnswer.selectedRating });
-      setEvidence({ [question.Question_Number]: savedAnswer.evidence });
-      setImprovement({ [question.Question_Number]: savedAnswer.improvement });
-    }
-  }, [savedAnswer, question.Question_Number]);
-
-  useEffect(() => {
-    if (savedAnswer) {
-      // If the savedAnswer exists, set it for the specific question
-      setSelectedRatings({ [question.Question_Number]: savedAnswer.selectedRating });
-      setEvidence({ [question.Question_Number]: savedAnswer.evidence });
-      setImprovement({ [question.Question_Number]: savedAnswer.improvement });
-    }
-  }, [savedAnswer, question.Question_Number]);
+    setSelectedRatings((prevState) => ({ 
+      ...prevState, 
+      [question.Question_Number]: savedAnswer 
+    }));
+  
+    setImprovement((prevState) => ({
+      ...prevState,
+      [question.Question_Number]: savedImprovement
+    }));
+  
+    setEvidence((prevState) => ({
+      ...prevState,
+      [question.Question_Number]: savedEvidence
+    }));
+  }, [savedAnswer, savedImprovement, savedEvidence, question.Question_Number]);
+  
 
   const handleRadioChange = (questionNumber, value) => {
-    setSelectedRatings(prevState => ({
+    setSelectedRatings((prevState) => ({
       ...prevState,
-      [questionNumber]: value 
+      [questionNumber]: value,
     }));
+  
+    const questionNumberStr = String(questionNumber);
+    var [key, index] = questionNumberStr.split('.');
 
-    handleAnswerChange(questionNumber, { 
-      selectedRating: value, 
-      evidence: evidence[questionNumber], 
-      improvement: improvement[questionNumber] 
-      });
+    handleAnswerChange('a', key, value, index); 
   };
-
+  
+  
   const handleEvidenceChange = (questionNumber, value) => {
     setEvidence(prevState => ({
       ...prevState,
       [questionNumber]: value
     }));
-    handleAnswerChange(questionNumber, { 
-      selectedRating: selectedRatings[questionNumber], 
-      evidence: value, 
-      improvement: improvement[questionNumber] });
-  };
+
+    const questionNumberStr = String(questionNumber);
+    var [key, index] = questionNumberStr.split('.');
+
+    handleAnswerChange('e', key, value, index); 
+    }
 
   const handleImprovementChange = (questionNumber, value) => {
     setImprovement(prevState => ({
       ...prevState,
       [questionNumber]: value
-    }));
-    handleAnswerChange(questionNumber, { 
-      selectedRating: selectedRatings[questionNumber], 
-      evidence: evidence[questionNumber] , 
-      improvement: value
-    });
+    }))
+
+    const questionNumberStr = String(questionNumber);
+    var [key, index] = questionNumberStr.split('.');
+
+    handleAnswerChange('i', key, value, index); 
   };
 
   const options = [
@@ -341,7 +450,6 @@ function GapAnalysis() {
     { name: 'Improvement Planning', path: `/gap-analysis/policy?improvement-planning=${encodeURIComponent(companyName)}&element=11`, image: '' },
   ];
 
-  console.log("company name: " + companyName);
   return (
     <div>
       <div className="gap-intro">
