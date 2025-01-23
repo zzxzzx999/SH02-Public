@@ -1,8 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState , forwardRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import '../css/NavBar.css';
+import { useSubmit } from './SubmitContext';
 
 function NavBar({links, logout}) {
+  const clear = false;
+  const submitAnswersToAPI = useSubmit();
+
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const navigate = useNavigate();
   const pageRef = useRef(null);
@@ -108,8 +112,13 @@ function NavBar({links, logout}) {
       <button className="close-button" onClick={() => setIsPopupOpen(false)}>X</button>
         <h2>Company Name</h2>
         <p>Are you finished?<br></br>If not, you can save and come back later.</p>
-        <button className="submitButton" onClick={() => navigate('/home')}>SAVE AND EXIT</button>
-        <button className="submitButton" style={{margin: '15px'}} onClick={() => navigate(`/overall-output?company=${companyName}`)}>FINISHED, GO TO RESULTS</button>
+        <button className="submitButton" onClick={async () => { await submitAnswersToAPI(); navigate('/home'); }}>
+          SAVE AND EXIT
+        </button>
+        <button className="submitButton" style={{ margin: '15px' }} onClick={async () => { await submitAnswersToAPI(clear=true); navigate(`/overall-output?company=${companyName}`);}}>
+          FINISHED, GO TO RESULTS
+        </button>
+
       </Popup>
     )}
     </div>
@@ -118,12 +127,13 @@ function NavBar({links, logout}) {
 
 export default NavBar;
 
-function Popup({onClose, children}) {
+const Popup = forwardRef(({ onClose, children }, ref) => {
   return (
-      <div className="bubble-container" style = {{width:'500px', marginTop:'40px'}} onClick={(e) => e.stopPropagation()}>
-        {children}
-      </div>
+    <div className="bubble-container" style={{ width: '500px', marginTop: '40px' }} onClick={(e) => e.stopPropagation()} ref={ref}>
+      {children}
+    </div>
   );
-}
+});
+
 
 

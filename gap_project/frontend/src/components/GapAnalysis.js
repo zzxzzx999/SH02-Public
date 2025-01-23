@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import NavBar from './NavBar';
+import { SubmitProvider } from './SubmitContext';
 import '../css/GapAnalysis.css';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -28,9 +29,85 @@ function Elements() {
 
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState({});  // To manage saved answers
+  const [answers, setAnswers] = useState({}); 
 
-  // Effect to fetch questions from the API when 'set' changes
+  useEffect(() => {
+    const savedAnswers = localStorage.getItem('answers');
+    console.log("rendered answers: " + savedAnswers);
+    if (savedAnswers) {
+      try {
+        const parsedAnswers = JSON.parse(savedAnswers); 
+        setAnswers(parsedAnswers); 
+        console.log("parsed answers: " +parsedAnswers)
+      } catch (error) {
+        console.error("Error parsing saved answers:", error);
+        setAnswers(getDefaultAnswers());
+      }
+    } else {
+      setAnswers(getDefaultAnswers());
+    }
+  }, []);
+
+  const getDefaultAnswers = () => {
+    return Object.fromEntries(
+      Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill(0)])
+    );
+  };
+   
+  // Format answers for backend
+  const prepareAnswers = () => {
+    const formattedAnswers = {};
+
+    Object.keys(answers).forEach(questionId => {
+      const [set, number] = questionId.split('.');
+      const answer = answers[questionId];
+      
+      const sequentialKey = parseInt(number); 
+
+      if (!formattedAnswers[sequentialKey]) {
+        formattedAnswers[sequentialKey] = 0;
+      }
+
+      if (answer && answer.selectedRating) {
+        formattedAnswers[sequentialKey] = parseInt(answer.selectedRating);
+      } else {
+        formattedAnswers[sequentialKey] = 0;
+      }
+  });
+
+  return formattedAnswers;
+};
+
+  // Send data to API to backend
+  const submitAnswersToAPI = async (clear) => {
+    const formattedAnswers = prepareAnswers();
+    console.log("Raw Data: ", formattedAnswers);
+  
+    const sanitizedAnswers = Object.fromEntries(
+      Object.entries(formattedAnswers).map(([key, value]) => [
+        key, value == null ? 0 : value 
+      ])
+    );
+  
+    console.log("Sanitized Data: ", sanitizedAnswers);
+  
+    try {
+      await axios.post("http://127.0.0.1:8000/api/getQuestionOrWriteAnswer/", {
+        GetOrWrite: "WRITE",
+        id: 1,
+        answers: sanitizedAnswers, 
+      });
+      console.log("Data successfully submitted: ", sanitizedAnswers);
+    } catch (error) {
+      console.error("Error submitting answers:", error.response?.data || error.message);
+    }
+
+    if (clear = true) {
+      localStorage.removeItem('answers');
+    }
+  };
+  
+  // Effect to fetch questions from the API 
   useEffect(() => {
     const fetchQuestion = async (set, number) => {
       try {
@@ -53,35 +130,26 @@ function Elements() {
         allQuestions = [...allQuestions, ...questionData];
       }
       setQuestions(allQuestions);
-      setCurrentQuestionIndex(0); // Reset to the first question when set changes
+      setCurrentQuestionIndex(0); 
     };
 
     fetchData();
   }, [set]);
 
-  // Effect to load saved answers from localStorage on initial load
-  useEffect(() => {
-    const savedAnswers = JSON.parse(localStorage.getItem('answers'));
-    if (savedAnswers) {
-      setAnswers(savedAnswers); // Load answers into state
-    }
-  }, []);  // Run once when the component mounts
+  const handleAnswerChange = (key, value, index) => {
+    const updatedAnswers = { ...answers };
+    index = index - 1
 
-  // Handle the answer change and store it in localStorage
-  const handleAnswerChange = (questionId, answer) => {
-    setAnswers(prevAnswers => {
-      const updatedAnswers = { ...prevAnswers, [questionId]: answer };
-      localStorage.setItem('answers', JSON.stringify(updatedAnswers));  // Persist the answers to localStorage
-      return updatedAnswers;
-    });
+    updatedAnswers[key][index] = value;
+    setAnswers(updatedAnswers);
+  
+    localStorage.setItem('answers', JSON.stringify(updatedAnswers));
   };
-
-  // Navigate to a specific question
+  
   const navigateToQuestion = (index) => {
     setCurrentQuestionIndex(index);
   };
 
-  // Go to the next question
   const goToNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -90,8 +158,9 @@ function Elements() {
 
   return (
     <div className="gap">
-      {/* Navigation Bar */}
-      <NavBar className="elements" links={links} logout={false} />
+      <SubmitProvider submitAnswersToAPI={submitAnswersToAPI}>
+        <NavBar className="elements" links={links} logout={false} />
+      </SubmitProvider>
 
       {questions.length > 0 && (
         <div>
@@ -106,16 +175,20 @@ function Elements() {
             </p>
           </div>
 
-          {/* Render the Compliance component */}
           <Compliance
             question={questions[currentQuestionIndex]?.Questions}
-            handleAnswerChange={handleAnswerChange}  // Use answer change handler
-            savedAnswer={answers[questions[currentQuestionIndex]?.Questions?.Question_Number]}  // Retrieve the saved answer
+            handleAnswerChange={handleAnswerChange}  
+            savedAnswer={
+              answers[`${questions[currentQuestionIndex]?.Section_Number}`]?.[questions[currentQuestionIndex]?.Questions?.Question_Number &&
+                String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1] &&
+                String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
+              ]
+            }
+            
           />
 
           <div className="navigation-buttons-container">
             <div className="navigation-buttons">
-              {/* Generate buttons for each question */}
               {questions.map((question, index) => (
                 <button
                   key={index}
@@ -126,7 +199,6 @@ function Elements() {
                 </button>
               ))}
 
-              {/* "Next" button */}
               <button
                 className="next-button"
                 onClick={goToNextQuestion}
@@ -142,9 +214,6 @@ function Elements() {
   );
 }
 export { Elements };
-
-
-
 
 function Compliance({ question, handleAnswerChange, savedAnswer }) {
   const [selectedRatings, setSelectedRatings] = useState({});
@@ -186,47 +255,28 @@ function Compliance({ question, handleAnswerChange, savedAnswer }) {
     }
   };
 
-
   useEffect(() => {
-    if (savedAnswer) {
-      // If the savedAnswer exists, set it for the specific question
-      setSelectedRatings({ [question.Question_Number]: savedAnswer.selectedRating });
-      setEvidence({ [question.Question_Number]: savedAnswer.evidence });
-      setImprovement({ [question.Question_Number]: savedAnswer.improvement });
+    if (savedAnswer !== undefined) {
+      setSelectedRatings({ [question.Question_Number]: savedAnswer });
     }
-  }, [savedAnswer, question.Question_Number]);
-
-  useEffect(() => {
-    if (savedAnswer) {
-      // If the savedAnswer exists, set it for the specific question
-      setSelectedRatings({ [question.Question_Number]: savedAnswer.selectedRating });
-      setEvidence({ [question.Question_Number]: savedAnswer.evidence });
-      setImprovement({ [question.Question_Number]: savedAnswer.improvement });
-    }
-  }, [savedAnswer, question.Question_Number]);
-
-  useEffect(() => {
-    if (savedAnswer) {
-      // If the savedAnswer exists, set it for the specific question
-      setSelectedRatings({ [question.Question_Number]: savedAnswer.selectedRating });
-      setEvidence({ [question.Question_Number]: savedAnswer.evidence });
-      setImprovement({ [question.Question_Number]: savedAnswer.improvement });
+    else {
+      console.log("savedanswer not defined")
     }
   }, [savedAnswer, question.Question_Number]);
 
   const handleRadioChange = (questionNumber, value) => {
-    setSelectedRatings(prevState => ({
+    setSelectedRatings((prevState) => ({
       ...prevState,
-      [questionNumber]: value 
+      [questionNumber]: value,
     }));
+  
+    const questionNumberStr = String(questionNumber);
+    var [key, index] = questionNumberStr.split('.');
 
-    handleAnswerChange(questionNumber, { 
-      selectedRating: value, 
-      evidence: evidence[questionNumber], 
-      improvement: improvement[questionNumber] 
-      });
+    handleAnswerChange(key, value, index); 
   };
-
+  
+  
   const handleEvidenceChange = (questionNumber, value) => {
     setEvidence(prevState => ({
       ...prevState,
@@ -341,7 +391,6 @@ function GapAnalysis() {
     { name: 'Improvement Planning', path: `/gap-analysis/policy?improvement-planning=${encodeURIComponent(companyName)}&element=11`, image: '' },
   ];
 
-  console.log("company name: " + companyName);
   return (
     <div>
       <div className="gap-intro">
