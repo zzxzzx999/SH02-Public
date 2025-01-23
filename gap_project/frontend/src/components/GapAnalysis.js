@@ -30,15 +30,18 @@ function Elements() {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({}); 
+  const [improvementPlan, setImprovementPlan] = useState({});
 
   useEffect(() => {
     const savedAnswers = localStorage.getItem('answers');
+    const savedImprovementPlan = localStorage.getItem('improvementPlan');
+  
     console.log("rendered answers: " + savedAnswers);
     if (savedAnswers) {
       try {
-        const parsedAnswers = JSON.parse(savedAnswers); 
-        setAnswers(parsedAnswers); 
-        console.log("parsed answers: " +parsedAnswers)
+        const parsedAnswers = JSON.parse(savedAnswers);
+        setAnswers(parsedAnswers);
+        console.log("parsed answers: " + parsedAnswers);
       } catch (error) {
         console.error("Error parsing saved answers:", error);
         setAnswers(getDefaultAnswers());
@@ -46,7 +49,30 @@ function Elements() {
     } else {
       setAnswers(getDefaultAnswers());
     }
+  
+    if (savedImprovementPlan) {
+      try {
+        const parsedImprovementPlan = JSON.parse(savedImprovementPlan); 
+        setImprovementPlan(parsedImprovementPlan); 
+      } catch (error) {
+        setImprovementPlan(getDefaultImprovementPlan());
+      }
+    } else {
+      setImprovementPlan(getDefaultImprovementPlan());
+    }
   }, []);
+  
+
+  const getDefaultImprovementPlan = () => {
+    return {
+      evidence: Object.fromEntries(
+        Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill("")]) // 12 sections, each with 10 empty evidence strings
+      ),
+      improvement: Object.fromEntries(
+        Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill("")]) // 12 sections, each with 10 empty improvement strings
+      ),
+    };
+  }
 
   const getDefaultAnswers = () => {
     return Object.fromEntries(
@@ -136,14 +162,26 @@ function Elements() {
     fetchData();
   }, [set]);
 
-  const handleAnswerChange = (key, value, index) => {
+  const handleAnswerChange = (type, key, value, index) => {
     const updatedAnswers = { ...answers };
+    const updatedImprovementPlan = { ... improvementPlan};
     index = index - 1
 
-    updatedAnswers[key][index] = value;
-    setAnswers(updatedAnswers);
-  
-    localStorage.setItem('answers', JSON.stringify(updatedAnswers));
+    if (type == 'a'){
+      updatedAnswers[key][index] = value;
+      setAnswers(updatedAnswers);
+      localStorage.setItem('answers', JSON.stringify(updatedAnswers));
+    }
+    else if (type == 'i'){
+      updatedImprovementPlan.improvement[key][index] = value;
+      setImprovementPlan(updatedImprovementPlan);
+      localStorage.setItem('improvementPlan', JSON.stringify(updatedImprovementPlan));
+    }
+    else {
+      updatedImprovementPlan.evidence[key][index] = value;
+      setImprovementPlan(updatedImprovementPlan);
+      localStorage.setItem('improvementPlan', JSON.stringify(updatedImprovementPlan));
+    }
   };
   
   const navigateToQuestion = (index) => {
@@ -184,6 +222,20 @@ function Elements() {
                 String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
               ]
             }
+            savedImprovement = {
+              improvementPlan.improvement[
+                String(questions[currentQuestionIndex]?.Section_Number)
+              ]?.[
+                String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
+              ]
+            }
+            savedEvidence = {
+              improvementPlan.evidence[
+                String(questions[currentQuestionIndex]?.Section_Number)
+              ]?.[
+                String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
+              ]
+            }
             
           />
 
@@ -215,7 +267,7 @@ function Elements() {
 }
 export { Elements };
 
-function Compliance({ question, handleAnswerChange, savedAnswer }) {
+function Compliance({ question, handleAnswerChange, savedAnswer, savedImprovement, savedEvidence }) {
   const [selectedRatings, setSelectedRatings] = useState({});
   const [evidence, setEvidence] = useState({});
   const [improvement, setImprovement] = useState({});
@@ -256,13 +308,22 @@ function Compliance({ question, handleAnswerChange, savedAnswer }) {
   };
 
   useEffect(() => {
-    if (savedAnswer !== undefined) {
-      setSelectedRatings({ [question.Question_Number]: savedAnswer });
-    }
-    else {
-      console.log("savedanswer not defined")
-    }
-  }, [savedAnswer, question.Question_Number]);
+    setSelectedRatings((prevState) => ({ 
+      ...prevState, 
+      [question.Question_Number]: savedAnswer 
+    }));
+  
+    setImprovement((prevState) => ({
+      ...prevState,
+      [question.Question_Number]: savedImprovement
+    }));
+  
+    setEvidence((prevState) => ({
+      ...prevState,
+      [question.Question_Number]: savedEvidence
+    }));
+  }, [savedAnswer, savedImprovement, savedEvidence, question.Question_Number]);
+  
 
   const handleRadioChange = (questionNumber, value) => {
     setSelectedRatings((prevState) => ({
@@ -273,7 +334,7 @@ function Compliance({ question, handleAnswerChange, savedAnswer }) {
     const questionNumberStr = String(questionNumber);
     var [key, index] = questionNumberStr.split('.');
 
-    handleAnswerChange(key, value, index); 
+    handleAnswerChange('a', key, value, index); 
   };
   
   
@@ -282,22 +343,23 @@ function Compliance({ question, handleAnswerChange, savedAnswer }) {
       ...prevState,
       [questionNumber]: value
     }));
-    handleAnswerChange(questionNumber, { 
-      selectedRating: selectedRatings[questionNumber], 
-      evidence: value, 
-      improvement: improvement[questionNumber] });
-  };
+
+    const questionNumberStr = String(questionNumber);
+    var [key, index] = questionNumberStr.split('.');
+
+    handleAnswerChange('e', key, value, index); 
+    }
 
   const handleImprovementChange = (questionNumber, value) => {
     setImprovement(prevState => ({
       ...prevState,
       [questionNumber]: value
-    }));
-    handleAnswerChange(questionNumber, { 
-      selectedRating: selectedRatings[questionNumber], 
-      evidence: evidence[questionNumber] , 
-      improvement: value
-    });
+    }))
+
+    const questionNumberStr = String(questionNumber);
+    var [key, index] = questionNumberStr.split('.');
+
+    handleAnswerChange('i', key, value, index); 
   };
 
   const options = [
