@@ -4,7 +4,7 @@ import '../css/NavBar.css';
 import { useSubmit } from './SubmitContext';
 
 function NavBar({links, logout}) {
-  const clear = false;
+  let clear = false;
   const submitAnswersToAPI = useSubmit();
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);

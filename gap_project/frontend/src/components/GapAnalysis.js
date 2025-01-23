@@ -66,10 +66,10 @@ function Elements() {
   const getDefaultImprovementPlan = () => {
     return {
       evidence: Object.fromEntries(
-        Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill("")]) // 12 sections, each with 10 empty evidence strings
+        Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill("")]) 
       ),
       improvement: Object.fromEntries(
-        Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill("")]) // 12 sections, each with 10 empty improvement strings
+        Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill("")]) 
       ),
     };
   }
@@ -106,30 +106,23 @@ function Elements() {
 
   // Send data to API to backend
   const submitAnswersToAPI = async (clear) => {
-    const formattedAnswers = prepareAnswers();
-    console.log("Raw Data: ", formattedAnswers);
-  
-    const sanitizedAnswers = Object.fromEntries(
-      Object.entries(formattedAnswers).map(([key, value]) => [
-        key, value == null ? 0 : value 
-      ])
-    );
-  
-    console.log("Sanitized Data: ", sanitizedAnswers);
-  
     try {
       await axios.post("http://127.0.0.1:8000/api/getQuestionOrWriteAnswer/", {
         GetOrWrite: "WRITE",
-        id: 1,
-        answers: sanitizedAnswers, 
+        id: 1, // Change to gap id
+        answers: answers,
+        improvementPlan: improvementPlan,
       });
-      console.log("Data successfully submitted: ", sanitizedAnswers);
+      console.log("Data successfully submitted: ", answers);
+      console.log(improvementPlan);
     } catch (error) {
       console.error("Error submitting answers:", error.response?.data || error.message);
+      console.log("Data successfully submitted: ", answers);
+      console.log(improvementPlan);
     }
 
     if (clear = true) {
-      localStorage.removeItem('answers');
+      //localStorage.removeItem('answers');
     }
   };
   
@@ -282,9 +275,13 @@ function Compliance({ question, handleAnswerChange, savedAnswer, savedImprovemen
     const answersPayload = Object.keys(selectedRatings).map(questionId => ({
       question: questionId,
       selectedRating: selectedRatings[questionId],
-      evidence: evidence[questionId] || '',
-      improvement: improvement[questionId] || ''
+      improvementPlan: {
+        evidence: evidence[questionId] || '',
+        improvement: improvement[questionId] || ''
+      }
     }));
+    
+    console.log(answersPayload)
 
     // POST request to save answers
     try {

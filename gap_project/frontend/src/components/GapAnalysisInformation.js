@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import NavBar from './NavBar';  // Import the Navbar component
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 function GapAnalysisConfirm() {
   const links = [];
@@ -15,8 +16,6 @@ function GapAnalysisConfirm() {
     const company = queryParams.get('company');
     setCompanyName(company);
   }, [location]);
-
-  console.log("company name: " + companyName);
 
   return (
     <div className="gap-confirm">
@@ -54,10 +53,23 @@ function GapInformation(){
 
   const navigate = useNavigate(); 
 
-  const handleSubmit = (event) => {
-      event.preventDefault();
-      navigate(`/gap-analysis?company=${encodeURIComponent(companyName)}`);
-  }
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      //change url here when making API
+      await axios.post("http://127.0.0.1:8000/api/create-gap/",{
+        company_name: companyName,
+        consultant: consultant,
+        company_rep: companyRep,
+        company_email: companyEmail,
+        additional_notes: additionalNotes,
+      });
+      navigate(`/gap-analysis?company=${companyName}`);
+    } catch (error) {
+      console.error("Error submitting gap information:", error.response?.data || error.message);
+    }
+  };
+
 
   return (
   <div className="gap-info">
