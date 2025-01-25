@@ -47,7 +47,7 @@ def add_text(text, x, y, c, size=12): # Creating this function makes it easier t
     
 
 def examplePdfCreation(gap):
-    const_filename = "frontend/src/components/improvementPlan.pdf"
+    const_filename = "gap/src/improvementPlan.pdf"
     height_page = 720 # Change this to your template size
     width_page = 1270
 
@@ -55,7 +55,7 @@ def examplePdfCreation(gap):
 
     c.drawString(100, 100,f"\nThey will now do the improvements for {gap.company.name}!")
     c.drawString(400,400, "WHY WOUOLD THIS BE THE PROBLEM NOW") 
-    c.drawString(600,600, "GFHDJKFHSKJGHJKLH")
+    c.drawString(600,600, "NO FUCKING WAY ITS WORKING")
     c.save() # In order to save
     
     return c, gap.title

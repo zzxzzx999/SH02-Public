@@ -21,6 +21,7 @@ import os
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import action
+from django.http import FileResponse
 
 
 @api_view(['GET'])
@@ -66,11 +67,18 @@ def company_list(request):
 class PdfView(APIView):
     
     serializer_class = GapAnalysisSerializer
-    
+    @action(detail=True, methods=['get'], renderer_classes=(BinaryFileRenderer,))
     def get(self, request):
-        
-        return JsonResponse(test, status=200)
-    
+        # Open the PDF in binary mode
+        try:
+            pdf_path = 'gap/src/improvementPlan.pdf'
+            return FileResponse(
+                open(pdf_path, 'rb'),
+                as_attachment=True,  # Forces download
+                filename='file.pdf'  # Sets the downloaded file name
+            )
+        except FileNotFoundError:
+            return Response({'error': 'File not found'}, status=404)        
     def post(self, request):
         #return download(request)
         gapId = request.data.get('id')
@@ -82,10 +90,6 @@ class PdfView(APIView):
 
 @action(detail=True, methods=['get'], renderer_classes=(BinaryFileRenderer,))
 def download(request):
-    gapId = request.data.get('id')
-    gap = GapAnalysis.objects.get(id = gapId)
-    pdf, pdf_filename = examplePdfCreation(gap)
-    print(pdf_filename)
     with open('frontend/src/components/improvementPlan.pdf', 'rb') as report:
         return Response(
             report.read(),
