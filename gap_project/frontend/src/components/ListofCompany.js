@@ -67,14 +67,14 @@ function ListofCompany(){
     const handleDeleteClick = (company) => {
         console.log(company); 
         if (company && company.name) {
-            setDeleteTarget(company);  // 确保 deleteTarget 被正确赋值
-            setShowPopup(true); // 显示弹窗
+            setDeleteTarget(company);  
+            setShowPopup(true); 
         } else {
             console.error("Company ID is missing");
         };}
 
     const confirmDelete = () => {
-            const token = localStorage.getItem("authToken");  // 获取身份验证的 token
+            const token = localStorage.getItem("authToken"); 
             axios
                 .delete(`http://localhost:8000/api/companies/${deleteTarget.name}/delete/`, {
                     headers: { Authorization: `Token ${token}` },
