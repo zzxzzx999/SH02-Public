@@ -21,13 +21,16 @@ function OverallOutput() {
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const companyName = params.get('company');
+    const gapId = params.get('gap_id')
 
     // cal total score
     useEffect(() => {
-      axios.get(`http://localhost:8000/api/overall-scores/${companyName}/`)
+      if (!gapId) return;
+
+      axios.get(`http://localhost:8000/api/overall-scores/${companyName}//${gapId}`)
         .then((response) => {
           console.log( response.data);
-          const { totals, percentages, total_score } = response.data;
+          const { percentages, total_score } = response.data;
           setTotalScore(total_score)
           setPercentages(percentages)
         })
@@ -35,11 +38,11 @@ function OverallOutput() {
         .catch((error) => {
           console.error("Error fetching categories:", error);
         });
-}, [companyName]);
+}, [companyName,gapId]);
 
 const linksForPage3 = [
   { name: 'Previous Page', path: `/registed-company?company=${encodeURIComponent(companyName)}`, image: '/back-button.png' },
-  { name: 'Policy', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Policy')}` },
+  { name: 'Policy', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${gapId}&title=${encodeURIComponent('Policy')}` },
   { name: 'Management', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Management')}` },
   { name: 'Documented System', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Documented System')}` },
   { name: 'Meetings', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Meeting')}` },

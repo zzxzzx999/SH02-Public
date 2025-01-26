@@ -17,7 +17,7 @@ class CompanySerializer(serializers.ModelSerializer):
 
     class Meta:
             model = Company
-            fields = ('name',)
+            fields = ('name','dateRegistered')
         
 class GapAnalysisSerializer(serializers.ModelSerializer):
     

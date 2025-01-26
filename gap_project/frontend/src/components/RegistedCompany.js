@@ -13,6 +13,7 @@ function RegistedCompany() {
     const params = new URLSearchParams(location.search);  // get and query para
     const companyName = params.get('company');
     const title = params.get('title') || 'Overview'; 
+    const gapId = params.get('gap_id')
 
     const navigate = useNavigate(); 
 
@@ -86,9 +87,11 @@ function RegistedCompany() {
                         <div className="chart-box">[Chart Placeholder]</div>
                     </div>
                     {/* View Full Analysis */}
-                    <div className="full-analysis">
-                        <button onClick={() => navigate(`/overall-output?company=${companyName}`)}>View Full Analysis</button>
-                    </div>               
+                    {title !== 'Overview' && (
+                        <div className="full-analysis">
+                        <button onClick={() => navigate(`/overall-output?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}`)}>View Full Analysis</button>
+                    </div> 
+                    )}
                 </div>   
             </main>
         </div> 

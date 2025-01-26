@@ -6,6 +6,7 @@ django.setup()
 from django.db import models
 from gap.models import Company, GapAnalysis
 import json
+from datetime import date
 
 #Set up answer set template
 singular_set_answers = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
@@ -28,7 +29,8 @@ for i in range(1, 13):
     improvment_plan[i] = improvment_plan_set_answers.copy()
     
 def create_test_data():
-    company, created = Company.objects.get_or_create(name="test")
+    company, created = Company.objects.get_or_create(name="test", defaults={"dateRegistered":date(2024,12,21)})
+    
     gap_data={
         "1":[1, 3, 2, 4, 5, 5, 2, 3, 1, 2],"2":[3, 4, 5, 2, 3, 1, 4, 5, 2, 1],
         "3":[2,3,1,4,5,2,3,4,1,4], "4":[1,2,3,4,2,3,4,2,3,1], "5":[1,5,4,5,4,3,2,4,5,3],
@@ -45,6 +47,8 @@ def create_test_data():
 
     gap_analysis.gap_data = json.dumps(gap_data)
     gap_analysis.save()
+    company.save()
+    print(company.dateRegistered) 
     
 def populate():
     create_test_data()

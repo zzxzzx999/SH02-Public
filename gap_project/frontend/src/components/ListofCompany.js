@@ -16,24 +16,32 @@ function ListofCompany(){
     const[sortVisible, setSortVisible]=useState(false);
     const[showPopup, setShowPopup]= useState(false);
     const [deleteTarget, setDeleteTarget] = useState(null); // save ID of deleted company
-
     const [companies, setCompanies] = useState([]);
-
     const[filter, setFilter]= useState("");
     const [sort, setSort] = useState("");    // current sort condition
     const [searchKeyword, setSearchKeyword] = useState(""); 
     
     //backendlink
-    useEffect(() => {const token = localStorage.getItem("authToken");
-        axios.get("http://localhost:8000/api/companies/", {
-            headers: {
-                Authorization: `Token ${token}`,
-            }
-        }).then((response) => {setCompanies(response.data);})
-    .catch((error) => {console.error("Error :", error.response || error.message);
-
-    });}, []);
-
+    const fetchCompanies = () => {
+        const token = localStorage.getItem("authToken");
+        axios
+          .get("http://localhost:8000/api/companies/", {
+            headers: { Authorization: `Token ${token}` },
+          })
+          .then((response) => {
+            setCompanies(
+                response.data.map((company) => ({
+                    
+                    name: company.name,
+                    score: company.score,
+                    dateRegistered: company.dateRegistered,
+                }))
+            );
+        })
+          .catch((error) => console.error("Error:", error));
+      };
+    
+    useEffect(fetchCompanies, []);
     
     
     //filter bar
@@ -50,27 +58,44 @@ function ListofCompany(){
     const sortedCompanies = [...filteredCompanies].sort((a, b) => {
         if (sort === "Score High to Low") return b.score - a.score;
         if (sort === "Score Low to High") return a.score - b.score;
-        if (sort === "Earliest Registered") return new Date(a.date) - new Date(b.date);
-        if (sort === "Latest Registered") return new Date(b.date) - new Date(a.date);
+        if (sort === "Earliest Registered") return new Date(a.dateRegistered) - new Date(b.dateRegistered);
+        if (sort === "Latest Registered") return new Date(b.dateRegistered) - new Date(a.dateRegistered);
         return 0;
       });
 
     //delete pop up
     const handleDeleteClick = (company) => {
-        setDeleteTarget(company);
-        setShowPopup(true); // show pop up
-      };
+        console.log(company); 
+        if (company && company.name) {
+            setDeleteTarget(company);  // 确保 deleteTarget 被正确赋值
+            setShowPopup(true); // 显示弹窗
+        } else {
+            console.error("Company ID is missing");
+        };}
 
     const confirmDelete = () => {
-        setCompanies(companies.filter((c) => c.id !== deleteTarget.id));
-        setShowPopup(false); // hide pop up
-        setDeleteTarget(null);
-      };
+            const token = localStorage.getItem("authToken");  // 获取身份验证的 token
+            axios
+                .delete(`http://localhost:8000/api/companies/${deleteTarget.name}/delete/`, {
+                    headers: { Authorization: `Token ${token}` },
+                })
+                .then(() => {
+                    setCompanies((prevCompanies) =>
+                        prevCompanies.filter((c) => c.name !== deleteTarget.name));
+                    setShowPopup(false);
+                    setDeleteTarget(null);
+                })
+                .catch((error) => {
+                    console.error("Error during deletion:", error);
+                    alert("Failed to delete the company. Please try again.");
+            });} 
+            
     
     const cancelDelete = () => {
         setShowPopup(false);  
         setDeleteTarget(null);
       };
+
     return(
         <div class="main-content">
              <NavBar links={linksForPage2} logout={true} />
@@ -190,11 +215,9 @@ function ListofCompany(){
                         </span>
                             
                         <span className="score-column">{company.score}</span>
-                        <span className="date-column">{company.date}</span>
+                        <span className="date-column">{new Date(company.dateRegistered).toLocaleDateString()}</span>
                         </div>
                     ))}
-
-
                     
                 </div>
                 {showPopup && (

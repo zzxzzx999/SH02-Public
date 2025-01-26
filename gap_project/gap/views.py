@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from .models import Company
 from rest_framework.authtoken.models import Token
 from rest_framework import generics
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -128,7 +128,6 @@ def getElementOverview(self, request):
     return Response(element_data)
 
 
-@csrf_exempt
 def get_scores(request, company_name, element_name):
     company = Company.objects.get(name=company_name)
     analysis= GapAnalysis.objects.filter(company=company).first()
@@ -162,8 +161,18 @@ def get_scores(request, company_name, element_name):
 @permission_classes([AllowAny])
 def overall_scores(request, company_name):
     # Get all scores for a specified company from the database
-    analysis = GapAnalysis.objects.filter(company__name=company_name).first()
+    #analysis = GapAnalysis.objects.filter(company__name=company_name).first()
+    gap_id = request.GET.get('gap_id')
+    if not gap_id:
+        return JsonResponse({"error": "gap_id is required"}, status=400)
+    
+    try:
+        analysis = GapAnalysis.objects.get(id=gap_id)
+    except GapAnalysis.DoesNotExist:
+        return JsonResponse({"error": "Analysis not found for given gap_id"}, status=404)
+
     gap_data=json.loads(analysis.gap_data)
+    company_name=analysis.company.name
 
     total_score = 0
     totals = {"exceptional":0,"good":0, "basic":0,"needsImprovement":0, "unsatisfactory":0 }
@@ -192,3 +201,38 @@ def overall_scores(request, company_name):
         },
         "total_score": total_score,  # the total of marks
     })
+
+class CompanyListView(APIView):
+    def get(self, request):
+        companies = Company.objects.all()
+        serializer = CompanySerializer(companies, many=True)
+        return Response(serializer.data)
+
+class CompanyDeleteView(APIView):
+    def delete(self, request, company_name):
+        try:
+            company = Company.objects.get(name=company_name)
+            company.delete()  
+            return Response({"message": "Company deleted successfully!"}, status=status.HTTP_200_OK)
+        except Company.DoesNotExist:
+            return Response({"error": "Company not found"}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['DELETE'])
+def delete_company(request, company_name):
+    try:
+        company = Company.objects.get(name=company_name)
+        company.delete()
+        return JsonResponse({"message": f"Company {company_name} deleted successfully."}, status=200)
+    except Company.DoesNotExist:
+        return JsonResponse({"error": "Company not found."}, status=404)
+    
+
+@api_view(['GET'])
+@permission_classes([AllowAny]) 
+def company_detail(request, company_name):
+    try:
+        company = Company.objects.get(name__iexact=company_name)
+        serializer = CompanySerializer(company)
+        return Response(serializer.data)
+    except Company.DoesNotExist:
+        return JsonResponse({"error": "Company not found."}, status=404)
