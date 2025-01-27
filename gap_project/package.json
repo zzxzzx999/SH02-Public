@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "axios": "^1.7.7",
-    "bootstrap": "^5.3.3",
-    "react-hook-form": "^7.53.2",
-    "reactstrap": "^9.2.3"
-  }
-}
