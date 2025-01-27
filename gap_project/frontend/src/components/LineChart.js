@@ -14,9 +14,6 @@ const Chart = ({ chartData }) => {
     const chartInstance = echarts.init(chartRef.current);
 
     const chartOptions = {
-      title: {
-        text: 'ECharts Example',
-      },
       tooltip: {},
       xAxis: {
         type: 'category',

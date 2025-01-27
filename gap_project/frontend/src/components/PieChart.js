@@ -17,9 +17,6 @@ const PieChart = ({ chartData }) => {
     const chartInstance = echarts.init(chartRef.current);
 
     const options = {
-      title: {
-        text: 'Pie Chart Example',
-      },
       tooltip: {
         trigger: 'item',
       },
