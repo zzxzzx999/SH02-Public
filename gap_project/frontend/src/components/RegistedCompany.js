@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import '../css/NavBar.css';
 import "../css/RegistedCompany.css";
@@ -16,6 +16,7 @@ function RegistedCompany() {
     const gapId = params.get('gap_id')
 
     const navigate = useNavigate(); 
+    const [companyNotes, setCompanyNotes]=useState('')
 
     const handleDownload = () => {
         // achieve easy download function
@@ -29,6 +30,31 @@ function RegistedCompany() {
         document.title = title; // set page's title as title in URL
     }, [title]);  
 
+    useEffect(() => {
+        const fetchCompanyNotes = async () => {
+            try {
+                const token = localStorage.getItem("authToken"); 
+                const response = await fetch(`http://localhost:8000/api/companies/${encodeURIComponent(companyName)}/`,{
+                    headers: {
+                        'Authorization': `Token ${token}`
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setCompanyNotes(data.notes);  // set notes data
+            } catch (error) {
+                console.error('Error fetching company notes:', error);
+            }
+        };
+
+        if (companyName) {
+            fetchCompanyNotes();
+        }
+    }, [companyName]);
+
+
     return(
         <div class="main-content">
         <NavBar links={linksForPage3} />
@@ -37,8 +63,7 @@ function RegistedCompany() {
                 <h2>{companyName}</h2>
                 <div className="company-info">  
                     <p>
-                    This is where the company description would be. This could contain relevant contact
-                    information, the address of the company site, and any relevant information.
+                    {companyNotes|| "No additional notes."}
                     </p>
                 </div>
                 <div className="past-gap">

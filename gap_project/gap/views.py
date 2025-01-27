@@ -222,17 +222,21 @@ def delete_company(request, company_name):
     try:
         company = Company.objects.get(name=company_name)
         company.delete()
-        return JsonResponse({"message": f"Company {company_name} deleted successfully."}, status=200)
+        return Response({"message": f"Company {company_name} deleted successfully."}, status=200)
     except Company.DoesNotExist:
-        return JsonResponse({"error": "Company not found."}, status=404)
+        return Response({"error": "Company not found."}, status=404)
     
 
 @api_view(['GET'])
-@permission_classes([AllowAny]) 
+@permission_classes([AllowAny])
 def company_detail(request, company_name):
+    print(f"Looking for company with name: '{company_name}'")  
     try:
-        company = Company.objects.get(name__iexact=company_name)
+        company = Company.objects.get(name__iexact=company_name.strip())  # ignore front and back space of string
+        print(f"Found company: {company.name}")  
         serializer = CompanySerializer(company)
         return Response(serializer.data)
     except Company.DoesNotExist:
-        return JsonResponse({"error": "Company not found."}, status=404)
+        print("Company not found")
+        return Response({"error": "Company not found."}, status=status.HTTP_404_NOT_FOUND)
+    

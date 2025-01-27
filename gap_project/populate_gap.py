@@ -29,7 +29,7 @@ for i in range(1, 13):
     improvment_plan[i] = improvment_plan_set_answers.copy()
     
 def create_test_data():
-    company, created = Company.objects.get_or_create(name="test", defaults={"dateRegistered":date(2024,12,21)})
+    company, created = Company.objects.get_or_create(name="test")
     
     gap_data={
         "1":[1, 3, 2, 4, 5, 5, 2, 3, 1, 2],"2":[3, 4, 5, 2, 3, 1, 4, 5, 2, 1],
