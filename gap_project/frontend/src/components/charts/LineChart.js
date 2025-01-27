@@ -42,6 +42,12 @@ const LineChart = ({ chartData }) => {
       },
       yAxis: {
         type: 'value',
+        splitLine: {
+          show: true,
+          lineStyle: {
+            color: 'grey',
+          }
+        },
       },
       series: [
         {
@@ -71,7 +77,7 @@ const LineChart = ({ chartData }) => {
   }, [chartData]);
 
   return (
-    <div style={{ width: '80%', height: '400px', margin: '0 auto' }} ref={chartRef}></div>
+    <div style={{width: '24.5em', height: '18.7em', marginTop: '-3.5em', marginLeft: '-1em'}} ref={chartRef}></div>
   );
 };
 

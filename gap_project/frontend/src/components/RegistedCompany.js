@@ -1,8 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import '../css/NavBar.css';
 import "../css/RegistedCompany.css";
 import NavBar from "./NavBar";
+import BarChart from "./charts/BarChart";
+import LineChart from "./charts/LineChart";
+import LineChartWithBackground from "./charts/LineChartWithBg";
 
 function RegistedCompany() {
     const linksForPage3 = [
@@ -26,7 +29,25 @@ function RegistedCompany() {
 
     useEffect(() => {
         document.title = title; // set page's title as title in URL
-    }, [title]);  
+    }, [title]);
+
+    // Dummy data for bar chart (to be changed)
+    const [barData] = useState({
+        categories: ['Section 1', 'Section 2', 'Section 3', 'Section 4', 'Section 5', 'Section 6', 'Section 7', 'Section 8', 'Section 9', 'Section 10'],
+        values: [2, 20, 15, 50, 34, 45, 30, 20, 10, 5],
+      });
+
+    // Dummy data for line chart (to be changed)
+    const [lineData] = useState({
+        categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        values: [120, 200, 150, 80, 70, 110, 130],
+    });
+
+    // Dummy data for line chart with background (to be changed)
+    const [lineBgData] = useState({
+        categories: ['Section 1', 'Section 2', 'Section 3', 'Section 4', 'Section 5', 'Section 6', 'Section 7', 'Section 8', 'Section 9', 'Section 10'],
+        values: [2, 20, 15, 50, 34, 45, 30, 20, 10, 5],
+    });
 
     return(
         <div class="main-content">
@@ -72,18 +93,18 @@ function RegistedCompany() {
                     <div className="left-chart">
                         <div className="chart-placeholder">
                             <h2>Summary of Sections</h2>
-                            <div className="chart-box">[Chart Placeholder]</div>
+                            <div className="chart-box"><BarChart chartData={barData}/></div>
                         </div>
                         <div className="chart-placeholder">
                             <h2>Benchmark Improvement</h2>
-                            <div className="chart-box">[Chart Placeholder]</div>
+                            <div className="chart-box"><LineChart chartData={lineData}/></div>
                         </div>
                     </div>
 
                     {/* right part chart */}
                     <div className="chart-placeholder large-chart">
                         <h2>Potential Score Comparison</h2>
-                        <div className="chart-box">[Chart Placeholder]</div>
+                        <div className="chart-box"><LineChartWithBackground chartData={lineBgData}/></div>
                     </div>
                     {/* View Full Analysis */}
                     <div className="full-analysis">

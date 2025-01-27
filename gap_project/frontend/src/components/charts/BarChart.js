@@ -32,13 +32,22 @@ const HorizontalBarChart = ({ chartData }) => {
       },
       xAxis: {
         type: 'value',
-        boundaryGap: [0, 0.1],
+        boundaryGap: [0, 0],
+        axisLabel: {
+          show: false
+        },
+        splitLine: {
+          show: false,
+          lineStyle: {
+            color: 'grey',
+          }
+        }
       },
       yAxis: {
         type: 'category',
         data: chartData.categories,
         axisLabel: {
-            show: false
+            show: false,
         }
       },
       series: [
@@ -68,7 +77,7 @@ const HorizontalBarChart = ({ chartData }) => {
   }, [chartData]);
 
   return (
-    <div style={{ width: '80%', height: '400px', margin: '0 auto' }} ref={chartRef}></div>
+    <div style={{ width: '24.5em', height: '19.5em', marginTop: '-3.5em', marginLeft: '-1.3em'}} ref={chartRef}></div>
   );
 };
 

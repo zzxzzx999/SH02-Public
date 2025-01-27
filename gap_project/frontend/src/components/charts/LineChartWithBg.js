@@ -22,9 +22,18 @@ const LineChartWithBackground = ({ chartData }) => {
       xAxis: {
         type: 'category',
         data: chartData.categories,
+        axisLine: {
+          show: false,
+        },
+        axisLabel: {
+          show: false,
+        }
       },
       yAxis: {
         type: 'value',
+        splitLine: {
+          show: false
+        },
         splitArea: {
             show: true,
             areaStyle: {
@@ -62,7 +71,7 @@ const LineChartWithBackground = ({ chartData }) => {
   }, [chartData]);
 
   return (
-    <div style={{ width: '80%', height: '400px', margin: '0 auto' }} ref={chartRef}></div>
+    <div style={{width: '26em', height: '35em', marginTop: '-3.5em', marginLeft: '0em'}} ref={chartRef}></div>
   );
 };
 
