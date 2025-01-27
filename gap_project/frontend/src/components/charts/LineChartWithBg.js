@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import * as echarts from 'echarts';
 
-// For Benchmark Improvement
+// For Potential Score Comparison in "Registered Company" Page
 
 // chartData structure for line charts eg:
 // const [chartData] = useState({
@@ -9,24 +9,8 @@ import * as echarts from 'echarts';
 //      values: [120, 200, 150, 80, 70, 110, 130],
 // });
 
-const LineChart = ({ chartData }) => {
+const LineChartWithBackground = ({ chartData }) => {
   const chartRef = useRef(null);
-
-  // Function to determine color based on increasing or decreasing trend
-  const getColorForPoint = (index, values) => {
-    if (index === values.length - 1) return 'blue';
-
-    const currentValue = values[index];
-    const nextValue = values[index + 1];
-
-    if (nextValue > currentValue) {
-      return 'green'; // Increasing
-    } else if (nextValue < currentValue) {
-      return 'red'; // Decreasing
-    } else {
-      return 'blue';
-    }
-  };
 
   useEffect(() => {
     const chartInstance = echarts.init(chartRef.current);
@@ -41,18 +25,26 @@ const LineChart = ({ chartData }) => {
       },
       yAxis: {
         type: 'value',
+        splitArea: {
+            show: true,
+            areaStyle: {
+              color: [
+                'rgba(255, 0, 0, 0.3)',
+                'rgba(255, 127, 0, 0.3)',
+                'rgba(255, 255, 0, 0.3)',
+                'rgba(127, 255, 0, 0.3)',
+                'rgba(0, 100, 0, 0.3)',
+              ],
+            },
+          },
+          min: 0,
+          max: 50, // Maximum score per section
       },
       series: [
         {
           name: 'Values',
           type: 'line',
           data: chartData.values,
-          itemStyle: {
-            // Modify the color for each point in the line
-            normal: {
-              color: (params) => getColorForPoint(params.dataIndex, chartData.values),
-            },
-          },
           symbolSize: 8, // Size of the points
           lineStyle: {
             color: 'blue', // Line color remains constant
@@ -74,4 +66,4 @@ const LineChart = ({ chartData }) => {
   );
 };
 
-export default LineChart;
+export default LineChartWithBackground;

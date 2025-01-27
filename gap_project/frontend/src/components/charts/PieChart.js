@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import * as echarts from 'echarts';
 
 // For "Specifc Output"
+// TODO: Colors for the pie chart are yet to be changed to FIGMA
 
 // chartData structure for pie charts eg:
 // const [pieData] = useState([
