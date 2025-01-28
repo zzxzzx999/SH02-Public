@@ -31,27 +31,9 @@ function RegistedCompany() {
     }, [title]);  
 
     useEffect(() => {
-        const fetchCompanyNotes = async () => {
-            try {
-                const token = localStorage.getItem("authToken"); 
-                const response = await fetch(`http://localhost:8000/api/companies/${encodeURIComponent(companyName)}/`,{
-                    headers: {
-                        'Authorization': `Token ${token}`
-                    }
-                });
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                setCompanyNotes(data.notes);  // set notes data
-            } catch (error) {
-                console.error('Error fetching company notes:', error);
-            }
-        };
-
-        if (companyName) {
-            fetchCompanyNotes();
-        }
+        fetch(`http://localhost:8000/api/companies/?name=${encodeURIComponent(companyName)}`)
+        .then(r => r.json())
+        .then(d => setCompanyNotes(d[0].notes));
     }, [companyName]);
 
 
