@@ -5,14 +5,6 @@ from .models import Company
 # import the todo data model
 from .models import *
 
-# create a serializer class
-class IndexSerializer(serializers.ModelSerializer):
-
-    # create a meta class
-    class Meta:
-        model = Company
-        fields = ('name','numOfAnalysis','dateRegistered', 'notes')
-
 class CompanySerializer(serializers.ModelSerializer):
 
     class Meta:
