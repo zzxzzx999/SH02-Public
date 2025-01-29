@@ -60,14 +60,14 @@ function AboutUs() {
     <div className="main-content">
       <NavBar links={linksForPage1} logout={true}/> {/* Passing the links to the Navbar component */}
       <div className="about-us-search">
-        <h2 className = "search-text">Search for Company to Start GAP Analysis</h2>
+        <h2 className = "search-text">Gordon Foley Consulting</h2><br></br>
         <div className="search-box-and-results">
-          <input className="search-box" type="search" placeholder="search for company" value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={handleKeyDown}/>
+          <input className="search-box" type="search" placeholder="Search for company..." value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={handleKeyDown}/>
           <button onClick={clearSearch} className="clear-button">Clear Results</button>
           {Array.isArray(data) && data.length > 0 ? (
           data.map((company) => (
               <div className="search-results">
-                <p key={company.name}>Company name: {company.name}</p>
+                <p key={company.name}>{company.name}</p>
                 <Link to={`/new-gap-confirm?company=${company.name}`} className="start-gap-link">Start GAP Analysis</Link>
               </div>
           ))
