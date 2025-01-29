@@ -62,8 +62,8 @@ function AboutUs() {
       <div className="about-us-search">
         <h2 className = "search-text">Search for Company to Start GAP Analysis</h2>
         <div className="search-box-and-results">
-        <input className="search-box" type="search" placeholder="search for company" value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={handleKeyDown}/>
-        <button onClick={clearSearch} className="clear-button">Clear Results</button>
+          <input className="search-box" type="search" placeholder="search for company" value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={handleKeyDown}/>
+          <button onClick={clearSearch} className="clear-button">Clear Results</button>
           {Array.isArray(data) && data.length > 0 ? (
           data.map((company) => (
               <div className="search-results">
