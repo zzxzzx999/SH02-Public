@@ -9,7 +9,6 @@ const url = 'http://127.0.0.1:8000/api'
 function AboutUs() {
   const linksForPage1 = [
     { name: 'Add New Company', path: '/new-company' , image:'/add-new-company.png'},
-    { name: 'List of Company', path: '/list-of-company', image: '/company-list.png'}
   ];
 
   const [data, setData] = useState([])
