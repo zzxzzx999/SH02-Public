@@ -13,6 +13,7 @@ from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate
 from rest_framework.decorators import permission_classes
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from .serializers import *
 from .models import Company, GapAnalysis
 from .pdfGeneration import generateImprovementPlan
@@ -128,11 +129,15 @@ def getElementOverview(self, request):
     return Response(element_data)
 
 
-def get_scores(request, company_name, element_name):
-    company = Company.objects.get(name=company_name)
-    analysis= GapAnalysis.objects.filter(company=company).first()
-    if not analysis:
-            return JsonResponse({"error": "No analysis found for this company"}, status=404)
+def get_scores(request, gap_id, element_name):
+    #company = Company.objects.get(name=company_name)
+    try:
+        # use gap_id to query GapAnalysis 
+        analysis = GapAnalysis.objects.get(id=gap_id)
+    except GapAnalysis.DoesNotExist:
+        return JsonResponse({"error": f"GapAnalysis with id {gap_id} not found."}, status=404)
+
+
     gap_data = json.loads(analysis.gap_data)
     element_names = [
         "Policy", "Management", "Documented System", "Meetings", "Performance Measurement",
@@ -151,28 +156,41 @@ def get_scores(request, company_name, element_name):
         }
 
     return JsonResponse({
-        "company_name": company_name,
+        #"company_name": company_name,
+        "gap_id":gap_id,
         "element_name": element_name,
         "scores": scores
     })
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_past_analysis(request, company_name):
+    company = get_object_or_404(Company, name=company_name)
+    analyses=GapAnalysis.objects.filter(company=company).order_by("-id") 
+
+    data=[
+        {
+            "gap_id": analysis.id,
+            "date": analysis.date.strftime("%Y-%m-%d"),
+            "title":analysis.title
+        }
+        for analysis in analyses
+    ]
+    return Response({"company_name": company_name, "past_analyses": data}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def overall_scores(request, company_name):
+def overall_scores(request, gap_id):
     # Get all scores for a specified company from the database
     #analysis = GapAnalysis.objects.filter(company__name=company_name).first()
-    gap_id = request.GET.get('gap_id')
-    if not gap_id:
-        return JsonResponse({"error": "gap_id is required"}, status=400)
-    
     try:
         analysis = GapAnalysis.objects.get(id=gap_id)
     except GapAnalysis.DoesNotExist:
         return JsonResponse({"error": "Analysis not found for given gap_id"}, status=404)
+    
 
     gap_data=json.loads(analysis.gap_data)
-    company_name=analysis.company.name
+    #company_name=analysis.company.name
 
     total_score = 0
     totals = {"exceptional":0,"good":0, "basic":0,"needsImprovement":0, "unsatisfactory":0 }
@@ -191,8 +209,8 @@ def overall_scores(request, company_name):
     needs_improvement_percentage = (totals["needsImprovement"] / total) * 100
     basic_percentage = (totals["basic"] / total) * 100
 
-    return JsonResponse({
-        "company_name": company_name,
+    return Response({
+        #"company_name": company_name,
         "totals": totals,  # the total score of each category
         "percentages": {
             "unsatisfactory": round(unsatisfactory_percentage, 2),

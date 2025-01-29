@@ -43,12 +43,14 @@ def create_test_data():
         company=company,
         date="2025-01-01",  
         consultant="Tester",
+        defaults={"gap_data":json.dumps(gap_data)},
     )
 
     gap_analysis.gap_data = json.dumps(gap_data)
     gap_analysis.save()
     company.save()
     print(company.dateRegistered) 
+    print(gap_analysis.id)
     
 def populate():
     create_test_data()
