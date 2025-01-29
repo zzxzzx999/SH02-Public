@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import '../css/DetailScore.css';
 import '../css/NavBar.css';
 import NavBar from "./NavBar";
+import PieChart from "./charts/PieChart";
 
 
 function DetailScore() {
@@ -80,6 +81,14 @@ function DetailScore() {
     { name: 'Audit & Inspection Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Audit & Inspection Process')}` },
     { name: 'Improvement Planning', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Improvement Planning')}` },
 ];
+
+const [pieData] = useState([
+  { name: 'Mon', value: 120 },
+  { name: 'Tue', value: 200 },
+  { name: 'Wed', value: 150 },
+  { name: 'Thu', value: 80 },
+  { name: 'Fri', value: 70 },
+]);
   
   return (
     <div class="main-content" className="gap-intro">
@@ -116,7 +125,7 @@ function DetailScore() {
         </div>
 
         {/* Pie Chart Placeholder */}
-        <div className="pie-chart">[Chart Placeholder]</div>
+        <div className="pie-chart"><PieChart chartData={pieData}/></div>
 
         <button className="previous-button" onClick={handlePrevious}>&lt;</button>
         <button className="next-button" onClick={handleNext}>&gt;</button>
