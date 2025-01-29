@@ -144,11 +144,11 @@ def get_scores(request, company_name, element_name):
     element_scores = gap_data.get((element_index), [])
 
     scores = {
-            "exceptionalCompliance": element_scores[0],
-            "goodCompliance": element_scores[1],
-            "basicCompliance": element_scores[2],
-            "needsImprovement": element_scores[3],
-            "unsatisfactory": element_scores[4]
+        "exceptionalCompliance": sum(score for score in element_scores if score == 5),
+        "goodCompliance": sum(score for score in element_scores if score == 4),
+        "basicCompliance": sum(score for score in element_scores if score == 3),
+        "needsImprovement": sum(score for score in element_scores if score == 2),
+        "unsatisfactory": sum(score for score in element_scores if score == 1)
         }
 
     return JsonResponse({
@@ -171,12 +171,12 @@ def overall_scores(request, company_name):
 
     #Summarize the scores by category
     for scores in gap_data.values():
-        totals["exceptional"] +=scores[0]
-        totals["good"] += scores[1]
-        totals["basic"] += scores[2]
-        totals["needsImprovement"] += scores[3]
-        totals["unsatisfactory"] += scores[4]
-        total_score += sum(scores)
+        totals["exceptional"] += sum(score for score in scores if score == 5)
+        totals["good"] += sum(score for score in scores if score == 4)
+        totals["basic"] += sum(score for score in scores if score == 3)
+        totals["needsImprovement"] += sum(score for score in scores if score == 2)
+        totals["unsatisfactory"] += sum(score for score in scores if score == 1)
+        total_score += sum(scores) 
 
     unsatisfactory_percentage = (totals["unsatisfactory"] / total) * 100
     needs_improvement_percentage = (totals["needsImprovement"] / total) * 100
