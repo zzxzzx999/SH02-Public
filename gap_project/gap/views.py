@@ -4,12 +4,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Company, Score
 from rest_framework.authtoken.models import Token
-from rest_framework import generics
-from rest_framework import viewsets
-from rest_framework.views import APIView
+from rest_framework import generics, viewsets
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth import authenticate
 from rest_framework.decorators import permission_classes
 from django.contrib.auth.models import User
@@ -87,14 +84,15 @@ class PdfView(APIView):
         print(pdf_filename)
         return Response({'pdf' : pdf_filename}, status=200)
 
-
-@action(detail=True, methods=['get'], renderer_classes=(BinaryFileRenderer,))
-def download(request):
-    with open('frontend/src/components/improvementPlan.pdf', 'rb') as report:
-        return Response(
-            report.read(),
-            headers={'Content-Disposition': 'attachment; filename="file.pdf"'},
-            content_type='application/pdf')
+@api_view(['POST'])
+def create_gap(self, request):
+    data = request.data
+    serializer = QuestionsSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, staus = 201)
+    return Response(serializer.errors, status=400)
+    
 
 @permission_classes([AllowAny])
 class CompanyViewSet(viewsets.ModelViewSet):

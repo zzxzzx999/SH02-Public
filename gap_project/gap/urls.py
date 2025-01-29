@@ -9,6 +9,7 @@ app_name = 'gap'
 urlpatterns = [
 path('', views.index, name='index'),
 path('pdfplan/', views.PdfView.as_view(), name='PdfPlan'),
+path('creategap/', views.create_gap(), name='CreateGap'),
 path('api/scores/<str:company_name>/<str:element_name>/', views.get_scores, name='get_scores'),
 path('api/overall-scores/<str:company_name>/', views.overall_scores, name='overall_scores'),
 ]
