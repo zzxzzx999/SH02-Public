@@ -5,14 +5,6 @@ from .models import Company
 # import the todo data model
 from .models import *
 
-# create a serializer class
-class IndexSerializer(serializers.ModelSerializer):
-
-    # create a meta class
-    class Meta:
-        model = Company
-        fields = ('name','numOfAnalysis','dateRegistered', 'notes')
-
 class CompanySerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -20,10 +12,12 @@ class CompanySerializer(serializers.ModelSerializer):
             fields = ('name',)
         
 class GapAnalysisSerializer(serializers.ModelSerializer):
-    
+    gap_data = serializers.DictField(required=False)  #validates gap_data is a dictionary
+
     class Meta:
         model = GapAnalysis
-        fields = ['title', 'improvement_plan']
+        fields = ('title','company', 'consultant','companyRep', 'companyEmail','additionalNotes', 'gap_data', 'improvement_plan')
+
 
 class QuestionsSerializer(serializers.Serializer):
     GetOrWrite = serializers.CharField(max_length=10, required=False)

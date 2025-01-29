@@ -21,15 +21,6 @@ import os
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def index(request):
-    queryset = Company.objects.all()
-    serializer = IndexSerializer(queryset, many=True)
-
-    return Response(serializer.data, status=201)
-
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_user(request):
