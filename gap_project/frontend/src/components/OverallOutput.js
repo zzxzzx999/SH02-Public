@@ -6,6 +6,8 @@ import { useLocation } from "react-router-dom";
 import '../css/NavBar.css';
 import '../css/OverallOutput.css';
 import NavBar from "./NavBar";
+import LineChart from "./charts/LineChart";
+import BarChart from "./charts/BarChart";
 
 // registe Chart.js
 //ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
@@ -52,6 +54,18 @@ const linksForPage3 = [
   { name: 'Audit & Inspection Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Audit & Inspection Process')}` },
   { name: 'Improvement Planning', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Improvement Planning')}` },
 ];
+
+// Dummy data for bar chart (to be changed)
+const [barData] = useState({
+  categories: ['Section 1', 'Section 2', 'Section 3', 'Section 4', 'Section 5', 'Section 6', 'Section 7', 'Section 8', 'Section 9', 'Section 10'],
+  values: [2, 20, 15, 50, 34, 45, 30, 20, 10, 5],
+});
+
+// Dummy data for line chart (to be changed)
+const [lineData] = useState({
+  categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  values: [120, 200, 150, 80, 70, 110, 130],
+});
   
     return (
       // force refresh
@@ -84,13 +98,13 @@ const linksForPage3 = [
             {/* Left large chart */}
             <div className="chart-container overall-large-chart">
               <h2>Score over Time (Potential)</h2>
-              <div className="overall-output-chart-placeholder">[Chart Placeholder]</div>
+              <div className="overall-output-chart-placeholder"><LineChart chartData={lineData}/></div>
             </div>
             
             {/* Right small chart */}
             <div className="chart-container small-chart">
               <h2>Score over Time (Potential)</h2>
-              <div className="overall-output-chart-placeholder">[Chart Placeholder]</div>
+              <div className="overall-output-chart-placeholder"><BarChart chartData={barData}/></div>
             </div>
           </div>
         </div>
