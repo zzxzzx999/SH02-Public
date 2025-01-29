@@ -43,7 +43,7 @@ const PieChart = ({ chartData }) => {
     };
   }, [chartData]);
 
-  return <div ref={chartRef} style={{ width: '100%', height: '400px' }} />;
+  return <div ref={chartRef} style={{width: '26em', height: '35em', marginTop: '-3.5em', marginLeft: '0em'}} />;
 };
 
 export default PieChart;
