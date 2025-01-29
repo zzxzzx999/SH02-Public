@@ -41,12 +41,12 @@ def login_user(request):
 def company_list(request):
     if request.method == 'GET':
         companies = Company.objects.all()
-        serializer = IndexSerializer(companies, many=True)
+        serializer = CompanyListSerializer(companies, many=True)
         return Response(serializer.data)
     
     if request.method == 'POST':
         print("Incoming request data:", request.data)
-        serializer = IndexSerializer(data=request.data)
+        serializer = CompanyListSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status = 201)
