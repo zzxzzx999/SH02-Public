@@ -20,6 +20,8 @@ function ListofCompany(){
     const[filter, setFilter]= useState("");
     const [sort, setSort] = useState("");    // current sort condition
     const [searchKeyword, setSearchKeyword] = useState(""); 
+    const [scores, setScores] = useState({});
+    
     
     //backendlink
     const fetchCompanies = () => {
@@ -33,7 +35,7 @@ function ListofCompany(){
                 response.data.map((company) => ({
                     
                     name: company.name,
-                    score: company.score,
+                    score: 0,
                     dateRegistered: company.dateRegistered,
                 }))
             );
@@ -43,25 +45,67 @@ function ListofCompany(){
     
     useEffect(fetchCompanies, []);
     
+    // get the latest analysis score of each company
+    useEffect(() => {
+        // get company list
+        fetch("http://localhost:8000/api/companies")
+            .then((res) => res.json())
+            .then((data) => {
+                setCompanies(data); 
+                // get total_score of latest analysis of each company 
+                data.forEach(company => {
+                    fetch(`http://localhost:8000/api/company-latest-total-score/${encodeURIComponent(company.name)}`)
+                        .then((res) => res.json())
+                        .then((scoreData) => {
+                            setScores(prevScores => ({
+                                ...prevScores,
+                                [company.name]: scoreData.score || 0
+                            }));
+                        })
+                        .catch(error => console.error("Error fetching score:", error));
+                });
+            })
+            .catch(error => console.error("Error fetching companies:", error));
+    }, []);
     
     //filter bar
-    const filteredCompanies = companies.filter((company) => {
+    const filteredCompanies = companies.map((company) => ({
+        ...company,
+        score: scores[company.name] ?? 0, // make sure score is assigned value correctly
+    })).filter((company) => {
         const matchesFilter =
             (filter === "No GAP Analysis" && company.score <= 0) ||
             (filter === "Already Analysis" && company.score > 0) ||
             filter === ""; 
-        const matchesSearch = company.name.toLowerCase().includes(searchKeyword.toLowerCase()); // search and match logic
+        const matchesSearch = company.name.toLowerCase().includes(searchKeyword.toLowerCase());
         return matchesFilter && matchesSearch;
-      });
+    });
     
     //sort bar
     const sortedCompanies = [...filteredCompanies].sort((a, b) => {
-        if (sort === "Score High to Low") return b.score - a.score;
-        if (sort === "Score Low to High") return a.score - b.score;
-        if (sort === "Earliest Registered") return new Date(a.dateRegistered) - new Date(b.dateRegistered);
-        if (sort === "Latest Registered") return new Date(b.dateRegistered) - new Date(a.dateRegistered);
+        const scoreA = scores[a.name] ?? -1;
+        const scoreB = scores[b.name] ?? -1;
+    
+        if (sort === "Score High to Low") return scoreB - scoreA;
+        if (sort === "Score Low to High") return scoreA - scoreB;
+        
+        if (sort === "Earliest Registered") {
+            return new Date(a.dateRegistered) - new Date(b.dateRegistered);
+        }
+        if (sort === "Latest Registered") {
+            return new Date(b.dateRegistered) - new Date(a.dateRegistered);
+        }
         return 0;
-      });
+    });
+
+    useEffect(() => {
+        setCompanies((prevCompanies) =>
+            prevCompanies.map((company) => ({
+                ...company,
+                score: scores[company.name] ?? 0, 
+            }))
+        );
+    }, [scores]);
 
     //delete pop up
     const handleDeleteClick = (company) => {
@@ -214,7 +258,7 @@ function ListofCompany(){
                             </button>
                         </span>
                             
-                        <span className="score-column">{company.score}</span>
+                        <span className="score-column">{scores[company.name]|| ''}</span>
                         <span className="date-column">{new Date(company.dateRegistered).toLocaleDateString()}</span>
                         </div>
                     ))}

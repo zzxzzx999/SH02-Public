@@ -16,5 +16,6 @@ path('api/companies/', views.CompanyListView.as_view(), name='company_list'),
 path('api/companies/<str:company_name>/delete/', views.CompanyDeleteView.as_view(), name='delete_company'),
 path('api/companies/<str:company_name>/', views.company_detail, name='company_detail'),
 path('api/past_analyses/<str:company_name>/', views.get_past_analysis, name='get_past_analysis'),
+path('api/company-latest-total-score/<str:company_name>/', views.company_latest_total_score, name='company_latest_total_score'),
 ]
  

@@ -258,3 +258,28 @@ def company_detail(request, company_name):
         print("Company not found")
         return Response({"error": "Company not found."}, status=status.HTTP_404_NOT_FOUND)
     
+
+@api_view(['GET'])
+def company_latest_total_score(request, company_name):
+     # 1. 找到公司
+    company = Company.objects.filter(name__iexact=company_name.strip()).first()
+    if not company:
+        return Response({"error": "Company not found."}, status=404)
+    
+    # 2. 获取最近一次的 GapAnalysis 记录
+    latest_analysis = GapAnalysis.objects.filter(company=company).order_by('-date').first()
+    if not latest_analysis:
+        return Response({"name": company.name, "score": 0})  # 没有分析数据时返回 0
+    try:
+        # 3. 解析 gap_data
+        gap_data = json.loads(latest_analysis.gap_data)
+        total_score = sum(sum(scores) for scores in gap_data.values() if isinstance(scores, list))
+    except (json.JSONDecodeError, TypeError, ValueError) as e:
+        print(f"Error processing gap_data for company {company.name}: {e}")
+        total_score = 0 
+    
+    return Response({
+        "name": company.name,
+        "gap_id": latest_analysis.id,
+        "score": total_score
+    })
