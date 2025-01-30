@@ -54,7 +54,7 @@ h2 {
 .search-box-and-results input {
     padding: 10px 15px; 
     border: 2px solid #ddd; 
-    border-radius: 25px; 
+    border-radius: 30px; 
     font-size: 16px;
     width: 400px; 
     margin-right: 10px; 
@@ -71,7 +71,7 @@ h2 {
     background-color: #ff4c4c; 
     color: white;
     border: none;
-    border-radius: 25px;
+    border-radius: 30px;
     cursor: pointer;
     font-size: 14px;
     transition: background 0.3s ease, transform 0.2s ease;
@@ -88,7 +88,7 @@ h2 {
     align-items: center;
     gap: 25px;
     background-color: white;
-    border-radius: 12px;
+    border-radius: 30px;
     margin-top: 10px;
     padding: 5px;
     border-color: #5B5B5B;
@@ -105,13 +105,14 @@ h2 {
     font-weight: 500;
     color: #333;
     margin: 0;
+    padding-left: 10px;
   }
 
   .start-gap-link {
     background-color: #50a7d3;
     color: white;
     padding: 8px 14px;
-    border-radius: 20px;
+    border-radius: 30px;
     text-decoration: none;
     font-size: 14px;
     transition: background 0.3s ease;
