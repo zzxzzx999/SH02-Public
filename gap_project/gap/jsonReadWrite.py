@@ -1,4 +1,6 @@
 import json
+import os
+from django.conf import settings
 
 def getAnswer(element, question, gapAnalysis):
     return json.loads(gapAnalysis.gap_data)[str(element)][question-1]
