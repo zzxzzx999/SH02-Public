@@ -74,7 +74,7 @@
     align-items: center;
     font-weight: bold;
     color: white;
-    font-size: 90%;
+    font-size: 1.2vw;
 }
 
 .upper span {
@@ -90,7 +90,7 @@
     justify-content: center;
     align-items: center;
     background-color: white;
-    font-size: 1.2rem;
+    font-size: 1.4vw;
     font-weight: bold;
     color: black;
 }
@@ -130,7 +130,7 @@
     bottom: 20px; 
     left: 20px; 
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 2vw;
     color: grey;
     border-color: #4691B7;
     cursor: pointer;
@@ -142,7 +142,7 @@
     bottom: 20px; 
     right: 20px; 
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 2vw;
     color: grey;
     border-color: #4691B7;
     cursor: pointer;

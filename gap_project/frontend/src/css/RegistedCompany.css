@@ -30,7 +30,7 @@
   }
 
   .left-part h2 {
-    font-size: 2.5vw;
+    font-size: 2vw;
     margin-bottom: 5%;
   }
 
@@ -42,6 +42,7 @@
     width: 100%;
     word-wrap: break-word; /* line break*/
     white-space: normal;
+    font-size: 1vw;
     
 }
   
@@ -52,7 +53,7 @@
 }
 
 .past-gap h2 {
-  font-size: 2vw;
+  font-size: 1.8vw;
   white-space: normal;
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -67,6 +68,7 @@
     padding: 10px;
     margin-top: auto; 
     margin-bottom: auto; 
+    font-size: 1vw;
 }
   .analysis-list ul {
     margin-top: 0;
@@ -99,7 +101,7 @@
 }
 
 .overview-bubble h1 {
-    font-size: 2.8vw;
+    font-size: 2.5vw;
     margin: 0 auto;
     text-align: center;
 }
@@ -160,7 +162,7 @@
   .chart-placeholder h2 {
     margin-top: 0;
     margin-bottom: 2%;
-    font-size: 1.6vw;
+    font-size: 1.5vw;
   }
   
   .large-chart {
@@ -189,7 +191,7 @@
     padding: 8px 16px;
     border-radius: 15px;
     cursor: pointer;
-    font-size: 1.5rem;
+    font-size: 1.6vw;
     margin-top: 2%;
    
   }

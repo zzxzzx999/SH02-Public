@@ -29,15 +29,13 @@
 
 /*for new company title*/
 .bubble-container h2 {
-    font-size: 2rem;
+    font-size: 2vw;
     margin: 2%;
   }
-#company-name {
-    font-size: large;
-}
+
 
 textarea{
-    font-size: large;
+    font-size: 1.2vw;
     resize: none;
 }
 
@@ -48,6 +46,7 @@ textarea{
     border: 2px solid #dcdcdc;
     margin-bottom:20px;
     margin-top: 20px;
+    font-size: 1.2vw;
 }
 
 .bubble-container textarea{

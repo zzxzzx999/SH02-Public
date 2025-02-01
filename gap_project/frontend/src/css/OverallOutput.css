@@ -33,7 +33,7 @@
   }
   .score-block.total-score {
     flex: 1.5; /* Proportion */
-    font-size: 1.5em; 
+    font-size: 1.3vw; 
   }
 
     .score-block.unsatisfactory,
@@ -44,12 +44,13 @@
 
   .score-block span {
     display: block;
-    font-size: 1.5vw;
+    font-size: 1.3vw;
   }
   
 .total-score span, .total-score h2{
-    font-size: 2.5vw;
+    font-size: 2vw;
     font-weight: 600;
+    margin-bottom: 1%;
 }
 
   .score-block.unsatisfactory h2,
@@ -62,7 +63,7 @@
       height: 40%;
       border-radius: 10px;
       color: white;
-      font-size: 1.7vw;
+      font-size: 1.4vw;
       margin: 0; 
       margin-bottom: 10%;
   }
@@ -121,7 +122,7 @@
   .overall-large-chart h2, .small-chart h2{
     margin-top: 1%;
     margin-bottom: 1%;
-    font-size: 2vw;
+    font-size: 1.7vw;
   }
 
   .overall-output-chart-placeholder {
