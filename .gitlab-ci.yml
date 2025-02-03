@@ -1,28 +1,35 @@
 stages:
-#  - lint
+  - lint
   - test
   - security
   - deploy
 
-#lint: # check code styles and type hints
-#  stage: lint
-#  image: python:3.9
-#  before_script:
-#    - apt-get update
-#    - apt-get install -y python3 python3-pip
-#  script:
-#    - pip install flake8 mypy
-#    - flake8 .
-#    - mypy .
+lint-backend:
+  stage: lint
+  image: python:3.12
+  before_script:
+    # - apt-get update
+    # - apt-get install -y python3 python3-pip
+    - pip install flake8 mypy
+  script:
+    - flake8 . # Formatting issues, unused imports, indentation errors
+    - mypy . # Type mismatches, incorrect return types
+
+lint-frontend:
+  stage: lint
+  image: node:22.11
+  script:
+    - npm install -g eslint
+    - npx eslint . # --max-warnings=0 #(This makes the pipeline fail if styling errors detected)
 
 test:
   stage: test
-  image: python:3.9
+  image: python:3.12
   services:
     - postgres:latest
   variables:
     POSTGRES_DB: test_db
-    POSTGRES_USER: notadmin
+    POSTGRES_USER: GAPAdmin
     POSTGRES_PASSWORD: 1
   before_script:
     - apt-get update
