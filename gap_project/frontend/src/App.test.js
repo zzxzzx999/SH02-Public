@@ -2,8 +2,8 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './components/App';
 
-test('renders learn react link', () => {
+test('renders login button', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  const loginButton = screen.getByText(/log in/i);  // Looks for "LOG IN" button
+  expect(loginButton).toBeInTheDocument();
 });
