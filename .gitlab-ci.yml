@@ -21,7 +21,7 @@ lint-backend:
     - cd "$BACKEND_DIR"
     - flake8 . > "$DJANGO_LINT_FLAKE8_REPORT" --exit-zero || echo "Flake8 issues found." 
     # Formatting issues, unused imports, indentation errors
-    - mypy . > "$DJANGO_LINT_MYPY_REPORT" --exit-zero || echo "Mypy issues found." 
+    - mypy . > "$DJANGO_LINT_MYPY_REPORT" || echo "Mypy issues found." 
     # Type mismatches, incorrect return types
 
 lint-frontend:
