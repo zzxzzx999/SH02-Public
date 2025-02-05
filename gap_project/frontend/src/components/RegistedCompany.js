@@ -17,7 +17,7 @@ function RegistedCompany() {
     const companyName = params.get('company');
     const [title, setTitle] = useState("Overview");
     const [gapId, setGapId] = useState(null);
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const navigate = useNavigate(); 
     const [companyNotes, setCompanyNotes]=useState('')
@@ -42,19 +42,35 @@ function RegistedCompany() {
     }, [companyName]);
 
 
-    useEffect(()=>{
+    useEffect(() => {
         fetch(`http://localhost:8000/api/past_analyses/${encodeURIComponent(companyName)}`)
-            .then(response =>response.json())
-            .then(data => setAnalyses(data.past_analyses))
+            .then(response => response.json())
+            .then(data => {
+                setAnalyses(data.past_analyses);
+                if (data.past_analyses.length > 0) {
+                    const latestAnalysis = data.past_analyses[0];
+                    if (!searchParams.get("gap_id")) {
+                        // Set the latest analysis as default
+                        setSearchParams({ company: companyName, gap_id: latestAnalysis.gap_id });
+                        setTitle(`Overview (${latestAnalysis.date})`); // Set title for the latest analysis
+                        setGapId(latestAnalysis.gap_id);
+                    }
+                }
+            })
             .catch(error => console.error("Error fetching data:", error));
-    }, [companyName]);
+    }, [companyName, searchParams, setSearchParams]);
 
     useEffect(() => {
         const currentGapId = searchParams.get("gap_id");
         if (currentGapId) {
             const selectedAnalysis = analyses.find(a => a.gap_id === parseInt(currentGapId, 10));
             if (selectedAnalysis) {
-                setTitle(selectedAnalysis.date);
+                // Check if the selected analysis is the latest one
+                if (analyses.length > 0 && selectedAnalysis.gap_id === analyses[0].gap_id) {
+                    setTitle(`Overview (${selectedAnalysis.date})`); // Latest analysis
+                } else {
+                    setTitle(selectedAnalysis.date); // Other analyses
+                }
                 setGapId(selectedAnalysis.gap_id); // save gap_id
             }
         } else {
@@ -96,8 +112,15 @@ const [lineBgData] = useState({
                 <h2>Past GAP Analysis</h2>
                     <div className="analysis-list">
                         <ul>
-                            <li><Link to={`/registed-company?company=${encodeURIComponent(companyName)}`}>Overview</Link></li>
-                            {analyses.map(analysis => (
+                        {analyses.length > 0 && (
+                            <li>
+                                <Link to={`/registed-company?company=${encodeURIComponent(companyName)}&gap_id=${analyses[0].gap_id}`}
+                                   >
+                                    Overview ({analyses[0].date})  
+                                </Link>
+                            </li>
+                        )}
+                            {analyses.slice(1).map(analysis => (
                                 <li key={analysis.gap_id}>
                                     <Link to={`/registed-company?company=${encodeURIComponent(companyName)}&gap_id=${analysis.gap_id}`}
                                     onClick={() => setTitle(analysis.date)} >
@@ -144,11 +167,9 @@ const [lineBgData] = useState({
                         <div className="chart-box"><LineChartWithBackground chartData={lineBgData}/></div>
                     </div>
                     {/* View Full Analysis */}
-                    {title !== 'Overview' && (
-                        <div className="full-analysis">
+                    <div className="full-analysis">
                         <button onClick={() => navigate(`/overall-output?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}`)}>View Full Analysis</button> {/*&gap_id=${encodeURIComponent(gapId)} */}
-                    </div> 
-                    )}
+                    </div>
                 </div>   
             </main>
         </div> 
