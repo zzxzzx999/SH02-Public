@@ -63,7 +63,7 @@ function RegistedCompany() {
 
     return(
         <div class="main-content">
-        <NavBar links={linksForPage3} />
+        <NavBar links={linksForPage3}  logout={true}/>
         <div className="overview-container">
             <aside className="left-part">
                 <h2>{companyName}</h2>
