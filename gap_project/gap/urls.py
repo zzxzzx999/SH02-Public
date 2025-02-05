@@ -7,7 +7,6 @@ from . import views
 app_name = 'gap'
 
 urlpatterns = [
-path('', views.index, name='index'),
 path('pdfplan/', views.PdfView.as_view(), name='PdfPlan'),
 path('api/scores/<int:gap_id>/<str:element_name>/', views.get_scores, name='get_scores'),
 path('api/overall-scores/<int:gap_id>/', views.overall_scores, name='overall_scores'),
