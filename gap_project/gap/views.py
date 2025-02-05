@@ -194,23 +194,22 @@ def overall_scores(request, gap_id):
 
     total_score = 0
     totals = {"exceptional":0,"good":0, "basic":0,"needsImprovement":0, "unsatisfactory":0 }
-    total=600
+    total_number=120
 
-    #Summarize the scores by category
+    #Summarize the number of scores by category
     for scores in gap_data.values():
-        totals["exceptional"] += sum(score for score in scores if score == 5)
-        totals["good"] += sum(score for score in scores if score == 4)
-        totals["basic"] += sum(score for score in scores if score == 3)
-        totals["needsImprovement"] += sum(score for score in scores if score == 2)
-        totals["unsatisfactory"] += sum(score for score in scores if score == 1)
+        totals["exceptional"] += sum(1 for score in scores if score == 5)
+        totals["good"] += sum(1 for score in scores if score == 4)
+        totals["basic"] += sum(1 for score in scores if score == 3)
+        totals["needsImprovement"] += sum(1 for score in scores if score == 2)
+        totals["unsatisfactory"] += sum(1 for score in scores if score == 1)
         total_score += sum(scores) 
 
-    unsatisfactory_percentage = (totals["unsatisfactory"] / total) * 100
-    needs_improvement_percentage = (totals["needsImprovement"] / total) * 100
-    basic_percentage = (totals["basic"] / total) * 100
+    unsatisfactory_percentage = (totals["unsatisfactory"] / total_number) * 100
+    needs_improvement_percentage = (totals["needsImprovement"] / total_number) * 100
+    basic_percentage = (totals["basic"] / total_number) * 100
 
     return Response({
-        #"company_name": company_name,
         "totals": totals,  # the total score of each category
         "percentages": {
             "unsatisfactory": round(unsatisfactory_percentage, 2),
