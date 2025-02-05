@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from .models import Company
 from rest_framework.authtoken.models import Token
 from rest_framework import generics
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -13,6 +13,7 @@ from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate
 from rest_framework.decorators import permission_classes
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from .serializers import *
 from .models import Company, GapAnalysis
 from .pdfGeneration import generateImprovementPlan
@@ -119,12 +120,15 @@ def getElementOverview(self, request):
     return Response(element_data)
 
 
-@csrf_exempt
-def get_scores(request, company_name, element_name):
-    company = Company.objects.get(name=company_name)
-    analysis= GapAnalysis.objects.filter(company=company).first()
-    if not analysis:
-            return JsonResponse({"error": "No analysis found for this company"}, status=404)
+def get_scores(request, gap_id, element_name):
+    #company = Company.objects.get(name=company_name)
+    try:
+        # use gap_id to query GapAnalysis 
+        analysis = GapAnalysis.objects.get(id=gap_id)
+    except GapAnalysis.DoesNotExist:
+        return JsonResponse({"error": f"GapAnalysis with id {gap_id} not found."}, status=404)
+
+
     gap_data = json.loads(analysis.gap_data)
     element_names = [
         "Policy", "Management", "Documented System", "Meetings", "Performance Measurement",
@@ -143,38 +147,60 @@ def get_scores(request, company_name, element_name):
         }
 
     return JsonResponse({
-        "company_name": company_name,
+        #"company_name": company_name,
+        "gap_id":gap_id,
         "element_name": element_name,
         "scores": scores
     })
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_past_analysis(request, company_name):
+    company = get_object_or_404(Company, name=company_name)
+    analyses=GapAnalysis.objects.filter(company=company).order_by("-id") 
+
+    data=[
+        {
+            "gap_id": analysis.id,
+            "date": analysis.date.strftime("%Y-%m-%d"),
+            "title":analysis.title
+        }
+        for analysis in analyses
+    ]
+    return Response({"company_name": company_name, "past_analyses": data}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def overall_scores(request, company_name):
+def overall_scores(request, gap_id):
     # Get all scores for a specified company from the database
-    analysis = GapAnalysis.objects.filter(company__name=company_name).first()
+    #analysis = GapAnalysis.objects.filter(company__name=company_name).first()
+    try:
+        analysis = GapAnalysis.objects.get(id=gap_id)
+    except GapAnalysis.DoesNotExist:
+        return JsonResponse({"error": "Analysis not found for given gap_id"}, status=404)
+    
+
     gap_data=json.loads(analysis.gap_data)
+    #company_name=analysis.company.name
 
     total_score = 0
     totals = {"exceptional":0,"good":0, "basic":0,"needsImprovement":0, "unsatisfactory":0 }
-    total=600
+    total_number=120
 
-    #Summarize the scores by category
+    #Summarize the number of scores by category
     for scores in gap_data.values():
-        totals["exceptional"] += sum(score for score in scores if score == 5)
-        totals["good"] += sum(score for score in scores if score == 4)
-        totals["basic"] += sum(score for score in scores if score == 3)
-        totals["needsImprovement"] += sum(score for score in scores if score == 2)
-        totals["unsatisfactory"] += sum(score for score in scores if score == 1)
+        totals["exceptional"] += sum(1 for score in scores if score == 5)
+        totals["good"] += sum(1 for score in scores if score == 4)
+        totals["basic"] += sum(1 for score in scores if score == 3)
+        totals["needsImprovement"] += sum(1 for score in scores if score == 2)
+        totals["unsatisfactory"] += sum(1 for score in scores if score == 1)
         total_score += sum(scores) 
 
-    unsatisfactory_percentage = (totals["unsatisfactory"] / total) * 100
-    needs_improvement_percentage = (totals["needsImprovement"] / total) * 100
-    basic_percentage = (totals["basic"] / total) * 100
+    unsatisfactory_percentage = (totals["unsatisfactory"] / total_number) * 100
+    needs_improvement_percentage = (totals["needsImprovement"] / total_number) * 100
+    basic_percentage = (totals["basic"] / total_number) * 100
 
-    return JsonResponse({
-        "company_name": company_name,
+    return Response({
         "totals": totals,  # the total score of each category
         "percentages": {
             "unsatisfactory": round(unsatisfactory_percentage, 2),
@@ -182,4 +208,67 @@ def overall_scores(request, company_name):
             "basic": round(basic_percentage, 2),
         },
         "total_score": total_score,  # the total of marks
+    })
+
+class CompanyListView(APIView):
+    def get(self, request):
+        companies = Company.objects.all()
+        serializer = CompanySerializer(companies, many=True)
+        return Response(serializer.data)
+
+class CompanyDeleteView(APIView):
+    def delete(self, request, company_name):
+        try:
+            company = Company.objects.get(name=company_name)
+            company.delete()  
+            return Response({"message": "Company deleted successfully!"}, status=status.HTTP_200_OK)
+        except Company.DoesNotExist:
+            return Response({"error": "Company not found"}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['DELETE'])
+def delete_company(request, company_name):
+    try:
+        company = Company.objects.get(name=company_name)
+        company.delete()
+        return Response({"message": f"Company {company_name} deleted successfully."}, status=200)
+    except Company.DoesNotExist:
+        return Response({"error": "Company not found."}, status=404)
+    
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def company_detail(request, company_name):
+    print(f"Looking for company with name: '{company_name}'")  
+    try:
+        company = Company.objects.get(name__iexact=company_name.strip())  # ignore front and back space of string
+        print(f"Found company: {company.name}")  
+        serializer = CompanySerializer(company)
+        return Response(serializer.data)
+    except Company.DoesNotExist:
+        print("Company not found")
+        return Response({"error": "Company not found."}, status=status.HTTP_404_NOT_FOUND)
+    
+
+@api_view(['GET'])
+def company_latest_total_score(request, company_name):
+     # find the company
+    company = Company.objects.filter(name__iexact=company_name.strip()).first()
+    if not company:
+        return Response({"error": "Company not found."}, status=404)
+    
+    # get the most recent GapAnalysis record
+    latest_analysis = GapAnalysis.objects.filter(company=company).order_by('-date').first()
+    if not latest_analysis:
+        return Response({"name": company.name, "score": 0})  # if no analysisi data return 0
+    try:
+        gap_data = json.loads(latest_analysis.gap_data)
+        total_score = sum(sum(scores) for scores in gap_data.values() if isinstance(scores, list))
+    except (json.JSONDecodeError, TypeError, ValueError) as e:
+        print(f"Error processing gap_data for company {company.name}: {e}")
+        total_score = 0 
+    
+    return Response({
+        "name": company.name,
+        "gap_id": latest_analysis.id,
+        "score": total_score
     })

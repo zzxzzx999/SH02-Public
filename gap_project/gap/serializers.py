@@ -16,7 +16,7 @@ class CompanySerializer(serializers.ModelSerializer):
 
     class Meta:
             model = Company
-            fields = ('name',)
+            fields = ('name','dateRegistered', 'notes')
         
 class GapAnalysisSerializer(serializers.ModelSerializer):
     gap_data = serializers.DictField(required=False)  #validates gap_data is a dictionary

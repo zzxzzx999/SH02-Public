@@ -23,13 +23,16 @@ function OverallOutput() {
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const companyName = params.get('company');
+    const gapId = params.get('gap_id')
 
     // cal total score
     useEffect(() => {
-      axios.get(`http://localhost:8000/api/overall-scores/${companyName}/`)
+      if (!gapId) return;
+
+      axios.get(`http://localhost:8000/api/overall-scores/${gapId}/`)
         .then((response) => {
           console.log( response.data);
-          const { totals, percentages, total_score } = response.data;
+          const { percentages, total_score } = response.data;
           setTotalScore(total_score)
           setPercentages(percentages)
         })
@@ -37,22 +40,22 @@ function OverallOutput() {
         .catch((error) => {
           console.error("Error fetching categories:", error);
         });
-}, [companyName]);
+}, [companyName,gapId]);
 
 const linksForPage3 = [
-  { name: 'Previous Page', path: `/registed-company?company=${encodeURIComponent(companyName)}`, image: '/back-button.png' },
-  { name: 'Policy', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Policy')}` },
-  { name: 'Management', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Management')}` },
-  { name: 'Documented System', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Documented System')}` },
-  { name: 'Meetings', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Meeting')}` },
-  { name: 'Performance Measurement', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Performance Measurement')}` },
-  { name: 'Committee & Representatives', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Committee & Representatives')}` },
-  { name: 'Investigation Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Investigation Process')}` },
-  { name: 'Incident Reporting', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Incident Reporting')}` },
-  { name: 'Training Plan', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Training Plan')}` },
-  { name: 'Risk Management Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Risk Management Process')}` },
-  { name: 'Audit & Inspection Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Audit & Inspection Process')}` },
-  { name: 'Improvement Planning', path: `/detail-score?company=${encodeURIComponent(companyName)}&title=${encodeURIComponent('Improvement Planning')}` },
+  { name: 'Registed Company', path: `/registed-company?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}`, image: '/back-button.png' },
+  { name: 'Policy', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Policy')}` },
+  { name: 'Management', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Management')}` },
+  { name: 'Documented System', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Documented System')}` },
+  { name: 'Meetings', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Meetings')}` },
+  { name: 'Performance Measurement', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Performance Measurement')}` },
+  { name: 'Committee & Representatives', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Committee & Representatives')}` },
+  { name: 'Investigation Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Investigation Process')}` },
+  { name: 'Incident Reporting', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Incident Reporting')}` },
+  { name: 'Training Plan', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Training Plan')}` },
+  { name: 'Risk Management Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Risk Management Process')}` },
+  { name: 'Audit & Inspection Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Audit & Inspection Process')}` },
+  { name: 'Improvement Planning', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Improvement Planning')}` },
 ];
 
 // Dummy data for bar chart (to be changed)
