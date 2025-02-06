@@ -1,7 +1,9 @@
+import reactPlugin from "eslint-plugin-react";
+
 export default [
   {
     files: ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
-    plugins: ["react"], // Add the react plugin
+    plugins: {react: reactPlugin},
     extends: ["eslint:recommended", "plugin:react/recommended"], // Extend recommended rules
     rules: {
       "no-unused-vars": "warn",
