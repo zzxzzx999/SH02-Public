@@ -32,6 +32,7 @@ function Elements() {
   const [answers, setAnswers] = useState({}); 
   const [improvementPlan, setImprovementPlan] = useState({});
   const [gapID, setGapID] = useState([]);
+  const [error, setError] = useState('');
 
 
   useEffect(() => {

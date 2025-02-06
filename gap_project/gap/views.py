@@ -61,9 +61,7 @@ def create_gap(request):
     company_rep = request.data.get('company_rep')
     company_email = request.data.get('company_email')
     additional_notes = request.data.get('additional_notes')
-
-    company_instance = Company.objects.get(name=company_name)
-
+    
     try:
         company_instance = Company.objects.get(name=company_name)
         gap = GapAnalysis.objects.create(
@@ -73,7 +71,9 @@ def create_gap(request):
             companyEmail=company_email, 
             additionalNotes=additional_notes
         )
+        company_instance.current_gap = True
         serializer = GapAnalysisSerializer(gap)
+        company_instance.save()
 
         return Response(serializer.data, status=201)
 
