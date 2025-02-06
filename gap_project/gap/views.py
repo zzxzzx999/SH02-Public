@@ -53,6 +53,32 @@ def company_list(request):
             return Response(serializer.data, status = 201)
         return Response(serializer.errors, status=400)
 
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def create_gap(request):
+    company_name = request.data.get('company_name')
+    consultant = request.data.get('consultant')
+    company_rep = request.data.get('company_rep')
+    company_email = request.data.get('company_email')
+    additional_notes = request.data.get('additional_notes')
+
+    company_instance = Company.objects.get(name=company_name)
+
+    try:
+        company_instance = Company.objects.get(name=company_name)
+        gap = GapAnalysis.objects.create(
+            company=company_instance, 
+            consultant=consultant, 
+            companyRep=company_rep,
+            companyEmail=company_email, 
+            additionalNotes=additional_notes
+        )
+        serializer = GapAnalysisSerializer(gap)
+
+        return Response(serializer.data, status=201)
+
+    except Company.DoesNotExist:
+        return Response({"error": "Company not found"}, status=404)
 
 class PdfView(APIView):
     
