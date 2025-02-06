@@ -31,6 +31,21 @@ function Elements() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({}); 
   const [improvementPlan, setImprovementPlan] = useState({});
+  const [gapID, setGapID] = useState([]);
+
+
+  useEffect(() => {
+    const getGapID = async () => {
+        try {
+            const response = await axios.get("http://127.0.0.1:8000/api/get-gap-instance/");
+            setGapID(response.data.gap_id);
+        } catch (err) {
+            setError("Error fetching gap analysis ID.");
+            console.error(err);
+        }
+      };
+    getGapID();
+  }, []);
 
   useEffect(() => {
     const savedAnswers = localStorage.getItem('answers');
