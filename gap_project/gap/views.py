@@ -136,9 +136,12 @@ def getQuestionOrWriteAnswer(request):
 
     else:
         print("Incoming request data:", data)
-        gapAnalysis = GapAnalysis.objects.get(id = data.get("id"))
-        writeAnswer(data.get("answer"), data.get("set"), data.get("question"), gapAnalysis)
-        serializer = QuestionsSerializer(data=gapAnalysis)
+        gap = GapAnalysis.objects.get(id = data.get("id"))
+        gap.gap_data = data.get("answers")
+        gap.improvement_plan = data.get("improvementPlan")
+        gap.save()
+        serializer = GapAnalysisSerializer(gap, data={"gap_data": gap.gap_data}, partial=True)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status = 201)
