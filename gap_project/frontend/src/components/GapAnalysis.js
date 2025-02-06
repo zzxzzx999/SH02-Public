@@ -5,13 +5,15 @@ import '../css/GapAnalysis.css';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
+let gapID = null
 
 function Elements() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const set = parseInt(params.get('element'));
   const companyName = params.get('company');
-  const gapID = params.get('gapid');
+
+  console.log("gapid: " + gapID);
 
   const links = [
     { name: 'Policy', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=0`, image: '' },
@@ -108,10 +110,9 @@ function Elements() {
 
   // Send data to API to backend
   const submitAnswersToAPI = async (clear) => {
-    localStorage.clear(answers);
-    localStorage.clear(improvementPlan);
-    localStorage.clear(companyName);
-    console.log(gapID);
+    //localStorage.clear(answers);
+    //localStorage.clear(improvementPlan);
+    //localStorage.clear(companyName);
     try {
       await axios.post("http://127.0.0.1:8000/api/getQuestionOrWriteAnswer/", {
         GetOrWrite: "WRITE",
@@ -436,7 +437,6 @@ function GapAnalysis() {
   const params = new URLSearchParams(location.search);
   const companyName = params.get('company');
 
-  const [gapID, setGapID] = useState([]);
   const [error, setError] = useState('');
   const [links, setLinks] = useState([])
 
@@ -444,21 +444,22 @@ function GapAnalysis() {
     const getGapID = async () => {
         try {
             const response = await axios.get(`http://127.0.0.1:8000/api/get-latest-gap/?company_name=${companyName}`);
-            setGapID(response.data.gap_id);
+            gapID = response.data.gap_id;
+            console.log(gapID);
 
             const newLinks = [
               { name: 'Policy', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=0&gapid=${encodeURIComponent(gapID)}`, image: '' },
               { name: 'Management', path: `/gap-analysis/management?company=${encodeURIComponent(companyName)}&element=1&gapid=${encodeURIComponent(gapID)}`, image: '' },
               { name: 'Documented System', path: `/gap-analysis/documented-system?company=${encodeURIComponent(companyName)}&element=2&gapid=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Meetings', path: `/gap-analysis/meetings?company=${encodeURIComponent(companyName)}&element=3gapid=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Meetings', path: `/gap-analysis/meetings?company=${encodeURIComponent(companyName)}&element=3&gapid=${encodeURIComponent(gapID)}`, image: '' },
               { name: 'Performance Measurement', path: `/gap-analysis/performance-measurement?company=${encodeURIComponent(companyName)}&element=4&gapid=${encodeURIComponent(gapID)}`, image: '' },
               { name: 'Committee & Representatives', path: `/gap-analysis/committee-and-representatives?company=${encodeURIComponent(companyName)}&element=5&gapid=${encodeURIComponent(gapID)}`, image: '' },
               { name: 'Investiagtion Process', path: `/gap-analysis/investigation-process?company=${encodeURIComponent(companyName)}&element=6&gapid=${encodeURIComponent(gapID)}`, image: '' },
               { name: 'Incident Reporting', path: `/gap-analysis/incident-reporting?company=${encodeURIComponent(companyName)}&element=7&gapid=${encodeURIComponent(gapID)}`, image: '' },
               { name: 'Training Plan', path: `/gap-analysis/training-plan?company=${encodeURIComponent(companyName)}&element=8&gapid=${encodeURIComponent(gapID)}`, image: '' },
               { name: 'Risk Management Process', path: `/gap-analysis/risk-management-process?company=${encodeURIComponent(companyName)}&element=9&gapid=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Audit & Inspection Process', path: `/gap-analysis/audit-and-inspection-process?company=${encodeURIComponent(companyName)}&element=10&gapid=${encodeURIComponent(gapID)}v`, image: '' },
-              { name: 'Improvement Planning', path: `/gap-analysis/policy?improvement-planning=${encodeURIComponent(companyName)}&element=11&gapid=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Audit & Inspection Process', path: `/gap-analysis/audit-and-inspection-process?company=${encodeURIComponent(companyName)}&element=10&gapid=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Improvement Planning', path: `/gap-analysis/improvement-planning?company=${encodeURIComponent(companyName)}&element=11&gapid=${encodeURIComponent(gapID)}`, image: '' },
             ];
             setLinks(newLinks);
         } catch (err) {
@@ -467,7 +468,9 @@ function GapAnalysis() {
         }
       };
       getGapID();
+
   }, []);
+
 
   return (
     <div>
