@@ -157,7 +157,10 @@ def get_scores(request, gap_id, element_name):
 @permission_classes([AllowAny])
 def get_past_analysis(request, company_name):
     company = get_object_or_404(Company, name=company_name)
-    analyses=GapAnalysis.objects.filter(company=company).order_by("-id") 
+    analyses=GapAnalysis.objects.filter(company=company).order_by("-date") 
+    # Get the most recent analysis
+    most_recent_analysis = analyses.first()
+    recent_title = f"Overview ({most_recent_analysis.date.strftime('%Y-%m-%d')})" if most_recent_analysis else "Overview"
 
     data=[
         {
@@ -167,7 +170,7 @@ def get_past_analysis(request, company_name):
         }
         for analysis in analyses
     ]
-    return Response({"company_name": company_name, "past_analyses": data}, status=status.HTTP_200_OK)
+    return Response({"company_name": company_name, "past_analyses": data, "recent_title": recent_title}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])

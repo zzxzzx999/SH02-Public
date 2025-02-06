@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import '../css/ListofCompany.css';
 import '../css/NavBar.css';
 import NavBar from './NavBar';
@@ -21,6 +21,9 @@ function ListofCompany(){
     const [sort, setSort] = useState("");    // current sort condition
     const [searchKeyword, setSearchKeyword] = useState(""); 
     const [scores, setScores] = useState({});
+    const [searchParams] = useSearchParams();
+    const [gapId, setGapId] = useState(null);
+    const [analyses, setAnalyses] = useState([])
     
     
     //backendlink
@@ -44,6 +47,24 @@ function ListofCompany(){
       };
     
     useEffect(fetchCompanies, []);
+
+     // Fetch the latest analysis for each company
+     useEffect(() => {
+        companies.forEach((company) => {
+            fetch(`http://localhost:8000/api/past_analyses/${encodeURIComponent(company.name)}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.past_analyses.length > 0) {
+                        const latestAnalysis = data.past_analyses[0]; // Get the latest analysis
+                        setAnalyses((prevAnalyses) => ({
+                            ...prevAnalyses,
+                            [company.name]: latestAnalysis, // Store the latest analysis for this company
+                        }));
+                    }
+                })
+                .catch((error) => console.error("Error fetching analysis:", error));
+        });
+    }, [companies]);
     
     // get the latest analysis score of each company
     useEffect(() => {
@@ -106,6 +127,19 @@ function ListofCompany(){
             }))
         );
     }, [scores]);
+
+
+    useEffect(() => {
+        const currentGapId = searchParams.get("gap_id");
+        if (currentGapId) {
+            const selectedAnalysis = analyses.find(a => a.gap_id === parseInt(currentGapId, 10));
+            if (selectedAnalysis) {
+                setGapId(selectedAnalysis.gap_id); // save gap_id
+            }
+        } else {
+            setGapId(null);
+        }
+    }, [searchParams, analyses]);
 
     //delete pop up
     const handleDeleteClick = (company) => {
@@ -247,19 +281,20 @@ function ListofCompany(){
                     {sortedCompanies.map((company) => (
                         <div key={company.name} className="table-row">
                         <span className="company-name">
-                            <Link to={`/registed-company?company=${company.name}`}>{company.name}</Link>
-                        </span>
-                        <span className="delete-column">
-                        <button
-                            className="delete-button"
-                            onClick={() => handleDeleteClick(company)}
-                           >
-                            Delete
-                            </button>
+                        <Link to={`/registed-company?company=${encodeURIComponent(company.name)}&gap_id=${analyses[company.name]?.gap_id || ""}`}
+                                >{company.name}</Link>
                         </span>
                             
                         <span className="score-column">{scores[company.name]|| ''}</span>
                         <span className="date-column">{new Date(company.dateRegistered).toLocaleDateString()}</span>
+                        <span className="delete-column">
+                            <button
+                                className="delete-button"
+                                onClick={() => handleDeleteClick(company)}
+                            >
+                                Delete
+                            </button>
+                        </span>
                         </div>
                     ))}
                     
