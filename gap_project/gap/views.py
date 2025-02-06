@@ -79,6 +79,19 @@ def create_gap(request):
 
     except Company.DoesNotExist:
         return Response({"error": "Company not found"}, status=404)
+    
+@api_view(['GET'])
+def get_latest_gap(request):
+    company_name = request.GET.get('company_name')
+    
+    if not company_name:
+        return Response({"error": "Company name is required."}, status=400)
+    
+    latest_gap = GapAnalysis.objects.filter(company=company_name).order_by('-id').first()
+
+    if latest_gap:
+        return Response({"gap_id": latest_gap.id})
+    return Response({"error": "No gap analysis found for this company."}, status=404)
 
 class PdfView(APIView):
     

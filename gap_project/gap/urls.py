@@ -12,6 +12,7 @@ path('api/scores/<int:gap_id>/<str:element_name>/', views.get_scores, name='get_
 path('api/overall-scores/<int:gap_id>/', views.overall_scores, name='overall_scores'),
 path('api/getQuestionOrWriteAnswer/', views.getQuestionOrWriteAnswer, name='getQuestionOrWriteAnswer'),
 path('api/create-gap/', views.create_gap, name='create_gap'),
+path('api/get-latest-gap/', views.get_latest_gap, name='get_latest_gap'),
 path('api/companies/', views.CompanyListView.as_view(), name='company_list'),
 path('api/companies/<str:company_name>/delete/', views.CompanyDeleteView.as_view(), name='delete_company'),
 path('api/companies/<str:company_name>/', views.company_detail, name='company_detail'),

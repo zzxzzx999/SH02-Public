@@ -37,7 +37,7 @@ function Elements() {
   useEffect(() => {
     const getGapID = async () => {
         try {
-            const response = await axios.get("http://127.0.0.1:8000/api/get-gap-instance/");
+            const response = await axios.get(`http://127.0.0.1:8000/api/get-latest-gap/?company_name=${companyName}`);
             setGapID(response.data.gap_id);
         } catch (err) {
             setError("Error fetching gap analysis ID.");
