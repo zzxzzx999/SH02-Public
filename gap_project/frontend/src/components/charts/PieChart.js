@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
 import * as echarts from 'echarts';
+import React, { useEffect, useRef } from 'react';
 
 // For "Specifc Output"
 // TODO: Colors for the pie chart are yet to be changed to FIGMA
@@ -13,6 +13,14 @@ import * as echarts from 'echarts';
 //     { name: 'Fri', value: 70 },
 //   ]);
 
+const COLOR_MAP = {
+  exceptional: '#006613', 
+  good: '#42C259',
+  basic: '#7CCC8B', 
+  needsImprovement: '#FFC546', 
+  unsatisfactory: '#FF0B0B', 
+};
+
 const PieChart = ({ chartData }) => {
   const chartRef = useRef(null);
 
@@ -25,12 +33,14 @@ const PieChart = ({ chartData }) => {
       },
       series: [
         {
-          name: 'Sales',
+          //name: 'Sales',
           type: 'pie',
           radius: '50%',
           data: chartData.map(item => ({
             value: item.value,
             name: item.name,
+            itemStyle: {
+              color: COLOR_MAP[item.name] || '#9E9E9E',}
           })),
         },
       ],

@@ -22,6 +22,8 @@ function DetailScore() {
   const [scores, setScores] = useState({}); // store score
   const [totalScore, setTotalScore] = useState(0);
 
+  const [pieData, setPieData] = useState([]);
+
   // Calculate total score
   useEffect(() => {
     console.log(`Requesting: http://localhost:8000/api/scores/${gapId}/${elementName}/`);
@@ -64,6 +66,17 @@ function DetailScore() {
         }
       }
     };
+
+  //fetch data of pie chart
+  useEffect(() => {
+    axios.get(`http://localhost:8000/api/element-scores/${gapId}/${elementName}/`)
+      .then(response => {
+        setPieData(response.data);
+      })
+      .catch(error => {
+        console.error("Error fetching element scores:", error);
+      });
+  }, [gapId, elementName]);
   
   //Navbar
   const linksForPage3 = [
@@ -82,14 +95,6 @@ function DetailScore() {
     { name: 'Improvement Planning', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Improvement Planning')}` },
 ];
 
-const [pieData] = useState([
-  { name: 'Mon', value: 120 },
-  { name: 'Tue', value: 200 },
-  { name: 'Wed', value: 150 },
-  { name: 'Thu', value: 80 },
-  { name: 'Fri', value: 70 },
-]);
-  
   return (
     <div class="main-content" className="gap-intro">
       <NavBar links={linksForPage3} logout={true}/>

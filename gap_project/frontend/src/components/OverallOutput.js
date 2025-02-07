@@ -2,12 +2,12 @@
 //import { Line } from 'react-chartjs-2'; 
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import '../css/NavBar.css';
 import '../css/OverallOutput.css';
 import NavBar from "./NavBar";
-import LineChart from "./charts/LineChart";
 import BarChart from "./charts/BarChart";
+import LineChart from "./charts/LineChart";
 
 // registe Chart.js
 //ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
@@ -24,6 +24,18 @@ function OverallOutput() {
     const params = new URLSearchParams(location.search);
     const companyName = params.get('company');
     const gapId = params.get('gap_id')
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const [lineData, setLineData] = useState({
+      categories: [],
+      values: [],
+  });
+
+  const [barData, setBarData] = useState({
+    categories: [],
+    values: [],
+});
+  
 
     // cal total score
     useEffect(() => {
@@ -59,16 +71,35 @@ const linksForPage3 = [
 ];
 
 // Dummy data for bar chart (to be changed)
-const [barData] = useState({
-  categories: ['Section 1', 'Section 2', 'Section 3', 'Section 4', 'Section 5', 'Section 6', 'Section 7', 'Section 8', 'Section 9', 'Section 10'],
-  values: [2, 20, 15, 50, 34, 45, 30, 20, 10, 5],
-});
+useEffect(() => {
+  const currentGapId = searchParams.get("gap_id");
+  if (currentGapId) {
+      // Fetch bar chart data
+      fetch(`http://localhost:8000/api/analysis/${currentGapId}/bar-chart-data`)
+          .then(response => response.json())
+          .then(data => {
+              setBarData({
+                  categories: data.categories,
+                  values: data.values,
+              });
+          })}
+      }, [searchParams]);
 
-// Dummy data for line chart (to be changed)
-const [lineData] = useState({
-  categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-  values: [120, 200, 150, 80, 70, 110, 130],
-});
+// fetch data for line chart 
+useEffect(() => {
+  if (companyName) {
+      // Fetch line chart data
+      fetch(`http://localhost:8000/api/analysis/${encodeURIComponent(companyName)}/total-score-over-time/`)
+          .then(response => response.json())
+          .then(data => {
+              setLineData({
+                  categories: data.gap_date,
+                  values: data.total_score, 
+              });
+          })
+          .catch(error => console.error("Error fetching line chart data:", error));
+  }
+}, [companyName]);
   
     return (
       // force refresh
