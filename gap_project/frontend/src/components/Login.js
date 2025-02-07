@@ -32,7 +32,7 @@ function Login(){
             }
         } catch (err) {
             console.error("Login error:", err);
-            setError("Invalid username or password.");
+            setError(err.response?.data?.detail || "Invalid username or password.");
             localStorage.removeItem('authToken');
             localStorage.removeItem('username');
         }
@@ -81,6 +81,7 @@ function Login(){
             </label>
             <input className = "submitButton" type="submit" value="LOG IN"/>
         </form>
+        {error && <p style={{color:'red'}}>{error}</p>}
         </div>
     )
 }
