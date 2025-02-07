@@ -56,6 +56,8 @@ function AboutUs() {
     setData([]);   
   };
 
+  console.log("company info: " + data);
+
   return (
     <div className="main-content">
       <NavBar links={linksForPage1} logout={true}/> {/* Passing the links to the Navbar component */}
