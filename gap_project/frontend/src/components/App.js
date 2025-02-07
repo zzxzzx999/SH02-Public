@@ -21,7 +21,7 @@ function App() {
         <Template>
         <div className="app-container">
           <Routes>
-            <Route path="/" element={<Login />} />
+            <Route path="/" element={<PdfPlan />} />
             <Route path="/home" element={<PrivateRoute element={Home} />} />
             <Route path="/new-company" element={<PrivateRoute element={NewCompany} />} />
             <Route path="/list-of-company" element={<ListofCompany />} />

@@ -19,8 +19,10 @@ def getImprovementAnswer(element, question, gapAnalysis):
     return json.loads(str(gapAnalysis.improvement_plan))[str(element)][question-1]
 
 def getAllElement(element):
-    with open('src/elements-questions.json', 'r') as file:
-        data = json.loads(file)[element-1]
+    print("PINK PONY GIRLS")
+    print(os.getcwd())
+    with open('gap/src/elements-questions.json', 'r', encoding='utf-8') as file:
+        data = json.loads(file.read())[element-1]
     return data
 
 def getAllElementQuestions(element):
@@ -36,3 +38,6 @@ def getElementHeading(element):
 
 def getAllAnswersSingleGap(element, question, gapAnalysis):
     return json.loads(gapAnalysis.gap_data)
+
+def pdfFormatElement(gap, element):
+    return json.loads(str(gap.improvement_plan))[str(element)]

@@ -60,10 +60,10 @@ def company_list(request):
             return Response(serializer.data, status = 201)
         return Response(serializer.errors, status=400)
 
-
-class PdfView(APIView):
-    
+pdf_filename = ""
+class PdfView(APIView): 
     serializer_class = GapAnalysisSerializer
+    
     @action(detail=True, methods=['get'], renderer_classes=(BinaryFileRenderer,))
     def get(self, request):
         # Open the PDF in binary mode
@@ -72,7 +72,7 @@ class PdfView(APIView):
             return FileResponse(
                 open(pdf_path, 'rb'),
                 as_attachment=True,  # Forces download
-                filename='file.pdf'  # Sets the downloaded file name
+                filename = pdf_filename  # Sets the downloaded file name
             )
         except FileNotFoundError:
             return Response({'error': 'File not found'}, status=404)        
@@ -80,13 +80,13 @@ class PdfView(APIView):
         #return download(request)
         gapId = request.data.get('id')
         gap = GapAnalysis.objects.get(id = gapId)
-        pdf, pdf_filename = examplePdfCreation(gap)
-        print(pdf_filename)
+        chatExample(gap)
+        pdf_filename = f"{gap.title}.pdf"
         return Response({'pdf' : pdf_filename}, status=200)
 
 def create_gap(self, request):
     data = request.data
-    serializer = QuestionsSerializer(data=gapAnalysis)
+    serializer = QuestionsSerializer(data=data.get("gapAnalysis"))
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status = 201)
