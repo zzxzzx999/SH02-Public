@@ -109,7 +109,7 @@ function Elements() {
 };
 
   // Send data to API to backend
-  const submitAnswersToAPI = async (clear) => {
+  const submitAnswersToAPI = async (finished) => {
     //localStorage.clear(answers);
     //localStorage.clear(improvementPlan);
     //localStorage.clear(companyName);
@@ -119,6 +119,8 @@ function Elements() {
         id: gapID,
         answers: answers,
         improvementPlan: improvementPlan,
+        finished: finished,
+        company_name: companyName,
       });
       console.log("Data successfully submitted: ", answers);
       console.log(improvementPlan);
