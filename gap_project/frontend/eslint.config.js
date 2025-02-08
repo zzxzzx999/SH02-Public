@@ -1,17 +1,25 @@
-import reactPlugin from "eslint-plugin-react";
+import eslintPluginReact from "eslint-plugin-react";
+import js from "@eslint/js";
+import reactRecommended from "eslint-plugin-react/configs/recommended.js";
 
 export default [
+  js.configs.recommended, // JavaScript recommended rules
+  reactRecommended, // React recommended rules
   {
     files: ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
-    plugins: {react: reactPlugin},
-    extends: ["eslint:recommended", "plugin:react/recommended"], // Extend recommended rules
+    plugins: {
+      react: eslintPluginReact,
+    },
+    languageOptions: {
+      sourceType: "module", // Ensures ES modules are used
+    },
     rules: {
       "no-unused-vars": "warn",
       "no-console": "warn",
-      "react/jsx-uses-react": "error", // Ensure JSX syntax is handled correctly
-      "react/jsx-uses-vars": "error",  // Ensure variables used in JSX are not considered unused
-      "react/react-in-jsx-scope": "off", // Disable react-in-jsx-scope rule (React 17+ doesn't require React in scope)
-      "react/prop-types": "off" // Disable prop-types check if you're using TypeScript (not needed)
-    }
-  }
+      "react/jsx-uses-react": "error",
+      "react/jsx-uses-vars": "error",
+      "react/react-in-jsx-scope": "off",
+      "react/prop-types": "off",
+    },
+  },
 ];

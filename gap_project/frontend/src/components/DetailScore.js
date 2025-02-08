@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import '../css/DetailScore.css';
 import '../css/NavBar.css';
-import NavBar from "./NavBar";
-import PieChart from "./charts/PieChart";
+import NavBar from "./NavBar.js";
+import PieChart from "./charts/PieChart.js";
 
 
 function DetailScore() {

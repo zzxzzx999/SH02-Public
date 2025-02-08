@@ -5,9 +5,9 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import '../css/NavBar.css';
 import '../css/OverallOutput.css';
-import NavBar from "./NavBar";
-import LineChart from "./charts/LineChart";
-import BarChart from "./charts/BarChart";
+import NavBar from "./NavBar.js";
+import LineChart from "./charts/LineChart.js";
+import BarChart from "./charts/BarChart.js";
 
 // registe Chart.js
 //ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);

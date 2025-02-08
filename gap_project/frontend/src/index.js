@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './components/App';
+import App from './components/App.js';
 
 // think of the REACT pages as a tree, the root of this tree is defined here.
 // All of the components are called by eachother, and it starts with one component called : <App />

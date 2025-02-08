@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import NavBar from './NavBar';
-import { SubmitProvider } from './SubmitContext';
+import NavBar from './NavBar.js';
+import { SubmitProvider } from './SubmitContext.js';
 import '../css/GapAnalysis.css';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
