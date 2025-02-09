@@ -91,16 +91,16 @@ test-backend:
   rules:
     - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
 
-  test-frontend:
-    stage: test
-    image: node:22.11
-    before_script:
-      - cd "$FRONTEND_DIR"
-      - npm install
-    script:
-      - npm test -- --watchAll=false
-    rules:
-    - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
+test-frontend:
+  stage: test
+  image: node:22.11
+  before_script:
+    - cd "$FRONTEND_DIR"
+    - npm install
+  script:
+    - npm test -- --watchAll=false
+  rules:
+  - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
 
 #security:
 #  stage: security
