@@ -5,3 +5,4 @@ gap_project/db.sqlite3
 *.key
 thumbs.db
 gapenv/
+.coverage
