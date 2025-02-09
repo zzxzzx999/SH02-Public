@@ -12,6 +12,8 @@ function NavBar({links, logout}) {
   const pageRef = useRef(null);
   const popUpRef = useRef(null);
 
+  let finished = false;
+
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const companyName = params.get('company');
@@ -112,10 +114,10 @@ function NavBar({links, logout}) {
       <button className="close-button" onClick={() => setIsPopupOpen(false)}>X</button>
         <h2>Company Name</h2>
         <p>Are you finished?<br></br>If not, you can save and come back later.</p>
-        <button className="submitButton" onClick={async () => { await submitAnswersToAPI(); navigate('/home'); }}>
+        <button className="submitButton" onClick={async () => { await submitAnswersToAPI(finished=false); navigate('/home'); }}>
           SAVE AND EXIT
         </button>
-        <button className="submitButton" style={{ margin: '15px' }} onClick={async () => { await submitAnswersToAPI(clear=true); navigate(`/overall-output?company=${companyName}`);}}>
+        <button className="submitButton" style={{ margin: '15px' }} onClick={async () => { await submitAnswersToAPI(finished=true); navigate(`/overall-output?company=${companyName}`);}}>
           FINISHED, GO TO RESULTS
         </button>
 

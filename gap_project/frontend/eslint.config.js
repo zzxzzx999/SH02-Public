@@ -7,6 +7,9 @@ export default [
   reactRecommended, // React recommended rules
   {
     files: ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
+    settings: { 
+      react: { "version": "18.3.1" } 
+    },
     plugins: {
       react: eslintPluginReact,
     },
@@ -21,5 +24,6 @@ export default [
       "react/react-in-jsx-scope": "off",
       "react/prop-types": "off",
     },
+    ignores: ["node_modules/", "public/", "build/", "**/*.test.js"], // Exclude specific files and folders
   },
-];
+]

@@ -1,15 +1,25 @@
 stages:
   - lint
   - test
+  - build
   - security
   - deploy
 
 variables:
-  FRONTEND_DIR: "$CI_PROJECT_DIR/gap_project/frontend"
-  BACKEND_DIR: "$CI_PROJECT_DIR/gap_project/gap"
-  REACT_LINT_REPORT: "$CI_PROJECT_DIR/gap_project/reports/react-lint-report.txt"
-  DJANGO_LINT_FLAKE8_REPORT: "$CI_PROJECT_DIR/gap_project/reports/django-lint-flake8-report.txt"
-  DJANGO_LINT_MYPY_REPORT: "$CI_PROJECT_DIR/gap_project/reports/django-lint-mypy-report.txt"
+  # Define the project directory
+  BACKEND_DIR: "$CI_PROJECT_DIR/gap_project"
+  FRONTEND_DIR: "$BACKEND_DIR/frontend"
+  REPORTS_DIR: "$BACKEND_DIR/reports"
+  # Define the reports directory
+  REACT_LINT_REPORT: "$REPORTS_DIR/react-lint-report.txt"
+  DJANGO_LINT_FLAKE8_REPORT: "$REPORTS_DIR/django-lint-flake8-report.txt"
+  DJANGO_LINT_MYPY_REPORT: "$REPORTS_DIR/django-lint-mypy-report.txt"
+  DJANGO_TEST_COVERAGE_REPORT: "$REPORTS_DIR/django-test-coverage-report.txt"
+  # Define the test user
+  TEST_USER: "GAPAdmin"
+  TEST_USER_PASSWORD: "1"
+  # Define the feature branch pattern
+  FEATURE_BRANCH_PATTERN: "/^feature\/issue-\d+\/.*/"
 
 lint-backend:
   stage: lint
@@ -19,40 +29,78 @@ lint-backend:
     - pip install flake8 mypy
   script:
     - cd "$BACKEND_DIR"
-    - flake8 . > "$DJANGO_LINT_FLAKE8_REPORT" --exit-zero || echo "Flake8 issues found." 
+    - flake8 ./gap > "$DJANGO_LINT_FLAKE8_REPORT" --exit-zero || echo "Flake8 issues found." 
     # Formatting issues, unused imports, indentation errors
-    - mypy . > "$DJANGO_LINT_MYPY_REPORT" || echo "Mypy issues found, but continuing the pipeline."
+    - mypy ./gap > "$DJANGO_LINT_MYPY_REPORT" || echo "Mypy issues found, but continuing the pipeline."
     # Type mismatches, incorrect return types
 
-lint-frontend:
-  stage: lint
-  image: node:22.11
-  script:
-    - cd "$FRONTEND_DIR"
-    - npm install -g eslint
-    - npx eslint . > "$REACT_LINT_REPORT" || echo "Eslint issues found."
-    # --max-warnings=0 # (This makes the pipeline fail if styling errors detected)
+# TODO: Add frontend linting
+# lint-frontend:
+#   stage: lint
+#   image: node:22.11
+#   script:
+#     - cd "$FRONTEND_DIR"
+#     - npm install -g eslint
+#     - npx eslint . > "$REACT_LINT_REPORT" || echo "Eslint issues found."
+#     # --max-warnings=0 # (This makes the pipeline fail if styling errors detected)
 
-test:
+build-backend:
+  stage: build
+  image: python:3.12
+  before_script:
+    - cd $BACKEND_DIR
+    - pip install -r requirements.txt
+  script:
+    - python manage.py migrate
+    - python manage.py collectstatic --noinput
+  artifacts:
+    paths:
+      - $BACKEND_DIR/staticfiles/
+
+build-frontend:
+  stage: build
+  image: node:22.11
+  before_script:
+    - cd "$FRONTEND_DIR"
+    - npm install
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - $FRONTEND_DIR/build/
+
+test-backend:
   stage: test
   image: python:3.12
   services:
     - postgres:latest
   variables:
     POSTGRES_DB: test_db
-    POSTGRES_USER: GAPAdmin
-    POSTGRES_PASSWORD: 1
+    POSTGRES_USER: TEST_USER
+    POSTGRES_PASSWORD: TEST_USER_PASSWORD
   before_script:
-    - apt-get update
-    - apt-get install -y python3 python3-pip
-    - pip install django djangorestframework django-cors-headers coverage
-    - cd gap_project/
-    - python manage.py makemigrations --merge
+    - cd $CI_PROJECT_DIR
+    - pip install -r requirements.txt
+    - pip install coverage
+    # - python manage.py makemigrations --merge
     - python manage.py migrate
   script:
-    - python manage.py test
     - coverage run --source='.' manage.py test
-    - coverage report
+    - coverage report -m > "$DJANGO_TEST_COVERAGE_REPORT"
+  rules:
+    - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
+
+  test-frontend:
+    stage: test
+    image: node:22.11
+    before_script:
+      - cd "$FRONTEND_DIR"
+      - npm install
+    script:
+      - npm test -- --watchAll=false
+    rules:
+    - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
 
 #security:
 #  stage: security

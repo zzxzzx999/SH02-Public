@@ -5,10 +5,7 @@ import NavBar from "./NavBar";
 
 
 function CreateNewCompany(){
-    const linksForPage3 = [
-        { name: 'Previous Page', path: '/list-of-company' , image:'/back-button.png'},
-        
-      ];
+    const linksForPage3 = [];
     return (
 
         <div>
