@@ -19,7 +19,7 @@ variables:
   TEST_USER: "GAPAdmin"
   TEST_USER_PASSWORD: "1"
   # Define the feature branch pattern
-  FEATURE_BRANCH_PATTERN: "/^feature\/issue-\d+\/.*/"
+  FEATURE_BRANCH_PATTERN: "^feature/issue-\\d+/.+"
 
 lint-backend:
   stage: lint
