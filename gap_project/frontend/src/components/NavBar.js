@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import '../css/NavBar.css';
 import { useSubmit } from './SubmitContext';
 
-function NavBar({links, logout}) {
+function NavBar({links, logout, isComplete}) {
   let clear = false;
   const submitAnswersToAPI = useSubmit();
 
@@ -117,10 +117,11 @@ function NavBar({links, logout}) {
         <button className="submitButton" onClick={async () => { await submitAnswersToAPI(finished=false); navigate('/home'); }}>
           SAVE AND EXIT
         </button>
-        <button className="submitButton" style={{ margin: '15px' }} onClick={async () => { await submitAnswersToAPI(finished=true); navigate(`/overall-output?company=${companyName}`);}}>
-          FINISHED, GO TO RESULTS
-        </button>
-
+        {isComplete &&
+          <button className="submitButton" style={{ margin: '15px' }} onClick={async () => { await submitAnswersToAPI(finished=true); navigate(`/overall-output?company=${companyName}`);}}>
+            FINISHED, GO TO RESULTS
+          </button>
+        }
       </Popup>
     )}
     </div>
