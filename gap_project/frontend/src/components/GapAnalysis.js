@@ -1,12 +1,6 @@
-<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
 import NavBar from './NavBar.js';
 import { SubmitProvider } from './SubmitContext.js';
-=======
-import React, { useState, useEffect, useRef } from "react";
-import NavBar from './NavBar';
-import { SubmitProvider } from './SubmitContext';
->>>>>>> b10243f51f0f66fbd8b619430a624d6d26d63c5d
 import '../css/GapAnalysis.css';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
