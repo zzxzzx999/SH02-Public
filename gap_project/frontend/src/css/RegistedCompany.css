@@ -193,7 +193,6 @@
   height: 88%;
 }
 
-
 .full-analysis {
   position: absolute;
   bottom: 10px;
@@ -212,7 +211,6 @@
   cursor: pointer;
   font-size: 1.6vw;
   margin-top: 2%;
- 
 }
 
 .full-analysis button:hover {

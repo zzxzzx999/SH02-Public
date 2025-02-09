@@ -1,8 +1,8 @@
-import NavBar from './NavBar.js';
-import React, {useState} from "react";
-import '../css/NavBar.css';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import '../css/Home.css';
-import {Link } from "react-router-dom";
+import '../css/NavBar.css';
+import NavBar from './NavBar.js';
 
 const url = 'http://127.0.0.1:8000/api'
 
@@ -24,10 +24,7 @@ function AboutUs() {
     const endpoint = `${url}/companies/?name=${searchText}`
 
     try {
-      const response = await fetch (endpoint, {
-        method: 'GET'
-      })
-
+      const response = await fetch (endpoint, {method: 'GET'})
       const data = await response.json()
       console.log(data)
 
@@ -36,7 +33,6 @@ function AboutUs() {
       } else {
           console.error("Expected an array but received:", data);
       }
-
       setData(data)
     }
     catch (e) {
@@ -63,7 +59,13 @@ function AboutUs() {
       <div className="about-us-search">
         <h2 className = "search-text">Gordon Foley Consulting</h2><br></br>
         <div className="search-box-and-results">
-          <input className="search-box" type="search" placeholder="Search for company..." value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={handleKeyDown}/>
+          <input 
+            className="search-box" 
+            type="search" placeholder="Search for company..." 
+            value={searchText} onChange={e => 
+            setSearchText(e.target.value)} 
+            onKeyDown={handleKeyDown}
+            />
           <button onClick={clearSearch} className="clear-button">Clear Results</button>
           {Array.isArray(data) && data.length > 0 ? (
           data.map((company) => (

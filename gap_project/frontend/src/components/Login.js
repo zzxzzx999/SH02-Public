@@ -7,7 +7,6 @@ function Login(){
     const [username, setName] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("")
-
     const [visible, setVisible] = useState(false);
 
     const navigate = useNavigate(); 
@@ -39,10 +38,6 @@ function Login(){
             localStorage.removeItem('authToken');
             localStorage.removeItem('username');
         }
-
-
-
-
     };
 
     const togglePassword = () => {
@@ -73,14 +68,12 @@ function Login(){
                 className = "input"
                 required
             />
-
             <img 
                 className = "show-hide-icons"
                 src={visible ? '/show-icon.png' : '/hide-icon.png'} 
                 alt={visible ? 'Hide password' : 'Show password'} 
                 onClick={togglePassword}
             />
-    
             </label>
             <input className = "submitButton" type="submit" value="LOG IN"/>
         </form>
