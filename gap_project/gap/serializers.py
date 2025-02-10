@@ -16,14 +16,21 @@ class CompanySerializer(serializers.ModelSerializer):
 
     class Meta:
             model = Company
-            fields = ('name','dateRegistered', 'notes')
+            fields = ('name','dateRegistered', 'notes', 'current_gap')
         
 class GapAnalysisSerializer(serializers.ModelSerializer):
-    gap_data = serializers.DictField(required=False)  #validates gap_data is a dictionary
-
     class Meta:
         model = GapAnalysis
-        fields = ('title','company', 'consultant','companyRep', 'companyEmail','additionalNotes', 'gap_data', 'improvement_plan')
+        fields = ('title', 'company', 'consultant', 'companyRep', 'companyEmail', 'additionalNotes', 'gap_data', 'improvement_plan')
+
+    def create(self, validated_data):
+        """ Handle JSON fields properly """
+        gap_data = validated_data.pop('gap_data', {})
+        improvement_plan = validated_data.pop('improvement_plan', {})
+
+        # Create the GapAnalysis instance
+        gap_analysis = GapAnalysis.objects.create(**validated_data, gap_data=gap_data, improvement_plan=improvement_plan)
+        return gap_analysis
 
 
 class QuestionsSerializer(serializers.Serializer):

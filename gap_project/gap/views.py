@@ -53,6 +53,53 @@ def company_list(request):
             return Response(serializer.data, status = 201)
         return Response(serializer.errors, status=400)
 
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def create_gap(request):
+    company_name = request.data.get('company_name')
+    consultant = request.data.get('consultant')
+    company_rep = request.data.get('company_rep')
+    company_email = request.data.get('company_email')
+    additional_notes = request.data.get('additional_notes')
+
+    try:
+        company_instance = Company.objects.get(name=company_name)
+        gap = GapAnalysis.objects.create(
+            company=company_instance, 
+            consultant=consultant, 
+            companyRep=company_rep,
+            companyEmail=company_email, 
+            additionalNotes=additional_notes
+        )
+        company_instance.current_gap = True
+        serializer = GapAnalysisSerializer(gap)
+        company_instance.save()
+
+        return Response(serializer.data, status=201)
+
+    except Company.DoesNotExist:
+        return Response({"error": "Company not found"}, status=404)
+
+@api_view(['GET'])
+def get_latest_gap(request):
+    company_name = request.GET.get('company_name')
+    
+    if not company_name:
+        return Response({"error": "Company name is required."}, status=400)
+
+    try:
+        company_instance = Company.objects.get(name=company_name)
+        
+        latest_gap = GapAnalysis.objects.filter(company=company_instance).order_by('-id').first()
+
+        if latest_gap:
+            return Response({"gap_id": latest_gap.id})
+        else:
+            return Response({"error": "No gap analysis found for this company."}, status=404)
+
+    except Company.DoesNotExist:
+        return Response({"error": "Company not found."}, status=404)
+
 
 class PdfView(APIView):
     
@@ -89,9 +136,20 @@ def getQuestionOrWriteAnswer(request):
 
     else:
         print("Incoming request data:", data)
-        gapAnalysis = GapAnalysis.objects.get(id = data.get("id"))
-        writeAnswer(data.get("answer"), data.get("set"), data.get("question"), gapAnalysis)
-        serializer = QuestionsSerializer(data=gapAnalysis)
+        finished = data.get("finished")
+        company = Company.objects.get(name = data.get("company_name"))
+        gap = GapAnalysis.objects.get(id = data.get("id"))
+        gap.gap_data = data.get("answers")
+        gap.improvement_plan = data.get("improvementPlan")
+        print("finished: ", finished)
+        if finished:
+            print(company.name)
+            company.current_gap = False
+            print(company.current_gap)
+            company.save()
+        gap.save()
+        serializer = GapAnalysisSerializer(gap, data={"gap_data": gap.gap_data}, partial=True)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status = 201)
