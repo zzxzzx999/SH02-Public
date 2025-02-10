@@ -34,6 +34,17 @@ function Elements() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({}); 
   const [improvementPlan, setImprovementPlan] = useState({});
+  const [isComplete, setIsComplete] = useState(false);
+
+  useEffect(() => {
+    if (answers && typeof answers === "object") {
+        setIsComplete(
+            Object.values(answers).every(section => 
+                section.every(answer => answer !== 0)
+            )
+        );
+    }
+  }, [answers]);
 
 
   useEffect(() => {
@@ -195,7 +206,7 @@ function Elements() {
   return (
     <div className="gap">
       <SubmitProvider submitAnswersToAPI={submitAnswersToAPI}>
-        <NavBar className="elements" links={links} logout={false} />
+        <NavBar className="elements" links={links} logout={false} isComplete={isComplete} />
       </SubmitProvider>
 
       {questions.length > 0 && (
