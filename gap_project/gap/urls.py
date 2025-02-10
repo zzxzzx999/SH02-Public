@@ -18,5 +18,8 @@ path('api/companies/<str:company_name>/delete/', views.CompanyDeleteView.as_view
 path('api/companies/<str:company_name>/', views.company_detail, name='company_detail'),
 path('api/past_analyses/<str:company_name>/', views.get_past_analysis, name='get_past_analysis'),
 path('api/company-latest-total-score/<str:company_name>/', views.company_latest_total_score, name='company_latest_total_score'),
+path('api/analysis/<int:gap_id>/bar-chart-data/', views.get_bar_chart_data, name='bar-chart-data'),
+path('api/analysis/<str:company_name>/total-score-over-time/', views.get_total_score_over_time, name='total-score-over-time'),
+path('api/element-scores/<int:gap_id>/<str:element_name>/', views.get_pie_chart_data, name='get_pie_chart_data'),
 ]
  

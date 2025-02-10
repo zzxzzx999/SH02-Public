@@ -30,4 +30,7 @@ urlpatterns = [
     path('api/company-latest-total-score/<str:company_name>/', views.company_latest_total_score, name='company_latest_total_score'),
     path('api/create-gap/', views.create_gap, name='create_gap'),
     path('api/get-latest-gap/', views.get_latest_gap, name='get_latest_gap'),
+    path('api/analysis/<int:gap_id>/bar-chart-data/', views.get_bar_chart_data, name='bar-chart-data'),
+    path('api/analysis/<str:company_name>/total-score-over-time/', views.get_total_score_over_time, name='total-score-over-time'),
+    path('api/element-scores/<int:gap_id>/<str:element_name>/', views.get_pie_chart_data, name='get_pie_chart_data'),
 ]

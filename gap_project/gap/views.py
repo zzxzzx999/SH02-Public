@@ -333,3 +333,85 @@ def company_latest_total_score(request, company_name):
         "gap_id": latest_analysis.id,
         "score": total_score
     })
+
+
+#API for bar charts
+@api_view(['GET'])
+def get_bar_chart_data(request, gap_id):
+    try:
+        analysis = GapAnalysis.objects.get(id=gap_id)
+    except GapAnalysis.DoesNotExist:
+        return JsonResponse({"error": f"GapAnalysis with id {gap_id} not found."}, status=404)
+
+    gap_data = json.loads(analysis.gap_data)
+    element_names = [
+        "Policy", "Management", "Documented System", "Meetings", "Performance Measurement",
+        "Committee & Representatives", "Investigation Process", "Incident Reporting", "Training Plan",
+        "Risk Management Process", "Audit & Inspection Process", "Improvement Planning"
+    ]
+
+    categories = element_names
+    values = []
+
+    for element_name in element_names:
+        element_index = str(element_names.index(element_name) + 1)  # index starts from 1
+        element_scores = gap_data.get(element_index, [])
+        total_score = sum(element_scores) if element_scores else 0  # Sum of all scores for the element, default to 0 if no scores
+        values.append(total_score)
+
+    return JsonResponse({
+        "categories": categories,
+        "values": values
+    })
+
+# API for line chart
+@api_view(['GET'])
+def get_total_score_over_time(request, company_name):
+    try:
+        # Fetch all GAP analyses for the company
+        analyses = GapAnalysis.objects.filter(company__name=company_name).order_by('date')
+    except GapAnalysis.DoesNotExist:
+        return JsonResponse({"error": f"No GAP analyses found for company {company_name}."}, status=404)
+
+    gap_dates = []
+    total_scores = []
+
+    for analysis in analyses:
+        gap_dates.append(analysis.date.strftime("%Y-%m-%d"))  # Format date as string
+        gap_data = json.loads(analysis.gap_data)
+        total_score = sum(score for scores in gap_data.values() for score in scores)  if gap_data else 0  # Calculate total score, default to 0 if no data
+        total_scores.append(total_score)
+
+    return JsonResponse({
+        "gap_date": gap_dates,
+        "total_score": total_scores
+    })
+
+# API for bar chart 
+@api_view(['GET'])
+def get_pie_chart_data(request, gap_id,element_name):
+    try:
+        analysis = GapAnalysis.objects.get(id=gap_id)
+    except GapAnalysis.DoesNotExist:
+        return Response({"error": f"GapAnalysis with id {gap_id} not found."}, status=404)
+    gap_data = json.loads(analysis.gap_data)
+    element_names = [
+        "Policy", "Management", "Documented System", "Meetings", "Performance Measurement",
+        "Committee & Representatives", "Investigation Process", "Incident Reporting", "Training Plan",
+        "Risk Management Process", "Audit & Inspection Process", "Improvement Planning"
+    ]
+    element_index = str(element_names.index(element_name) + 1) # change to the key of gap_data which is string
+    element_scores = gap_data.get(element_index, []) # get all data of this element
+
+    score_counts = {
+        "exceptional": sum(1 for score in element_scores if score == 5),
+        "good": sum(1 for score in element_scores if score == 4),
+        "basic": sum(1 for score in element_scores if score == 3),
+        "needsImprovement": sum(1 for score in element_scores if score == 2),
+        "unsatisfactory": sum(1 for score in element_scores if score == 1)
+    }
+    pie_data = [{"name": category, "value": count} for category, count in score_counts.items()]
+
+    return Response(pie_data)
+
+

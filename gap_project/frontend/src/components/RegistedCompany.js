@@ -23,6 +23,20 @@ function RegistedCompany() {
     const [companyNotes, setCompanyNotes]=useState('')
     const [analyses, setAnalyses] = useState([])
 
+    // State for chart data
+    const [barData, setBarData] = useState({
+        categories: [],
+        values: [],
+    });
+    const [lineData, setLineData] = useState({
+        categories: [],
+        values: [],
+    });
+    const [lineBgData, setLineBgData] = useState({
+        categories: [],
+        values: [],
+    });
+
     const handleDownload = () => {
         // achieve easy download function
         const link = document.createElement('a');
@@ -35,13 +49,14 @@ function RegistedCompany() {
         document.title = title; // set page's title as title in URL
     }, [title]);  
 
+    // Fetch company notes
     useEffect(() => {
         fetch(`http://localhost:8000/api/companies/?name=${encodeURIComponent(companyName)}`)
         .then(r => r.json())
         .then(d => setCompanyNotes(d[0].notes));
     }, [companyName]);
 
-
+    // Fetch past analyses
     useEffect(() => {
         fetch(`http://localhost:8000/api/past_analyses/${encodeURIComponent(companyName)}`)
             .then(response => response.json())
@@ -79,23 +94,43 @@ function RegistedCompany() {
         }
     }, [searchParams, analyses]);
 
-// Dummy data for bar chart (to be changed)
-const [barData] = useState({
-    categories: ['Section 1', 'Section 2', 'Section 3', 'Section 4', 'Section 5', 'Section 6', 'Section 7', 'Section 8', 'Section 9', 'Section 10'],
-    values: [2, 20, 15, 50, 34, 45, 30, 20, 10, 5],
-    });
+    // Fetch chart data based on gap_id
+    useEffect(() => {
+        const currentGapId = searchParams.get("gap_id");
+        if (currentGapId) {
+            // Fetch bar chart data
+            fetch(`http://localhost:8000/api/analysis/${currentGapId}/bar-chart-data`)
+                .then(response => response.json())
+                .then(data => {
+                    setBarData({
+                        categories: data.categories || [],
+                        values: data.values || [],
+                    });
+                })
+                .catch(error => console.error("Error fetching bar chart data:", error));
+            // Fetch line chart data
+            fetch(`http://localhost:8000/api/analysis/${encodeURIComponent(companyName)}/total-score-over-time`)
+                .then(response => response.json())
+                .then(data => {
+                    setLineData({
+                        categories: data.gap_date || [],
+                        values: data.total_score || [],
+                    });
+                })
+                .catch(error => console.error("Error fetching line chart data:", error));
 
-// Dummy data for line chart (to be changed)
-const [lineData] = useState({
-    categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    values: [120, 200, 150, 80, 70, 110, 130],
-});
-
-// Dummy data for line chart with background (to be changed)
-const [lineBgData] = useState({
-    categories: ['Section 1', 'Section 2', 'Section 3', 'Section 4', 'Section 5', 'Section 6', 'Section 7', 'Section 8', 'Section 9', 'Section 10'],
-    values: [2, 20, 15, 50, 34, 45, 30, 20, 10, 5],
-});
+            // Fetch line chart with background 
+            fetch(`http://localhost:8000/api/analysis/${currentGapId}/bar-chart-data`)
+                .then(response => response.json())
+                .then(data => {
+                    setLineBgData({
+                        categories: data.categories || [],
+                        values: data.values || [],
+                    });
+                })
+                .catch(error => console.error("Error fetching line chart with background data:", error));
+        }
+    }, [searchParams]);
 
     return(
         <div class="main-content">
