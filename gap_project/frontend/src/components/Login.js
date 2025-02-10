@@ -61,7 +61,7 @@ function Login(){
             />
             </label>
     
-            <label  style={{ position: 'relative', display: 'block'}}>
+            <label  style={{ position: 'relative', width: '100%'}}>
             <input 
                 type={visible ? 'text' : 'password'}
                 value={password}
