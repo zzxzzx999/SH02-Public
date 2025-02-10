@@ -298,7 +298,7 @@ def get_bar_chart_data(request, gap_id):
     for element_name in element_names:
         element_index = str(element_names.index(element_name) + 1)  # index starts from 1
         element_scores = gap_data.get(element_index, [])
-        total_score = sum(element_scores)  # Sum of all scores for the element
+        total_score = sum(element_scores) if element_scores else 0  # Sum of all scores for the element, default to 0 if no scores
         values.append(total_score)
 
     return JsonResponse({
@@ -321,7 +321,7 @@ def get_total_score_over_time(request, company_name):
     for analysis in analyses:
         gap_dates.append(analysis.date.strftime("%Y-%m-%d"))  # Format date as string
         gap_data = json.loads(analysis.gap_data)
-        total_score = sum(score for scores in gap_data.values() for score in scores)  # Calculate total score
+        total_score = sum(score for scores in gap_data.values() for score in scores)  if gap_data else 0  # Calculate total score, default to 0 if no data
         total_scores.append(total_score)
 
     return JsonResponse({

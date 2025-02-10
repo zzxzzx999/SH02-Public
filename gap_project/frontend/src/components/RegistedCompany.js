@@ -103,8 +103,8 @@ function RegistedCompany() {
                 .then(response => response.json())
                 .then(data => {
                     setBarData({
-                        categories: data.categories,
-                        values: data.values,
+                        categories: data.categories || [],
+                        values: data.values || [],
                     });
                 })
                 .catch(error => console.error("Error fetching bar chart data:", error));
@@ -113,8 +113,8 @@ function RegistedCompany() {
                 .then(response => response.json())
                 .then(data => {
                     setLineData({
-                        categories: data.gap_date,
-                        values: data.total_score,
+                        categories: data.gap_date || [],
+                        values: data.total_score || [],
                     });
                 })
                 .catch(error => console.error("Error fetching line chart data:", error));
@@ -124,8 +124,8 @@ function RegistedCompany() {
                 .then(response => response.json())
                 .then(data => {
                     setLineBgData({
-                        categories: data.categories,
-                        values: data.values,
+                        categories: data.categories || [],
+                        values: data.values || [],
                     });
                 })
                 .catch(error => console.error("Error fetching line chart with background data:", error));
