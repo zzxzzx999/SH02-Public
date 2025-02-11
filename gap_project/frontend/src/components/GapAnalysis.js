@@ -13,8 +13,6 @@ function Elements() {
   const set = parseInt(params.get('element'));
   const companyName = params.get('company');
 
-  console.log("gapid: " + gapID);
-
   localStorage.setItem("gapID", gapID);
 
   const links = [
@@ -37,7 +35,7 @@ function Elements() {
   const [answers, setAnswers] = useState({}); 
   const [improvementPlan, setImprovementPlan] = useState({});
   const [isComplete, setIsComplete] = useState(false);
-
+  
   useEffect(() => {
     if (answers && typeof answers === "object") {
         setIsComplete(
@@ -128,7 +126,6 @@ function Elements() {
     for (let key in answers) {
       answers[key] = answers[key].filter(value => value !== '').map(value => Number(value));
     }
-    console.log(answers)
     try {
       await axios.post("http://127.0.0.1:8000/api/getQuestionOrWriteAnswer/", {
         GetOrWrite: "WRITE",
@@ -138,16 +135,12 @@ function Elements() {
         finished: finished,
         company_name: companyName,
       });
-      console.log(answers)
-      console.log("Data successfully submitted: ", answers);
-      console.log(improvementPlan);
     } catch (error) {
       console.error("Error submitting answers:", error.response?.data || error.message);
-      console.log("Data successfully submitted: ", answers);
-      console.log(improvementPlan);
     }
   };
   
+
   // Effect to fetch questions from the API 
   useEffect(() => {
     const fetchQuestion = async (set, number) => {
@@ -176,6 +169,28 @@ function Elements() {
 
     fetchData();
   }, [set]);
+
+    // get incomplete data from backend when resuming gap analysis
+    useEffect(() => {
+      const getAnswers = async () => {
+        try {
+          const response = await axios.get("http://127.0.0.1:8000/api/get_incomplete_answers/", {
+            params: { gap_id: gapID },
+          });
+          setAnswers(response.data["gap_data"]);
+          setImprovementPlan(response.data["improvement_plan"])
+
+          localStorage.setItem('answers', answers);
+          localStorage.setItem('improvementPlan', improvementPlan);
+        } catch (error) {
+          console.error("Error fetching incomplete answers:", error.response?.data || error.message);
+        }
+      };
+  
+      if (gapID) {
+        getAnswers();
+      }
+  }, [gapID]);
 
   const handleAnswerChange = (type, key, value, index) => {
     const updatedAnswers = { ...answers };
@@ -356,7 +371,6 @@ function Compliance({ question, handleAnswerChange, savedAnswer, savedImprovemen
     handleAnswerChange('a', key, value, index); 
   };
   
-  
   const handleEvidenceChange = (questionNumber, value) => {
     setEvidence(prevState => ({
       ...prevState,
@@ -399,7 +413,7 @@ function Compliance({ question, handleAnswerChange, savedAnswer, savedImprovemen
             id={`question_${question.Question_Number}_${option.value}`}
             name={`question_${question.Question_Number}`} 
             value={option.value}
-            checked={selectedRatings[question.Question_Number] === option.value}
+            checked={selectedRatings[question.Question_Number] === Number(option.value)}
             onChange={() => handleRadioChange(question.Question_Number, option.value)}
           />
           <label htmlFor={`question_${question.Question_Number}_${option.value}`} className={`compliance ${option.className}`}>
@@ -464,8 +478,6 @@ function GapAnalysis() {
         try {
             const response = await axios.get(`http://127.0.0.1:8000/api/get-latest-gap/?company_name=${companyName}`);
             gapID = response.data.gap_id;
-            console.log(gapID);
-
 
             const newLinks = [
               { name: 'Policy', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=0&gap_id=${encodeURIComponent(gapID)}`, image: '' },
