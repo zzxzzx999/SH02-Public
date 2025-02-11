@@ -72,7 +72,7 @@ const linksForPage3 = [
 
 // Dummy data for bar chart (to be changed)
 useEffect(() => {
-  const currentGapId = searchParams.get("gap_id");
+  let currentGapId = searchParams.get("gap_id");
   if (currentGapId) {
       // Fetch bar chart data
       fetch(`http://localhost:8000/api/analysis/${currentGapId}/bar-chart-data`)

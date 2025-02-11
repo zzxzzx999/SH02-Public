@@ -187,7 +187,7 @@ def get_scores(request, gap_id, element_name):
         return JsonResponse({"error": f"GapAnalysis with id {gap_id} not found."}, status=404)
 
 
-    gap_data = json.loads(analysis.gap_data)
+    gap_data = analysis.gap_data
     element_names = [
         "Policy", "Management", "Documented System", "Meetings", "Performance Measurement",
         "Committee & Representatives", "Investigation Process", "Incident Reporting", "Training Plan",
@@ -197,11 +197,11 @@ def get_scores(request, gap_id, element_name):
     element_scores = gap_data.get((element_index), [])
 
     scores = {
-        "exceptionalCompliance": sum(score for score in element_scores if score == 5),
-        "goodCompliance": sum(score for score in element_scores if score == 4),
-        "basicCompliance": sum(score for score in element_scores if score == 3),
-        "needsImprovement": sum(score for score in element_scores if score == 2),
-        "unsatisfactory": sum(score for score in element_scores if score == 1)
+        "exceptionalCompliance": sum(int(score) for score in element_scores if int(score) == 5),
+        "goodCompliance": sum(int(score) for score in element_scores if int(score) == 4),
+        "basicCompliance": sum(int(score) for score in element_scores if int(score) == 3),
+        "needsImprovement": sum(int(score) for score in element_scores if int(score) == 2),
+        "unsatisfactory": sum(int(score) for score in element_scores if int(score) == 1)
         }
 
     return JsonResponse({
@@ -241,7 +241,7 @@ def overall_scores(request, gap_id):
         return JsonResponse({"error": "Analysis not found for given gap_id"}, status=404)
     
 
-    gap_data=json.loads(analysis.gap_data)
+    gap_data=analysis.gap_data
     #company_name=analysis.company.name
 
     total_score = 0
@@ -255,7 +255,8 @@ def overall_scores(request, gap_id):
         totals["basic"] += sum(1 for score in scores if score == 3)
         totals["needsImprovement"] += sum(1 for score in scores if score == 2)
         totals["unsatisfactory"] += sum(1 for score in scores if score == 1)
-        total_score += sum(scores) 
+        total_score += sum(int(score) for score in scores if isinstance(score, (int, float)) or score.isdigit())
+
 
     unsatisfactory_percentage = (totals["unsatisfactory"] / total_number) * 100
     needs_improvement_percentage = (totals["needsImprovement"] / total_number) * 100
@@ -343,7 +344,7 @@ def get_bar_chart_data(request, gap_id):
     except GapAnalysis.DoesNotExist:
         return JsonResponse({"error": f"GapAnalysis with id {gap_id} not found."}, status=404)
 
-    gap_data = json.loads(analysis.gap_data)
+    gap_data = analysis.gap_data
     element_names = [
         "Policy", "Management", "Documented System", "Meetings", "Performance Measurement",
         "Committee & Representatives", "Investigation Process", "Incident Reporting", "Training Plan",
@@ -356,7 +357,7 @@ def get_bar_chart_data(request, gap_id):
     for element_name in element_names:
         element_index = str(element_names.index(element_name) + 1)  # index starts from 1
         element_scores = gap_data.get(element_index, [])
-        total_score = sum(element_scores) if element_scores else 0  # Sum of all scores for the element, default to 0 if no scores
+        total_score = sum(int(score) for score in element_scores if isinstance(score, (int, float)) or str(score).isdigit()) if element_scores else 0 # Sum of all scores for the element, default to 0 if no scores
         values.append(total_score)
 
     return JsonResponse({
@@ -378,9 +379,19 @@ def get_total_score_over_time(request, company_name):
 
     for analysis in analyses:
         gap_dates.append(analysis.date.strftime("%Y-%m-%d"))  # Format date as string
-        gap_data = json.loads(analysis.gap_data)
-        total_score = sum(score for scores in gap_data.values() for score in scores)  if gap_data else 0  # Calculate total score, default to 0 if no data
+        gap_data = analysis.gap_data
+        
+        # get the total scores for each of the gap analyses in the company
+        if gap_data:
+            total_score = 0
+            for scores in gap_data.values(): 
+                for score in scores: 
+                    total_score += int(score) 
+        else:
+            total_score = 0 
+
         total_scores.append(total_score)
+    print(total_score)
 
     return JsonResponse({
         "gap_date": gap_dates,
@@ -394,7 +405,7 @@ def get_pie_chart_data(request, gap_id,element_name):
         analysis = GapAnalysis.objects.get(id=gap_id)
     except GapAnalysis.DoesNotExist:
         return Response({"error": f"GapAnalysis with id {gap_id} not found."}, status=404)
-    gap_data = json.loads(analysis.gap_data)
+    gap_data = analysis.gap_data
     element_names = [
         "Policy", "Management", "Documented System", "Meetings", "Performance Measurement",
         "Committee & Representatives", "Investigation Process", "Incident Reporting", "Training Plan",
@@ -402,13 +413,14 @@ def get_pie_chart_data(request, gap_id,element_name):
     ]
     element_index = str(element_names.index(element_name) + 1) # change to the key of gap_data which is string
     element_scores = gap_data.get(element_index, []) # get all data of this element
-
+    print(element_scores)
+    
     score_counts = {
-        "exceptional": sum(1 for score in element_scores if score == 5),
-        "good": sum(1 for score in element_scores if score == 4),
-        "basic": sum(1 for score in element_scores if score == 3),
-        "needsImprovement": sum(1 for score in element_scores if score == 2),
-        "unsatisfactory": sum(1 for score in element_scores if score == 1)
+        "exceptional": sum(1 for score in element_scores if int(score) == 5),
+        "good": sum(1 for score in element_scores if int(score) == 4),
+        "basic": sum(1 for score in element_scores if int(score) == 3),
+        "needsImprovement": sum(1 for score in element_scores if int(score) == 2),
+        "unsatisfactory": sum(1 for score in element_scores if int(score) == 1)
     }
     pie_data = [{"name": category, "value": count} for category, count in score_counts.items()]
 
