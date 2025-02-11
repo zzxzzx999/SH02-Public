@@ -15,6 +15,7 @@ function Elements() {
 
   console.log("gapid: " + gapID);
 
+  localStorage.setItem("gapID", gapID);
 
   const links = [
     { name: 'Policy', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=0&gap_id=${encodeURIComponent(gapID)}`, image: '' },
@@ -47,17 +48,16 @@ function Elements() {
     }
   }, [answers]);
 
-
+  // keep incase user refreshes page
   useEffect(() => {
     const savedAnswers = localStorage.getItem('answers');
     const savedImprovementPlan = localStorage.getItem('improvementPlan');
+    gapID = localStorage.getItem('gapID');
   
-    console.log("rendered answers: " + savedAnswers);
     if (savedAnswers) {
       try {
         const parsedAnswers = JSON.parse(savedAnswers);
         setAnswers(parsedAnswers);
-        console.log("parsed answers: " + parsedAnswers);
       } catch (error) {
         console.error("Error parsing saved answers:", error);
         setAnswers(getDefaultAnswers());
@@ -115,16 +115,16 @@ function Elements() {
       } else {
         formattedAnswers[sequentialKey] = 0;
       }
-  });
-
-  return formattedAnswers;
-};
+    });
+    return formattedAnswers;
+  };
 
   // Send data to API to backend
   const submitAnswersToAPI = async (finished) => {
-    //localStorage.clear(answers);
-    //localStorage.clear(improvementPlan);
-    //localStorage.clear(companyName);
+    localStorage.removeItem("answers");
+    localStorage.removeItem("improvementPlan");
+    localStorage.removeItem("companyName");
+    localStorage.removeItem("gapID");
     for (let key in answers) {
       answers[key] = answers[key].filter(value => value !== '').map(value => Number(value));
     }
