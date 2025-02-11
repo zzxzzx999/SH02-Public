@@ -414,7 +414,7 @@ function Compliance({ question, handleAnswerChange, savedAnswer, savedImprovemen
             name={`question_${question.Question_Number}`} 
             value={option.value}
             checked={selectedRatings[question.Question_Number] === Number(option.value)}
-            onChange={() => handleRadioChange(question.Question_Number, option.value)}
+            onChange={() => handleRadioChange(question.Question_Number, Number(option.value))}
           />
           <label htmlFor={`question_${question.Question_Number}_${option.value}`} className={`compliance ${option.className}`}>
             {option.label}
