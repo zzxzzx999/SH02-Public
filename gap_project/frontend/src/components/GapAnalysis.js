@@ -5,32 +5,13 @@ import '../css/GapAnalysis.css';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
-let gapID = null
+let gapID = null;
 
 function Elements() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const set = parseInt(params.get('element'));
   const companyName = params.get('company');
-
-  console.log("gapid: " + gapID);
-
-
-  const links = [
-    { name: 'Policy', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=0&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Management', path: `/gap-analysis/management?company=${encodeURIComponent(companyName)}&element=1&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Documented System', path: `/gap-analysis/documented-system?company=${encodeURIComponent(companyName)}&element=2&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Meetings', path: `/gap-analysis/meetings?company=${encodeURIComponent(companyName)}&element=3&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Performance Measurement', path: `/gap-analysis/performance-measurement?company=${encodeURIComponent(companyName)}&element=4&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Committee & Representatives', path: `/gap-analysis/committee-and-representatives?company=${encodeURIComponent(companyName)}&element=5&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Investigation Process', path: `/gap-analysis/investigation-process?company=${encodeURIComponent(companyName)}&element=6&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Incident Reporting', path: `/gap-analysis/incident-reporting?company=${encodeURIComponent(companyName)}&element=7&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Training Plan', path: `/gap-analysis/training-plan?company=${encodeURIComponent(companyName)}&element=8&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Risk Management Process', path: `/gap-analysis/risk-management-process?company=${encodeURIComponent(companyName)}&element=9&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Audit & Inspection Process', path: `/gap-analysis/audit-and-inspection-process?company=${encodeURIComponent(companyName)}&element=10&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Improvement Planning', path: `/gap-analysis/policy?improvement-planning=${encodeURIComponent(companyName)}&element=11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-  ];
-
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({}); 
@@ -47,17 +28,15 @@ function Elements() {
     }
   }, [answers]);
 
-
+  // keep incase user refreshes page
   useEffect(() => {
     const savedAnswers = localStorage.getItem('answers');
     const savedImprovementPlan = localStorage.getItem('improvementPlan');
   
-    console.log("rendered answers: " + savedAnswers);
     if (savedAnswers) {
       try {
         const parsedAnswers = JSON.parse(savedAnswers);
         setAnswers(parsedAnswers);
-        console.log("parsed answers: " + parsedAnswers);
       } catch (error) {
         console.error("Error parsing saved answers:", error);
         setAnswers(getDefaultAnswers());
@@ -77,7 +56,21 @@ function Elements() {
       setImprovementPlan(getDefaultImprovementPlan());
     }
   }, []);
-  
+
+  const links = [
+    { name: 'Policy', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=0&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Management', path: `/gap-analysis/management?company=${encodeURIComponent(companyName)}&element=1&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Documented System', path: `/gap-analysis/documented-system?company=${encodeURIComponent(companyName)}&element=2&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Meetings', path: `/gap-analysis/meetings?company=${encodeURIComponent(companyName)}&element=3&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Performance Measurement', path: `/gap-analysis/performance-measurement?company=${encodeURIComponent(companyName)}&element=4&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Committee & Representatives', path: `/gap-analysis/committee-and-representatives?company=${encodeURIComponent(companyName)}&element=5&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Investigation Process', path: `/gap-analysis/investigation-process?company=${encodeURIComponent(companyName)}&element=6&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Incident Reporting', path: `/gap-analysis/incident-reporting?company=${encodeURIComponent(companyName)}&element=7&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Training Plan', path: `/gap-analysis/training-plan?company=${encodeURIComponent(companyName)}&element=8&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Risk Management Process', path: `/gap-analysis/risk-management-process?company=${encodeURIComponent(companyName)}&element=9&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Audit & Inspection Process', path: `/gap-analysis/audit-and-inspection-process?company=${encodeURIComponent(companyName)}&element=10&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Improvement Planning', path: `/gap-analysis/policy?improvement-planning=${encodeURIComponent(companyName)}&element=11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+  ];
 
   const getDefaultImprovementPlan = () => {
     return {
@@ -115,39 +108,34 @@ function Elements() {
       } else {
         formattedAnswers[sequentialKey] = 0;
       }
-  });
-
-  return formattedAnswers;
-};
+    });
+    return formattedAnswers;
+  };
 
   // Send data to API to backend
   const submitAnswersToAPI = async (finished) => {
-    //localStorage.clear(answers);
-    //localStorage.clear(improvementPlan);
-    //localStorage.clear(companyName);
+    localStorage.removeItem("answers");
+    localStorage.removeItem("improvementPlan");
+    localStorage.removeItem("companyName");
     for (let key in answers) {
       answers[key] = answers[key].filter(value => value !== '').map(value => Number(value));
     }
-    console.log(answers)
     try {
       await axios.post("http://127.0.0.1:8000/api/getQuestionOrWriteAnswer/", {
         GetOrWrite: "WRITE",
-        id: gapID,
+        id: localStorage.getItem("gapID"),
         answers: answers,
         improvementPlan: improvementPlan,
         finished: finished,
         company_name: companyName,
       });
-      console.log(answers)
-      console.log("Data successfully submitted: ", answers);
-      console.log(improvementPlan);
     } catch (error) {
       console.error("Error submitting answers:", error.response?.data || error.message);
-      console.log("Data successfully submitted: ", answers);
-      console.log(improvementPlan);
     }
+    localStorage.removeItem("gapID");
   };
   
+
   // Effect to fetch questions from the API 
   useEffect(() => {
     const fetchQuestion = async (set, number) => {
@@ -176,6 +164,40 @@ function Elements() {
 
     fetchData();
   }, [set]);
+
+    // get incomplete data from backend when resuming gap analysis
+    useEffect(() => {
+      const getAnswers = async () => {
+        try {
+          const response = await axios.get("http://127.0.0.1:8000/api/get_incomplete_answers/", {
+            params: { gap_id: gapID },
+          });
+          setAnswers(response.data["gap_data"]);
+          setImprovementPlan(response.data["improvement_plan"])
+
+        } catch (error) {
+          console.error("Error fetching incomplete answers:", error.response?.data || error.message);
+        }
+      };
+  
+      if (gapID) {
+        getAnswers();
+      }
+  }, [gapID]);
+
+  // Save to localStorage when answers or improvementPlan change (like when they first load in)
+  useEffect(() => {
+    if (answers && Object.keys(answers).length > 0) {
+      localStorage.setItem("answers", JSON.stringify(answers));
+    }
+    if (improvementPlan && Object.keys(improvementPlan).length > 0) {
+      localStorage.setItem("improvementPlan", JSON.stringify(improvementPlan));
+    }
+    if (gapID) {
+      localStorage.setItem("gapID", gapID);
+    }
+  }, [answers, improvementPlan, gapID]);
+
 
   const handleAnswerChange = (type, key, value, index) => {
     const updatedAnswers = { ...answers };
@@ -302,8 +324,6 @@ function Compliance({ question, handleAnswerChange, savedAnswer, savedImprovemen
         improvement: improvement[questionId] || ''
       }
     }));
-    
-    console.log(answersPayload)
 
     // POST request to save answers
     try {
@@ -356,7 +376,6 @@ function Compliance({ question, handleAnswerChange, savedAnswer, savedImprovemen
     handleAnswerChange('a', key, value, index); 
   };
   
-  
   const handleEvidenceChange = (questionNumber, value) => {
     setEvidence(prevState => ({
       ...prevState,
@@ -399,8 +418,8 @@ function Compliance({ question, handleAnswerChange, savedAnswer, savedImprovemen
             id={`question_${question.Question_Number}_${option.value}`}
             name={`question_${question.Question_Number}`} 
             value={option.value}
-            checked={selectedRatings[question.Question_Number] === option.value}
-            onChange={() => handleRadioChange(question.Question_Number, option.value)}
+            checked={selectedRatings[question.Question_Number] === Number(option.value)}
+            onChange={() => handleRadioChange(question.Question_Number, Number(option.value))}
           />
           <label htmlFor={`question_${question.Question_Number}_${option.value}`} className={`compliance ${option.className}`}>
             {option.label}
@@ -464,8 +483,7 @@ function GapAnalysis() {
         try {
             const response = await axios.get(`http://127.0.0.1:8000/api/get-latest-gap/?company_name=${companyName}`);
             gapID = response.data.gap_id;
-            console.log(gapID);
-
+            localStorage.setItem("gapID", gapID);
 
             const newLinks = [
               { name: 'Policy', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=0&gap_id=${encodeURIComponent(gapID)}`, image: '' },

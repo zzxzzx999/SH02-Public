@@ -21,6 +21,7 @@ from .jsonReadWrite import *
 import os
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.core.exceptions import ObjectDoesNotExist
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -117,6 +118,20 @@ class PdfView(APIView):
             serializer.save()
             print(serializer.data)
             return Response(serializer.data)
+        
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_incomplete_answers(request):
+    gap_id = request.query_params.get("gap_id")
+
+    try:
+        gap = GapAnalysis.objects.get(id=gap_id)
+    except GapAnalysis.DoesNotExist:
+        return Response({"error": "GapAnalysis not found"}, status=404)
+
+    serializer = AnswersSerializer(gap)
+    return Response(serializer.data, status=200)
+
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -138,7 +153,11 @@ def getQuestionOrWriteAnswer(request):
         print("Incoming request data:", data)
         finished = data.get("finished")
         company = Company.objects.get(name = data.get("company_name"))
-        gap = GapAnalysis.objects.get(id = data.get("id"))
+        print(data.get("id"))
+        try:
+            gap = GapAnalysis.objects.get(id=data.get("id"))
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': 'GapAnalysis record not found for the given gapID'}, status=404)
         gap.gap_data = data.get("answers")
         gap.improvement_plan = data.get("improvementPlan")
         print("finished: ", finished)

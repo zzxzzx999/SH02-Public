@@ -35,4 +35,13 @@ class GapAnalysisSerializer(serializers.ModelSerializer):
 
 class QuestionsSerializer(serializers.Serializer):
     GetOrWrite = serializers.CharField(max_length=10, required=False)
+
+class AnswersSerializer(serializers.ModelSerializer):
+    gap_data = serializers.JSONField()
+    improvement_plan = serializers.JSONField()
+
+    class Meta:
+        model = GapAnalysis
+        fields = ['id', 'gap_data', 'improvement_plan']
+
     
