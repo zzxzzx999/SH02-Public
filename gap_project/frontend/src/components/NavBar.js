@@ -4,6 +4,7 @@ import '../css/NavBar.css';
 import { useSubmit } from './SubmitContext';
 
 function NavBar({links, logout, isComplete}) {
+
   let clear = false;
   const submitAnswersToAPI = useSubmit();
 
@@ -18,6 +19,7 @@ function NavBar({links, logout, isComplete}) {
   const params = new URLSearchParams(location.search);
   const companyName = params.get('company');
   localStorage.setItem("companyName", companyName);
+  const gapID = params.get("gap_id");
 
   const handleOutsideClick = (e) => {
     if (
@@ -118,7 +120,7 @@ function NavBar({links, logout, isComplete}) {
           SAVE AND EXIT
         </button>
         {isComplete &&
-          <button className="submitButton" style={{ margin: '15px' }} onClick={async () => { await submitAnswersToAPI(finished=true); navigate(`/overall-output?company=${companyName}`);}}>
+          <button className="submitButton" style={{ margin: '15px' }} onClick={async () => { await submitAnswersToAPI(finished=true); navigate(`/overall-output?company=${companyName}&gap_id=${encodeURIComponent(gapID)}`);}}>
             FINISHED, GO TO RESULTS
           </button>
         }
