@@ -178,6 +178,15 @@ function Elements() {
         const questionData = await fetchQuestion(set + 1, i);
         allQuestions = [...allQuestions, ...questionData];
       }
+      //add an 11th page : the summary page
+      allQuestions.push({
+        Section_Name: "Summary of " + allQuestions[0].Section_Name,
+        Questions: {
+          Question_Number: 'Summary', 
+          Question_Name: "",
+        },
+        isSummaryPage: true
+      });
       setQuestions(allQuestions);
       setCurrentQuestionIndex(0); 
     };
@@ -259,42 +268,53 @@ function Elements() {
 
       {questions.length > 0 && (
         <div>
-          <h1 className="section-title" style={{ marginLeft: '16px' }}>
-            {questions[currentQuestionIndex]?.Section_Name}
-          </h1>
 
-          <div className="question-text">
-            <p style={{ marginLeft: '16px' }}>
-              <strong>{questions[currentQuestionIndex]?.Questions?.Question_Number}: </strong>
-              {questions[currentQuestionIndex]?.Questions?.Question_Name}
-            </p>
+          {questions[currentQuestionIndex]?.isSummaryPage ? (
+          <div className="summary-page">
+              <h1 className="section-title" style={{ marginLeft: '16px' }}>
+                {questions[currentQuestionIndex]?.Section_Name}
+              </h1>
           </div>
+            ) : (
+            <div>
+              <h1 className="section-title" style={{ marginLeft: '16px' }}>
+                {questions[currentQuestionIndex]?.Section_Name}
+              </h1>
+  
+              <div className="question-text">
+                <p style={{ marginLeft: '16px' }}>
+                  <strong>{questions[currentQuestionIndex]?.Questions?.Question_Number}: </strong>
+                  {questions[currentQuestionIndex]?.Questions?.Question_Name}
+                </p>
+              </div>
 
-          <Compliance
-            question={questions[currentQuestionIndex]?.Questions}
-            handleAnswerChange={handleAnswerChange}  
-            savedAnswer={
-              answers[`${questions[currentQuestionIndex]?.Section_Number}`]?.[questions[currentQuestionIndex]?.Questions?.Question_Number &&
-                String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1] &&
-                String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
-              ]
-            }
-            savedImprovement = {
-              improvementPlan.improvement[
-                String(questions[currentQuestionIndex]?.Section_Number)
-              ]?.[
-                String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
-              ]
-            }
-            savedEvidence = {
-              improvementPlan.evidence[
-                String(questions[currentQuestionIndex]?.Section_Number)
-              ]?.[
-                String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
-              ]
-            }
-            
-          />
+              <Compliance
+                question={questions[currentQuestionIndex]?.Questions}
+                handleAnswerChange={handleAnswerChange}  
+                savedAnswer={
+                  answers[`${questions[currentQuestionIndex]?.Section_Number}`]?.[
+                    questions[currentQuestionIndex]?.Questions?.Question_Number &&
+                    String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1] &&
+                    String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
+                  ]
+                }
+                savedImprovement = {
+                  improvementPlan.improvement[
+                    String(questions[currentQuestionIndex]?.Section_Number)
+                  ]?.[
+                    String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
+                  ]
+                }
+                savedEvidence = {
+                  improvementPlan.evidence[
+                    String(questions[currentQuestionIndex]?.Section_Number)
+                  ]?.[
+                    String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
+                  ]
+                }
+              />
+              </div>
+            )}
 
           <div className="navigation-buttons-container">
             <div className="navigation-buttons">
