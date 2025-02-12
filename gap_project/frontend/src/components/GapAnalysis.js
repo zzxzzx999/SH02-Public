@@ -14,9 +14,46 @@ function Elements() {
   const companyName = params.get('company');
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState({}); 
-  const [improvementPlan, setImprovementPlan] = useState({});
   const [isComplete, setIsComplete] = useState(false);
+
+  // set up improvement plan
+  const getDefaultImprovementPlan = () => {
+    return {
+      evidence: Object.fromEntries(
+        Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill("")]) 
+      ),
+      improvement: Object.fromEntries(
+        Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill("")]) 
+      ),
+    };
+  }
+
+  // try to set improvement plan with default
+  const [improvementPlan, setImprovementPlan] = useState(getDefaultImprovementPlan());
+  
+  // if answers is not populated yet, fill it with empty entries
+  useEffect(() => {
+    if (!improvementPlan.improvement) {
+      setImprovementPlan(getDefaultImprovementPlan());
+    }
+  }, [improvementPlan]);
+
+  // set up answers
+  const getDefaultAnswers = () => {
+    return Object.fromEntries(
+      Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill(0)])
+    );
+  };
+
+  // try to set answers to default when initialising it
+  const [answers, setAnswers] = useState(getDefaultAnswers()); 
+
+  // if answers is not populated yet, fill it with empty entries (0s)
+  useEffect(() => {
+    if (!answers || Object.keys(answers).length === 0) {
+      setAnswers(getDefaultAnswers());
+    }
+  }, [answers]);
 
   useEffect(() => {
     if (answers && typeof answers === "object") {
@@ -72,23 +109,6 @@ function Elements() {
     { name: 'Improvement Planning', path: `/gap-analysis/policy?improvement-planning=${encodeURIComponent(companyName)}&element=11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
   ];
 
-  const getDefaultImprovementPlan = () => {
-    return {
-      evidence: Object.fromEntries(
-        Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill("")]) 
-      ),
-      improvement: Object.fromEntries(
-        Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill("")]) 
-      ),
-    };
-  }
-
-  const getDefaultAnswers = () => {
-    return Object.fromEntries(
-      Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill(0)])
-    );
-  };
-   
   // Format answers for backend
   const prepareAnswers = () => {
     const formattedAnswers = {};
