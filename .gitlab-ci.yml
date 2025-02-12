@@ -64,7 +64,6 @@ build-frontend:
     - cd "$FRONTEND_DIR"
     - npm install
   script:
-    - npm ci
     - npm run build
   artifacts:
     paths:
@@ -83,7 +82,7 @@ test-backend:
     - cd $CI_PROJECT_DIR
     - pip install -r requirements.txt
     - pip install coverage
-    # - python manage.py makemigrations --merge
+    - python manage.py makemigrations
     - python manage.py migrate
   script:
     - coverage run --source='.' manage.py test
