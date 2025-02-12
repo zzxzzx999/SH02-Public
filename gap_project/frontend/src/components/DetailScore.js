@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import '../css/DetailScore.css';
 import '../css/NavBar.css';
 import NavBar from "./NavBar";
@@ -9,6 +9,7 @@ import PieChart from "./charts/PieChart";
 
 function DetailScore() {
   const location = useLocation(); // require para
+  const navigate = useNavigate();
   const params = new URLSearchParams(location.search);
   const companyName = params.get('company');
   const elementName = params.get('title');
