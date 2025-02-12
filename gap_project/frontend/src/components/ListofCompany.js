@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import '../css/ListofCompany.css';
 import '../css/NavBar.css';
 import NavBar from './NavBar';
@@ -16,57 +16,164 @@ function ListofCompany(){
     const[sortVisible, setSortVisible]=useState(false);
     const[showPopup, setShowPopup]= useState(false);
     const [deleteTarget, setDeleteTarget] = useState(null); // save ID of deleted company
-
     const [companies, setCompanies] = useState([]);
-
     const[filter, setFilter]= useState("");
     const [sort, setSort] = useState("");    // current sort condition
+    const [searchKeyword, setSearchKeyword] = useState(""); 
+    const [scores, setScores] = useState({});
+    const [searchParams] = useSearchParams();
+    const [gapId, setGapId] = useState(null);
+    const [analyses, setAnalyses] = useState([])
+    
     
     //backendlink
-    useEffect(() => {const token = localStorage.getItem("authToken");
-        axios.get("http://localhost:8000/api/companies/", {
-            headers: {
-                Authorization: `Token ${token}`,
-            }
-        }).then((response) => {setCompanies(response.data);})
-    .catch((error) => {console.error("Error :", error.response || error.message);
-
-    });}, []);
-
+    const fetchCompanies = () => {
+        const token = localStorage.getItem("authToken");
+        axios
+          .get("http://localhost:8000/api/companies/", {
+            headers: { Authorization: `Token ${token}` },
+          })
+          .then((response) => {
+            setCompanies(
+                response.data.map((company) => ({
+                    
+                    name: company.name,
+                    score: 0,
+                    dateRegistered: company.dateRegistered,
+                }))
+            );
+        })
+          .catch((error) => console.error("Error:", error));
+      };
     
+    useEffect(fetchCompanies, []);
+
+     // Fetch the latest analysis for each company
+     useEffect(() => {
+        companies.forEach((company) => {
+            fetch(`http://localhost:8000/api/past_analyses/${encodeURIComponent(company.name)}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.past_analyses.length > 0) {
+                        const latestAnalysis = data.past_analyses[0]; // Get the latest analysis
+                        setAnalyses((prevAnalyses) => ({
+                            ...prevAnalyses,
+                            [company.name]: latestAnalysis, // Store the latest analysis for this company
+                        }));
+                    }
+                })
+                .catch((error) => console.error("Error fetching analysis:", error));
+        });
+    }, [companies]);
+    
+    // get the latest analysis score of each company
+    useEffect(() => {
+        // get company list
+        fetch("http://localhost:8000/api/companies")
+            .then((res) => res.json())
+            .then((data) => {
+                setCompanies(data); 
+                // get total_score of latest analysis of each company 
+                data.forEach(company => {
+                    fetch(`http://localhost:8000/api/company-latest-total-score/${encodeURIComponent(company.name)}`)
+                        .then((res) => res.json())
+                        .then((scoreData) => {
+                            setScores(prevScores => ({
+                                ...prevScores,
+                                [company.name]: scoreData.score || 0
+                            }));
+                        })
+                        .catch(error => console.error("Error fetching score:", error));
+                });
+            })
+            .catch(error => console.error("Error fetching companies:", error));
+    }, []);
     
     //filter bar
-    const filteredCompanies = companies.filter((company) => {
-        if (filter === "No GAP Analysis") return company.score <= 0; 
-        if (filter === "Already Analysis") return company.score > 0; 
-        return true;
-      });
+    const filteredCompanies = companies.map((company) => ({
+        ...company,
+        score: scores[company.name] ?? 0, // make sure score is assigned value correctly
+    })).filter((company) => {
+        const matchesFilter =
+            (filter === "No GAP Analysis" && company.score <= 0) ||
+            (filter === "Already Analysis" && company.score > 0) ||
+            filter === ""; 
+        const matchesSearch = company.name.toLowerCase().includes(searchKeyword.toLowerCase());
+        return matchesFilter && matchesSearch;
+    });
     
     //sort bar
     const sortedCompanies = [...filteredCompanies].sort((a, b) => {
-        if (sort === "Score High to Low") return b.score - a.score;
-        if (sort === "Score Low to High") return a.score - b.score;
-        if (sort === "Earliest Registered") return new Date(a.date) - new Date(b.date);
-        if (sort === "Latest Registered") return new Date(b.date) - new Date(a.date);
+        const scoreA = scores[a.name] ?? -1;
+        const scoreB = scores[b.name] ?? -1;
+    
+        if (sort === "Score High to Low") return scoreB - scoreA;
+        if (sort === "Score Low to High") return scoreA - scoreB;
+        
+        if (sort === "Earliest Registered") {
+            return new Date(a.dateRegistered) - new Date(b.dateRegistered);
+        }
+        if (sort === "Latest Registered") {
+            return new Date(b.dateRegistered) - new Date(a.dateRegistered);
+        }
         return 0;
-      });
+    });
+
+    useEffect(() => {
+        setCompanies((prevCompanies) =>
+            prevCompanies.map((company) => ({
+                ...company,
+                score: scores[company.name] ?? 0, 
+            }))
+        );
+    }, [scores]);
+
+
+    useEffect(() => {
+        const currentGapId = searchParams.get("gap_id");
+        if (currentGapId) {
+            const selectedAnalysis = analyses.find(a => a.gap_id === parseInt(currentGapId, 10));
+            if (selectedAnalysis) {
+                setGapId(selectedAnalysis.gap_id); // save gap_id
+            }
+        } else {
+            setGapId(null);
+        }
+    }, [searchParams, analyses]);
 
     //delete pop up
     const handleDeleteClick = (company) => {
-        setDeleteTarget(company);
-        setShowPopup(true); // show pop up
-      };
+        console.log(company); 
+        if (company && company.name) {
+            setDeleteTarget(company);  
+            setShowPopup(true); 
+        } else {
+            console.error("Company ID is missing");
+        };}
 
     const confirmDelete = () => {
-        setCompanies(companies.filter((c) => c.id !== deleteTarget.id));
-        setShowPopup(false); // hide pop up
-        setDeleteTarget(null);
-      };
+            const token = localStorage.getItem("authToken"); 
+            axios
+                .delete(`http://localhost:8000/api/companies/${deleteTarget.name}/delete/`, {
+                    headers: { Authorization: `Token ${token}` },
+                })
+                .then(() => {
+                    setCompanies((prevCompanies) =>
+                        prevCompanies.filter((c) => c.name !== deleteTarget.name));
+                    setShowPopup(false);
+                    setDeleteTarget(null);
+                })
+                .catch((error) => {
+                    console.error("Error during deletion:", error);
+                    alert("Failed to delete the company. Please try again.");
+            });} 
+            
     
     const cancelDelete = () => {
         setShowPopup(false);  
         setDeleteTarget(null);
       };
+
     return(
         <div class="main-content">
              <NavBar links={linksForPage2} logout={true} />
@@ -167,20 +274,23 @@ function ListofCompany(){
                     {/*React usually use map to iterator the company datas*/}
                     {sortedCompanies.map((company) => (
                         <div key={company.name} className="table-row">
-                        <span>
-                            <Link to={`/registed-company?company=${company.name}`}>{company.name}</Link>
+                        <span className="company-name">
+                        <Link to={`/registed-company?company=${encodeURIComponent(company.name)}&gap_id=${analyses[company.name]?.gap_id || ""}`}
+                                >{company.name}</Link>
+                        </span>
+                            
+                        <span className="score-column">{scores[company.name]|| ''}</span>
+                        <span className="date-column">{new Date(company.dateRegistered).toLocaleDateString()}</span>
+                        <span className="delete-column">
                             <button
-                            className="delete-button"
-                            onClick={() => handleDeleteClick(company)}
-                           >
-                            Delete
+                                className="delete-button"
+                                onClick={() => handleDeleteClick(company)}
+                            >
+                                Delete
                             </button>
                         </span>
-                        <span>{company.score}</span>
-                        <span>{company.date}</span>
                         </div>
                     ))}
-
                     
                 </div>
                 {showPopup && (

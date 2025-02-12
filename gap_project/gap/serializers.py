@@ -5,9 +5,8 @@ from .models import Company
 # import the todo data model
 from .models import *
 
-# create a serializer class
-class IndexSerializer(serializers.ModelSerializer):
-
+class CompanyListSerializer(serializers.ModelSerializer):
+ 
     # create a meta class
     class Meta:
         model = Company
@@ -17,17 +16,32 @@ class CompanySerializer(serializers.ModelSerializer):
 
     class Meta:
             model = Company
-            fields = ('name',)
+            fields = ('name','dateRegistered', 'notes', 'current_gap')
         
 class GapAnalysisSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = GapAnalysis
-        fields = ['title', 'improvement_plan']
+        fields = ('title', 'company', 'consultant', 'companyRep', 'companyEmail', 'additionalNotes', 'gap_data', 'improvement_plan')
 
-class QuestionsSerializer(serializers.ModelSerializer):
-    
+    def create(self, validated_data):
+        """ Handle JSON fields properly """
+        gap_data = validated_data.pop('gap_data', {})
+        improvement_plan = validated_data.pop('improvement_plan', {})
+
+        # Create the GapAnalysis instance
+        gap_analysis = GapAnalysis.objects.create(**validated_data, gap_data=gap_data, improvement_plan=improvement_plan)
+        return gap_analysis
+
+
+class QuestionsSerializer(serializers.Serializer):
+    GetOrWrite = serializers.CharField(max_length=10, required=False)
+
+class AnswersSerializer(serializers.ModelSerializer):
+    gap_data = serializers.JSONField()
+    improvement_plan = serializers.JSONField()
+
     class Meta:
         model = GapAnalysis
-        fields = '__all__'
+        fields = ['id', 'gap_data', 'improvement_plan']
+
     

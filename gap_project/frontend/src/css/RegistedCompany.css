@@ -18,7 +18,7 @@
   
   /* left part */
   .left-part {
-    height: 98%;
+    height: 97%;
     width: 22%;
     flex: 0.8;
     background-color: white;
@@ -30,8 +30,9 @@
   }
 
   .left-part h2 {
-    font-size: 1.8rem;
-    margin : 0.5%;
+    font-size: 2vw;
+    margin-bottom: 5%;
+    margin-top: 0;
   }
 
   .company-info {
@@ -39,14 +40,27 @@
     background-color: #e9e9e9;
     border-radius: 10px;
     padding: 2%;
+    width: 100%;
+    word-wrap: break-word; /* line break*/
+    white-space: normal;
+    font-size: 1vw;
     
 }
   
 .past-gap{
     margin-top: auto; /* push to centre */
     margin-bottom: auto; /* push to centre */
-    white-space: nowrap;
+    word-wrap: break-word; 
 }
+
+.past-gap h2 {
+  font-size: 1.8vw;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+}
+
 .analysis-list{
     overflow-y: auto;
     outline: none;
@@ -55,6 +69,7 @@
     padding: 10px;
     margin-top: auto; 
     margin-bottom: auto; 
+    font-size: 1vw;
 }
   .analysis-list ul {
     margin-top: 0;
@@ -87,7 +102,7 @@
 }
 
 .overview-bubble h1 {
-    font-size: 2.5em;
+    font-size: 2.5vw;
     margin: 0 auto;
     text-align: center;
 }
@@ -125,7 +140,7 @@
     padding: 20px;
     border-radius: 15px;
     width: auto;
-    height: 83%;
+    height: 85%;
     position: relative;
 
 }
@@ -142,13 +157,13 @@
     background-color: #e9e9e9;
     padding: 3%;
     text-align: center;
-    height: 40%;
+    height: 42%;
   }
 
   .chart-placeholder h2 {
     margin-top: 0;
     margin-bottom: 2%;
-    font-size: 1.3rem;
+    font-size: 1.5vw;
   }
   
   .large-chart {
@@ -177,7 +192,7 @@
     padding: 8px 16px;
     border-radius: 15px;
     cursor: pointer;
-    font-size: 1.5rem;
+    font-size: 1.6vw;
     margin-top: 2%;
    
   }

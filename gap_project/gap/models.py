@@ -21,7 +21,9 @@ class GapAnalysis(models.Model):
     consultant = models.CharField(max_length=128, unique=False)
     gap_data = models.JSONField(default=dict)
     improvement_plan = models.JSONField(default=dict)
-
+    companyRep= models.CharField(max_length=128, unique=False, blank=False, null=False)
+    companyEmail = models.EmailField(max_length=128, blank=False, null=False, default='example@company.com')
+    additionalNotes = models.TextField(blank=True)
     
     class Meta:
         verbose_name_plural = "Gap Analyses"

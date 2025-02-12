@@ -9,7 +9,6 @@ const url = 'http://127.0.0.1:8000/api'
 function AboutUs() {
   const linksForPage1 = [
     { name: 'Add New Company', path: '/new-company' , image:'/add-new-company.png'},
-    { name: 'List of Company', path: '/list-of-company', image: '/company-list.png'}
   ];
 
   const [data, setData] = useState([])
@@ -57,20 +56,30 @@ function AboutUs() {
     setData([]);   
   };
 
+  console.log("company info: " + data);
+
   return (
     <div className="main-content">
       <NavBar links={linksForPage1} logout={true}/> {/* Passing the links to the Navbar component */}
       <div className="about-us-search">
-        <h2 className = "search-text">Search for Company to Start GAP Analysis</h2>
+        <h2 className = "search-text">Gordon Foley Consulting</h2><br></br>
         <div className="search-box-and-results">
-        <input className="search-box" type="search" placeholder="search for company" value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={handleKeyDown}/>
-        <button onClick={clearSearch} className="clear-button">Clear Results</button>
+          <input className="search-box" type="search" placeholder="Search for company..." value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={handleKeyDown}/>
+          <button onClick={clearSearch} className="clear-button">Clear Results</button>
           {Array.isArray(data) && data.length > 0 ? (
           data.map((company) => (
-              <div className="search-results">
-                <p key={company.name}>Company name: {company.name}</p>
-                <Link to={`/new-gap-confirm?company=${company.name}`} className="start-gap-link">Start GAP Analysis</Link>
-              </div>
+            <div className="search-results">
+              <p key={company.name}>{company.name}</p>
+              {company.current_gap ? (
+                <Link to={`/gap-analysis?company=${company.name}`} className="start-gap-link">
+                  Resume GAP Analysis
+                </Link>
+              ) : (
+                <Link to={`/new-gap-confirm?company=${company.name}`} className="start-gap-link">
+                Start GAP Analysis
+                </Link> //if company does not have an ongoing gap
+              )}
+            </div>
           ))
           ) : (
           <p className="search-results">No companies found</p>
