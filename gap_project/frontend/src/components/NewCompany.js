@@ -37,8 +37,8 @@ function NewCompany() {
   return (
     <div className="create-new-company">
         <NavBar links = {linksForPage2} logout={true}/>
-        <div className="bubble-container" style = {{width:'500px'}}>
-        <h2> CREATE NEW COMPANY </h2>
+        <div className="bubble-container" style = {{width:'500px', padding:'30px'}}>
+        <h2 style={{fontSize:'24px'}}> CREATE NEW COMPANY </h2>
             <form className="form" onSubmit={handleSubmit}>
                 {/* company name */}
 
@@ -55,6 +55,8 @@ function NewCompany() {
                 {/* Additional comments */}
             <label> 
                 <textarea
+                    id="add_comments"
+                    style={{width:'350px'}}
                     type="text" 
                     value={additionalNotes}
                     onChange={(e) => setAdditionalNotes(e.target.value)}
