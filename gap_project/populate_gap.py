@@ -43,10 +43,10 @@ def create_test_data():
         company=company,
         date="2025-01-01",  
         consultant="Tester",
-        defaults={"gap_data":json.dumps(gap_data)},
+        defaults={"gap_data":(gap_data)},
     )
 
-    gap_analysis.gap_data = json.dumps(gap_data)
+    gap_analysis.gap_data = (gap_data)
     gap_analysis.save()
     company.save()
     print(company.dateRegistered) 
@@ -93,8 +93,8 @@ def add_gap(date, c, i):
     g = GapAnalysis.objects.get_or_create(date = date, company = c, )[0]
     print(date)
     g.title = f"Gap Analysis{i} : {date}"
-    g.gap_data = json.dumps(question_answer_set.copy())
-    g.improvement_plan = json.dumps(improvment_plan.copy())
+    g.gap_data = (question_answer_set.copy())
+    g.improvement_plan = (improvment_plan.copy())
     g.save()
     
 if __name__ == '__main__':

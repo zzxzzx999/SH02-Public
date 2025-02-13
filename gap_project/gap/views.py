@@ -342,7 +342,7 @@ def company_latest_total_score(request, company_name):
     if not latest_analysis:
         return Response({"name": company.name, "score": 0})  # if no analysisi data return 0
     try:
-        gap_data = json.loads(latest_analysis.gap_data)
+        gap_data = (latest_analysis.gap_data)
         total_score = sum(sum(scores) for scores in gap_data.values() if isinstance(scores, list))
     except (json.JSONDecodeError, TypeError, ValueError) as e:
         print(f"Error processing gap_data for company {company.name}: {e}")
