@@ -49,6 +49,7 @@ function NewCompany() {
                         value={companyName} // Controlled input
                         onChange={(e) => setCompanyName(e.target.value)} // Update state
                         placeholder = "Company Name"
+                        required
                     />
 
 
