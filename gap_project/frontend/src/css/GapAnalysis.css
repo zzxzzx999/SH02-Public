@@ -257,17 +257,48 @@ textarea:focus {
     background-color: white;
     border-radius: 20px;
     display:inline-block;
-  }
+}
   
-  .output:last-child {
-    margin-right: 0; 
-  }
+.output:last-child {
+margin-right: 0; 
+}
 
-  .output li {
-    margin-left:5px;
-    text-wrap: wrap;
-    list-style-type: none
-  }
-  .output-img {
-    float:right;
-  }
+.output li {
+margin-left:5px;
+text-wrap: wrap;
+list-style-type: none
+}
+.output-img {
+float:right;
+}
+
+.summary-table {
+border: 1px solid black;
+background-color: white;
+border-collapse: collapse;
+width: 100%;
+}
+
+.summary-rows {
+border: 1px solid black;
+}
+
+.summary-headers {
+padding: 3px;
+border: 1px solid black;
+table-layout: fixed;
+text-align: left;
+font-family: 'Poppins';
+border-bottom: 1px solid #ddd;
+}
+
+tr:hover {
+background-color: coral;
+}
+
+.summary-data {
+padding: 3px;
+border: 1px solid black;
+font-family: 'Poppins';
+/*border-bottom: 1px solid #ddd;*/
+}

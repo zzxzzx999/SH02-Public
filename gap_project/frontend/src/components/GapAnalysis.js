@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import NavBar from './NavBar';
+import Accordion from './Accordion'
 import { SubmitProvider } from './SubmitContext';
 import '../css/GapAnalysis.css';
 import { useLocation } from 'react-router-dom';
@@ -268,12 +269,15 @@ function Elements() {
 
       {questions.length > 0 && (
         <div>
-
           {questions[currentQuestionIndex]?.isSummaryPage ? (
           <div className="summary-page">
               <h1 className="section-title" style={{ marginLeft: '16px' }}>
                 {questions[currentQuestionIndex]?.Section_Name}
               </h1>
+            {/*questions.map((question, index) => (
+              <p key={index}>{question.Questions.Question_Name}</p>
+            ))*/}
+            <Accordion />
           </div>
             ) : (
             <div>
