@@ -3,7 +3,7 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import '../css/Accordion.css'
 
 //  accordionitem component
-const AccordionItem = ({ question, score, improvement, evidence, isOpen, onClick }) => {
+const AccordionItem = ({ question, score, improvement, evidence, isOpen, onClick, index }) => {
   const contentHeight = useRef();
   console.log(improvement);
   return (
@@ -12,7 +12,7 @@ const AccordionItem = ({ question, score, improvement, evidence, isOpen, onClick
         className={`question-container ${isOpen ? "active" : ""}`}
         onClick={onClick}
       >
-        <p className="question-content">{question}</p>
+        <p className="question-content">{index+1}. {question}</p>
         <RiArrowDropDownLine className={`arrow ${isOpen ? "active" : ""}`} />
       </button>
 
@@ -25,9 +25,9 @@ const AccordionItem = ({ question, score, improvement, evidence, isOpen, onClick
             : { height: "0px" }
         }
       >
-        <p className="answer-content">{score}</p>
-        <p className="answer-content">{evidence}</p>
-        <p className="answer-content">{improvement}</p>
+        <p className="answer-content">Compliance Score: {score}</p>
+        <p className="answer-content">Evidence: {evidence}</p>
+        <p className="answer-content">Improvement: {improvement}</p>
 
       </div>
     </div>
@@ -44,7 +44,7 @@ const Accordion = ({data, answers, evidence, improvement}) => {
 
   return (
     <div className="container">
-      {data.map((q, index) => (
+      {data.slice(0, -1).map((q, index) => (
         <>
         <AccordionItem
           key={index}
@@ -72,6 +72,7 @@ const Accordion = ({data, answers, evidence, improvement}) => {
           }
           isOpen={activeIndex === index}
           onClick={() => handleItemClick(index)}
+          index = {index}
         />
         </>
       ))}
