@@ -277,7 +277,7 @@ function Elements() {
             {/*questions.map((question, index) => (
               <p key={index}>{question.Questions.Question_Name}</p>
             ))*/}
-            <Accordion />
+            <Accordion data={questions} answers={answers} improvement={improvementPlan.improvement} evidence={improvementPlan.evidence}/>
           </div>
             ) : (
             <div>
