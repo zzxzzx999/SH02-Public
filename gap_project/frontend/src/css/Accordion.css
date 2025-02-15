@@ -1,17 +1,17 @@
 body {
     overflow: hidden;
+    font-family: "Poppins";
 }
 
 .container {
   background-color: rgba(255, 255, 255, 0.7);
-  max-height: 65vh; /* Set desired height */
-  overflow-y: auto; /* Enable vertical scrolling */
-  scrollbar-width: thin; /* For Firefox */
-  border-radius: 10px;
+  max-height: 65vh;
+  overflow-y: auto; 
+  scrollbar-width: thin; 
   overflow: auto;
-  margin-left: 16px;
-  margin-right: 16px;
+  margin-left: 1em;
   background-clip: padding-box;
+  width: 92vw;
 }
 
 .wrapper {
@@ -67,10 +67,91 @@ body {
 
 .wrapper .answer-content {
     margin-left:1em;
-  /*font-size: 16px;*/
 }
 
 .answer-content {
     margin:0;
-    padding-top:0.5em;
+    padding:0.5em;
 }
+
+.compliance-box {
+  background-color: #50a7d3;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border: 1px solid #ccc;
+    margin: auto;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    width: 20%;
+  }
+  
+  .evidence-improvement-container {
+    margin-left: 16px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 16px;
+  }
+  
+  .evidence-text {
+    position: relative;
+    text-align: left;
+    background-color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    width: 30%;
+    padding-top: 2em;
+    max-height: 5em;
+    word-wrap: break-word; 
+    overflow-wrap: break-word; 
+    overflow: auto;
+  }
+
+  .evidence-text::before {
+    text-align: center;
+    color: #555;
+    font-weight: bold;
+    content: "Evidence";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5vh;
+    background-color: #ECEBEB;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+  
+  .improvement-text {
+    position: relative;
+    text-align: left;
+    background-color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    width: 30%;
+    max-height: 5em;
+    padding-top: 2em;
+    word-wrap: break-word; 
+    overflow-wrap: break-word; 
+    overflow: auto;
+    margin-right: 2em;
+  }
+
+  .improvement-text::before {
+    text-align: center;
+    font-weight: bold;
+    color: #555;
+    content: "Improvement";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5vh;
+    background-color: #ECEBEB;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+  
