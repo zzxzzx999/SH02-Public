@@ -2,26 +2,17 @@ import React, { useRef, useState, useEffect } from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import '../css/Accordion.css'
 
-const COLOR_MAP = {
-    exceptional: '#006613', 
-    good: '#42C259',
-    basic: '#7CCC8B', 
-    needsImprovement: '#FFC546', 
-    unsatisfactory: '#FF0B0B', 
-  };
+const compliance = {
+  1: {text:( <> Exceptional Compliance<br /> (Score 5) </> ), color: '#006613'},
+  2: {text:( <> Good Compliance<br /> (Score 4) </> ), color: '#42C259'},
+  3: {text:( <> Basic Compliance<br /> (Score 3) </> ), color: '#7CCC8B'},
+  4: {text:( <> Needs Improvement<br /> (Score 2) </> ), color: '#FFC546'},
+  5: {text:( <> Unsatisfactory<br /> (Score 1) </> ), color: '#FF0B0B'}
+};
 
-  const compliance = {
-    1: {text:( <> Exceptional Compliance<br /> (Score 5) </> ), color: '#006613'},
-    2: {text:( <> Good Compliance<br /> (Score 4) </> ), color: '#42C259'},
-    3: {text:( <> Basic Compliance<br /> (Score 3) </> ), color: '#7CCC8B'},
-    4: {text:( <> Needs Improvement<br /> (Score 2) </> ), color: '#FFC546'},
-    5: {text:( <> Unsatisfactory<br /> (Score 1) </> ), color: '#FF0B0B'}
-  };
-
-//  accordionitem component
 const AccordionItem = ({ question, score, improvement, evidence, isOpen, onClick, index }) => {
   const contentHeight = useRef();
-  console.log(improvement);
+
   return (
     <div className="wrapper">
       <button
@@ -47,14 +38,12 @@ const AccordionItem = ({ question, score, improvement, evidence, isOpen, onClick
             <p className="evidence-text">{evidence || "N/A"}</p>
             <p className="improvement-text">{improvement || "N/A"}</p>
         </div>
-
       </div>
     </div>
   );
 };
 
 const Accordion = ({data, answers, evidence, improvement}) => {
-      
   const [activeIndex, setActiveIndex] = useState(null);
 
   const handleItemClick = (index) => {
@@ -64,7 +53,6 @@ const Accordion = ({data, answers, evidence, improvement}) => {
   return (
     <div className="container">
       {data.slice(0, -1).map((q, index) => (
-        <>
         <AccordionItem
           key={index}
           question={q.Questions.Question_Name}
@@ -93,7 +81,6 @@ const Accordion = ({data, answers, evidence, improvement}) => {
           onClick={() => handleItemClick(index)}
           index = {index}
         />
-        </>
       ))}
     </div>
   );
