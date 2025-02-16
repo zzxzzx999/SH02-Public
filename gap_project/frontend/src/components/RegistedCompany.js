@@ -3,14 +3,17 @@ import { Link, useLocation, useNavigate, useSearchParams } from "react-router-do
 import '../css/NavBar.css';
 import "../css/RegistedCompany.css";
 import NavBar from "./NavBar";
+import BarChart from "./charts/BarChart";
+import LineChart from "./charts/LineChart";
+import LineChartWithBackground from "./charts/LineChartWithBg";
 
 function RegistedCompany() {
     const linksForPage3 = [
         { name: 'Previous Page', path: '/list-of-company' , image:'/back-button.png'},
     ];
 
-    const location = useLocation();
-    const params = new URLSearchParams(location.search);
+    const location = useLocation();  // get current URL info
+    const params = new URLSearchParams(location.search);  // get and query para
     const companyName = params.get('company');
     const [title, setTitle] = useState("Overview");
     const [gapId, setGapId] = useState(null);
@@ -170,9 +173,8 @@ function RegistedCompany() {
                 {/* Overview title and download button */}
                 <div className="o-d-section">
                     <div className="overview-bubble">
-                    <h1>Overview</h1>
-                    
-                </div> 
+                        <h1>{title}</h1>
+                    </div>              
                     <img
                         src="/download.png" 
                         alt="Download"
@@ -186,18 +188,18 @@ function RegistedCompany() {
                     <div className="left-chart">
                         <div className="chart-placeholder">
                             <h2>Summary of Sections</h2>
-                            <div className="chart-box">[Chart Placeholder]</div>
+                            <div className="chart-box"><BarChart chartData={barData}/></div>
                         </div>
                         <div className="chart-placeholder">
                             <h2>Benchmark Improvement</h2>
-                            <div className="chart-box">[Chart Placeholder]</div>
+                            <div className="chart-box"><LineChart chartData={lineData}/></div>
                         </div>
                     </div>
 
                     {/* right part chart */}
                     <div className="chart-placeholder large-chart">
                         <h2>Potential Score Comparison</h2>
-                        <div className="chart-box">[Chart Placeholder]</div>
+                        <div className="chart-box"><LineChartWithBackground chartData={lineBgData}/></div>
                     </div>
                     {/* View Full Analysis */}
                     <div className="full-analysis">

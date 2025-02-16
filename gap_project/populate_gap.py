@@ -93,6 +93,8 @@ def add_gap(date, c, i):
     print(date)
     g.title = f"Gap Analysis{date}"
     g.gap_data = json.dumps(question_answer_set.copy())
+    print(f"gap data saved: \n {g.gap_data}")
+    print(f"Answer set copy: \n {str(question_answer_set.copy())}")
     g.improvement_plan = json.dumps(improvment_plan.copy())
     g.save()
     

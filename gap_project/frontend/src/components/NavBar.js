@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState , forwardRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import '../css/NavBar.css';
 import { useSubmit } from './SubmitContext';
@@ -132,12 +132,13 @@ function NavBar({links, logout, isComplete}) {
 
 export default NavBar;
 
-function Popup({onClose, children}) {
+const Popup = forwardRef(({ onClose, children }, ref) => {
   return (
-      <div className="bubble-container" style = {{width:'500px', marginTop:'40px'}} onClick={(e) => e.stopPropagation()}>
-        {children}
-      </div>
+    <div className="bubble-container" style={{ width: '500px', marginTop: '40px' }} onClick={(e) => e.stopPropagation()} ref={ref}>
+      {children}
+    </div>
   );
-}
+});
+
 
 

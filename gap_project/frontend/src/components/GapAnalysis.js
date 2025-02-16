@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import NavBar from './NavBar';
+import { SubmitProvider } from './SubmitContext';
 import '../css/GapAnalysis.css';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -245,53 +246,74 @@ function Elements() {
   };
 
   const goToNextQuestion = () => {
-    if (currentQuestionIndex < questions[0].Questions.length - 1) {
+    if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     }
   };
-
 
   return (
     <div className="gap">
       <SubmitProvider submitAnswersToAPI={submitAnswersToAPI}>
         <NavBar className="elements" links={links} logout={false} isComplete={isComplete} />
       </SubmitProvider>
-  
+
       {questions.length > 0 && (
         <div>
           <h1 className="section-title" style={{ marginLeft: '16px' }}>
             {questions[currentQuestionIndex]?.Section_Name}
           </h1>
-  
+
           <div className="question-text">
-            <p style={{marginLeft:'16px'}}>
-              <strong>{questions[0].Questions[currentQuestionIndex].Question_Number}: </strong>
-              {questions[0].Questions[currentQuestionIndex].Question_Name}
+            <p style={{ marginLeft: '16px' }}>
+              <strong>{questions[currentQuestionIndex]?.Questions?.Question_Number}: </strong>
+              {questions[currentQuestionIndex]?.Questions?.Question_Name}
             </p>
           </div>
-  
-          <Compliance question={questions[0].Questions[currentQuestionIndex]} />
-  
+
+          <Compliance
+            question={questions[currentQuestionIndex]?.Questions}
+            handleAnswerChange={handleAnswerChange}  
+            savedAnswer={
+              answers[`${questions[currentQuestionIndex]?.Section_Number}`]?.[questions[currentQuestionIndex]?.Questions?.Question_Number &&
+                String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1] &&
+                String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
+              ]
+            }
+            savedImprovement = {
+              improvementPlan.improvement[
+                String(questions[currentQuestionIndex]?.Section_Number)
+              ]?.[
+                String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
+              ]
+            }
+            savedEvidence = {
+              improvementPlan.evidence[
+                String(questions[currentQuestionIndex]?.Section_Number)
+              ]?.[
+                String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
+              ]
+            }
+            
+          />
+
           <div className="navigation-buttons-container">
             <div className="navigation-buttons">
-              <div className="question-buttons">
-                {questions[0].Questions.map((question, index) => (
-                  <button
-                    key={index}
-                    onClick={() => navigateToQuestion(index)}
-                    className={currentQuestionIndex === index ? "active" : ""}
-                  >
-                    {question.Question_Number.slice(2)}
-                  </button>
-                ))}                
-              </div>
-  
+              {questions.map((question, index) => (
+                <button
+                  key={index}
+                  onClick={() => navigateToQuestion(index)}
+                  className={currentQuestionIndex === index ? "active" : ""}
+                >
+                  {String(question.Questions.Question_Number).split('.')[1]?.slice(0, 2)}
+                </button>
+              ))}
+
               <button
                 className="next-button"
                 onClick={goToNextQuestion}
-                disabled={currentQuestionIndex === questions[0].Questions.length - 1}
+                disabled={currentQuestionIndex === questions.length - 1}
               >
-              &gt;
+                &gt;
               </button>
             </div>
           </div>
@@ -299,10 +321,10 @@ function Elements() {
       )}
     </div>
   );
-}  
+}
 export { Elements };
 
-function Compliance({ question }) {
+function Compliance({ question, handleAnswerChange, savedAnswer, savedImprovement, savedEvidence }) {
   const [selectedRatings, setSelectedRatings] = useState({});
   const [evidence, setEvidence] = useState({});
   const [improvement, setImprovement] = useState({});
@@ -363,10 +385,15 @@ function Compliance({ question }) {
   
 
   const handleRadioChange = (questionNumber, value) => {
-    setSelectedRatings(prevState => ({
+    setSelectedRatings((prevState) => ({
       ...prevState,
-      [questionNumber]: value 
+      [questionNumber]: value,
     }));
+  
+    const questionNumberStr = String(questionNumber);
+    var [key, index] = questionNumberStr.split('.');
+
+    handleAnswerChange('a', key, value, index); 
   };
   
   const handleEvidenceChange = (questionNumber, value) => {
@@ -374,13 +401,23 @@ function Compliance({ question }) {
       ...prevState,
       [questionNumber]: value
     }));
-  };
+
+    const questionNumberStr = String(questionNumber);
+    var [key, index] = questionNumberStr.split('.');
+
+    handleAnswerChange('e', key, value, index); 
+    }
 
   const handleImprovementChange = (questionNumber, value) => {
     setImprovement(prevState => ({
       ...prevState,
       [questionNumber]: value
-    }));
+    }))
+
+    const questionNumberStr = String(questionNumber);
+    var [key, index] = questionNumberStr.split('.');
+
+    handleAnswerChange('i', key, value, index); 
   };
 
   const options = [
@@ -453,6 +490,7 @@ function Compliance({ question }) {
 export { Compliance };
 
 function GapAnalysis() {
+
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const companyName = params.get('company');
@@ -539,4 +577,5 @@ function GapAnalysis() {
     </div>
   );
 }
+
 export default GapAnalysis;
