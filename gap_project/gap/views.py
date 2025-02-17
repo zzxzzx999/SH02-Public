@@ -8,19 +8,20 @@ from rest_framework import generics
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth import authenticate
 from rest_framework.decorators import permission_classes
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from .serializers import *
 from .models import Company, GapAnalysis
-from .pdfGeneration import generateImprovementPlan
+from .pdfGeneration import *
 from .jsonReadWrite import *
 import os
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import action
+from django.http import FileResponse
 from django.core.exceptions import ObjectDoesNotExist
 
 @api_view(['POST'])
@@ -101,24 +102,30 @@ def get_latest_gap(request):
     except Company.DoesNotExist:
         return Response({"error": "Company not found."}, status=404)
 
-
-class PdfView(APIView):
-    
+pdf_filename = ""
+class PdfView(APIView): 
     serializer_class = GapAnalysisSerializer
     
+    @action(detail=True, methods=['get'], renderer_classes=(BinaryFileRenderer,))
     def get(self, request):
-        gapAnalysis = GapAnalysis.objects.all()[0]
-        response = {"name" : pdf_filename}
-        c, pdf_filename = generateImprovementPlan(gapAnalysis)
-        return Response(response)
-    
+        # Open the PDF in binary mode
+        try:
+            pdf_path = 'gap/src/improvementPlan.pdf'
+            return FileResponse(
+                open(pdf_path, 'rb'),
+                as_attachment=True,  # Forces download
+                filename = pdf_filename  # Sets the downloaded file name
+            )
+        except FileNotFoundError:
+            return Response({'error': 'File not found'}, status=404)        
     def post(self, request):
-        serializer = GapAnalysisSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            print(serializer.data)
-            return Response(serializer.data)
-        
+        #return download(request)
+        gapId = request.data.get('id')
+        gap = GapAnalysis.objects.get(id = gapId)
+        chatExample(gap)
+        pdf_filename = f"{gap.title}.pdf"
+        return Response({'pdf' : pdf_filename}, status=200)
+    
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_incomplete_answers(request):
@@ -132,22 +139,14 @@ def get_incomplete_answers(request):
     serializer = AnswersSerializer(gap)
     return Response(serializer.data, status=200)
 
-
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def getQuestionOrWriteAnswer(request):
     serializer = QuestionsSerializer(data=request.data)
     data = request.data
-
-    if not serializer.is_valid():
-        return Response(serializer.errors, status=400)
-
     if (data.get("GetOrWrite") == "GET"):
         question_info = getQuestion(data.get("Set"), data.get("Number"))
-        if question_info:
-            return Response(question_info, status=200)
-        else:
-            return Response({"error": "Question not found"}, status=404)
+        return Response(question_info)
 
     else:
         print("Incoming request data:", data)
@@ -446,3 +445,96 @@ def get_pie_chart_data(request, gap_id,element_name):
     return Response(pie_data)
 
 
+
+
+
+#Answer set template
+singular_set_answers = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+question_answer_set = {}
+for i in range(1, 13):
+    question_answer_set[i] = singular_set_answers.copy()
+
+#Improvment plan template
+improvement_plan_template = question_answer_set.copy()
+singular_set_strings = ["","","","","","","","","",""]
+for i in range(1,13):
+    improvement_plan_template[i] = singular_set_strings.copy()
+    
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def createGapInstance(request):
+    data = request.data
+    data["gap_data"] = question_answer_set.copy()
+    data["improvement_plan"] = improvement_plan_template.copy()
+    data["evidence_plan"] = improvement_plan_template.copy()
+    
+    serializer = GapAnalysisFullSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, staus = 201)
+    return Response(serializer.errors, status=400)
+
+#For actual questions- when wanting to get a question the request dictionary 
+#should be of the format
+"""
+{
+    "GetOrWrite" : "GET"
+    "Element"    : (The element number)
+    "Question"   : (The question number)
+    "id"         : (The id of the gapAnalysis)
+}
+""" 
+#For writing the answers to questions to the database the request dictionary
+#should be of the format
+"""
+{
+    "GetOrWrite" : "WRITE"
+    "Element"    : (The element number)
+    "Question"   : (The question number)
+    "Answer"     : (A list formatted like to the right) [number, improvment string, evidence string] 
+    "id"         : (The id of the gapAnalysis)
+}
+"""
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def getQuestionOrWriteAnswer(self, request):
+    data = request.data
+    if (data.get("GetOrWrite") == "GET"):
+        question_info = getQuestion(data.get("Element"), data.get("Question")) #returns a dictionary with one key "Question"
+        return Response(question_info)
+
+    else:
+        print("Incoming request data:", data)
+        gapAnalysis = GapAnalysis.objects.get(id = data.get("id"))
+        writeAnswer(data.get("answer"), data.get("Element"), data.get("Question"), gapAnalysis)
+        serializer = QuestionsSerializer(data=gapAnalysis)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = 201)
+        return Response(serializer.errors, status=400)
+    
+    
+#This is for the individual element overview
+#The dictionary format:
+"""
+{
+    "Element" : (The element number)
+    "id"      : (The id of the gapAnalysis)
+}
+"""
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def getElementOverview(self, request):
+    data = request.data
+    gapAnalysis = GapAnalysis.objects.get(id = data.get("id"))
+    element_data = {
+                    "data" : getElementAnswers(data.get("Element"), gapAnalysis)
+                   }
+    return Response(element_data)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def specificFullGapOverview(self, request):
+    data = request.data
+    gapAnalysis = GapAnalysis.objects.get(id = data.get("id"))

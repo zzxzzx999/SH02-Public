@@ -41,7 +41,7 @@
                 "Question_Name": "The organisation has detailed the arrangements for the management of health and safety in practice within a documented health and safety management system."
             },
             {
-                "Question_Number": "1.10",
+                "Question_Number": 1.10,
                 "Question_Name": "The organisation reviews its health and safety policy on a regular basis and this can be demonstrated."
             }
         ]
@@ -88,7 +88,7 @@
                 "Question_Name": "The organisation has a robust system for measuring our safety performance using leading and lagging indicators."
             },
             {
-                "Question_Number": "2.10",
+                "Question_Number": 2.10,
                 "Question_Name": "The organisation has robust audit and inspection processes in place which help us determine our level of compliance from both a system and operational perspective."
             }
         ]
@@ -135,7 +135,7 @@
                 "Question_Name": "The organisation has speicifc procedures and arrangements in place for employee welfare facilities."
             },
             {
-                "Question_Number": "3.10",
+                "Question_Number": 3.10,
                 "Question_Name": "The organisation has a mechanism for document storage, management and review which allows appropriate access to all employees to the correct revision status for each document."
             }
         ]
@@ -182,7 +182,7 @@
                 "Question_Name": "The organisation discusses any health and safety audits and inspections which are either completed or planned at each health and safety management meeting."
             },
             {
-                "Question_Number": "4.10",
+                "Question_Number": 4.10,
                 "Question_Name": "The organisation reviews any regulatory/client/customer related health and safety concerns at each health and safety management meeting."
             }
         ]
@@ -229,7 +229,7 @@
                 "Question_Name": "The organisation uses charts, diagrams and tables to illustrate their health and safety performance to enable them to identify trends, outliers and other issues."
             },
             {
-                "Question_Number": "5.10",
+                "Question_Number": 5.10,
                 "Question_Name": "The organisation has a robust method for analysing their health and safety performance data which can then be converted to actionable information and form part of their improvement planning process for health and safety."
             }
         ]
@@ -276,7 +276,7 @@
                 "Question_Name": "The organisation's health and safety committee review and comment on their H&S performance KPI’s."
             },
             {
-                "Question_Number": "6.10",
+                "Question_Number": 6.10,
                 "Question_Name": "The organisation's health and safety committee are an approachable point of contact for all their employees to discuss H&S issues and concerns."
             }
         ]
@@ -323,7 +323,7 @@
                 "Question_Name": "The organisation follows up any incident investigation as appropriate with HR where there may be disciplinary implications."
             },
             {
-                "Question_Number": "7.10",
+                "Question_Number": 7.10,
                 "Question_Name": "The organisation communicates the incident and its findings through a safety alert or equivalent to all staff."
             }
         ]
@@ -370,7 +370,7 @@
                 "Question_Name": "The organisation applies a just and fair apporach to the follow up to all incidents and events reported."
             },
             {
-                "Question_Number": "8.10",
+                "Question_Number": 8.10,
                 "Question_Name": "The organisation understands the importance of all staff having free and unencumbered access to reporting health and safety incidents and events."
             }
         ]
@@ -417,7 +417,7 @@
                 "Question_Name": "The organisation has a schedule of toolbox talks and safety briefings which is followed."
             },
             {
-                "Question_Number": "9.10",
+                "Question_Number": 9.10,
                 "Question_Name": "The organisation has an \"appointed\" person responsible for the oversight of the training plan."
             }
         ]
@@ -464,7 +464,7 @@
                 "Question_Name": "The organisation has well developed health and safety  \"principles\", “life-saving or golden rules”"
             },
             {
-                "Question_Number": "10.10",
+                "Question_Number": 10.10,
                 "Question_Name": "The organisation trains appropriate staff on how to undertake risk assessments."
             }     
         ]
@@ -511,7 +511,7 @@
                 "Question_Name": "The organisation plans for all intenral and external audits."
             },
             {
-                "Question_Number": "11.10",
+                "Question_Number": 11.10,
                 "Question_Name": "The organsiation actively benchmarks its progress on both internal and external audits."
             }
         ]
@@ -558,7 +558,7 @@
                 "Question_Name": "Health & Safety improvements are followed up to check for effectiveness in practice."
             },
             {
-                "Question_Number": "12.10",
+                "Question_Number": 12.10,
                 "Question_Name": "The organisation views health and safety improvement as an investment."
             }
         ]
