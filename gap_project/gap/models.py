@@ -7,7 +7,7 @@ class Company(models.Model):
     numOfAnalysis = models.IntegerField(default=0)
     dateRegistered = models.DateField(auto_now_add=True)
     notes = models.TextField(blank=True, null=True)
-    
+    current_gap=models.BooleanField(default=False)
     class Meta:
         verbose_name_plural = "Companies"
     
