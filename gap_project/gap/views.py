@@ -125,6 +125,19 @@ class PdfView(APIView):
         chatExample(gap)
         pdf_filename = f"{gap.title}.pdf"
         return Response({'pdf' : pdf_filename}, status=200)
+    
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_incomplete_answers(request):
+    gap_id = request.query_params.get("gap_id")
+
+    try:
+        gap = GapAnalysis.objects.get(id=gap_id)
+    except GapAnalysis.DoesNotExist:
+        return Response({"error": "GapAnalysis not found"}, status=404)
+
+    serializer = AnswersSerializer(gap)
+    return Response(serializer.data, status=200)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
