@@ -17,8 +17,8 @@ class Company(models.Model):
 class GapAnalysis(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     date = models.DateField(default = timezone.now)
-    title = models.CharField(max_length=50, default = f"Gap Analysis : {date}")
-    consultant = models.CharField(max_length=128, unique=False, blank=False, null=False)
+    title = models.CharField(max_length=50, default = f"{company}-Gap Analysis{date}")
+    consultant = models.CharField(max_length=128, unique=False)
     gap_data = models.JSONField(default=dict)
     improvement_plan = models.JSONField(default=dict)
     companyRep= models.CharField(max_length=128, unique=False, blank=False, null=False)
@@ -31,7 +31,6 @@ class GapAnalysis(models.Model):
     def __str__(self):
         return self.date.strftime(format="%d/%m/%Y")
 
-
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
     is_admin = models.BooleanField(default=False)
@@ -41,25 +40,10 @@ class UserProfile(models.Model):
     
     
 
-class Section(models.Model):
-    name= models.CharField(max_length=255, unique=True)
-    def __str__(self):
-        return self.name
-
-class Question(models.Model):
-    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='questions')
-    question_number = models.CharField(max_length=10)
-    question_text = models.TextField()
-    def __str__(self):
-        return f"{self.section.name} - {self.question_number}"
-    
-class Input(models.Model):
-    gap_analysis = models.ForeignKey(GapAnalysis, on_delete=models.CASCADE, related_name='answers')
-    question = models.ForeignKey(Question, on_delete = models.CASCADE)
-    rating = models.PositiveIntegerField(default =0)
-    evidence = models.TextField(blank = True, null= True)
-    improvement = models.TextField(blank=True, null=True)
+class Score(models.Model):
+    company_name = models.CharField(max_length=255)
+    category = models.CharField(max_length=255)
+    score = models.DecimalField(max_digits=5, decimal_places=2)
 
     def __str__(self):
-        return (f"{self.gap_analysis} :" f"{self.question.section.name} :" f"{self.question.question_number}")
-    
+        return f"{self.company_name} - {self.category}: {self.score}"
