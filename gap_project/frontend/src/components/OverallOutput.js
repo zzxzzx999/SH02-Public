@@ -1,5 +1,3 @@
-//import { CategoryScale, Chart as ChartJS, LinearScale, LineElement, PointElement } from 'chart.js';
-//import { Line } from 'react-chartjs-2'; 
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
@@ -9,8 +7,6 @@ import NavBar from "./NavBar";
 import BarChart from "./charts/BarChart";
 import LineChart from "./charts/LineChart";
 
-// registe Chart.js
-//ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
 
 function OverallOutput() {
     // store total score
@@ -70,7 +66,7 @@ const linksForPage3 = [
   { name: 'Improvement Planning', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Improvement Planning')}` },
 ];
 
-// Dummy data for bar chart (to be changed)
+// fetch data for bar chart 
 useEffect(() => {
   let currentGapId = searchParams.get("gap_id");
   if (currentGapId) {
