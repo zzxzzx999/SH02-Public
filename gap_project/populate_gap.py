@@ -53,6 +53,7 @@ def create_test_data():
     print(gap_analysis.id)
     
 def populate():
+    create_test_data()
     joes_gap_analyses = [
         "2016-11-02", "2015-11-03", "2017-06-11", "2018-06-11"
     ]
@@ -91,10 +92,8 @@ def add_comp(company):
 def add_gap(date, c, i):
     g = GapAnalysis.objects.get_or_create(date = date, company = c, )[0]
     print(date)
-    g.title = f"Gap Analysis{date}"
+    g.title = f"Gap Analysis{i} : {date}"
     g.gap_data = json.dumps(question_answer_set.copy())
-    print(f"gap data saved: \n {g.gap_data}")
-    print(f"Answer set copy: \n {str(question_answer_set.copy())}")
     g.improvement_plan = json.dumps(improvment_plan.copy())
     g.save()
     
@@ -103,5 +102,4 @@ if __name__ == '__main__':
     populate()
     
             
-    
     
