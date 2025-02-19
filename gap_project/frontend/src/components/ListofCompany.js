@@ -7,7 +7,6 @@ import NavBar from './NavBar';
 
 function ListofCompany(){
     const linksForPage2 = [
-        { name: 'Previous Page', path: '/home' , image:'/back-button.png'},
         { name: 'Add New Company', path: '/new-company' , image:'/add-new-company.png'},
         
       ];

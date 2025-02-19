@@ -5,15 +5,18 @@ import '../css/Login.css';
 import NavBar from './NavBar'; // Import the Navbar component
 
 function NewCompany() {
+  const role = localStorage.getItem("role");  
+  const navigate = useNavigate();
+  const previousPagePath = role === "admin" ? "/list-of-company" : "/home";
   const linksForPage2 = [
-    { name: 'Previous Page', path: '/list-of-company', image:'/back-button.png'},
+    { name: 'Previous Page', path: previousPagePath, image:'/back-button.png'},
   ];
 
   const [companyName, setCompanyName] = useState("");
   const [additionalNotes, setAdditionalNotes] =useState("");
-  const navigate = useNavigate();
+  
   const handleSubmit = async (event) => { 
-      event.preventDefault();
+    event.preventDefault();
       const token = localStorage.getItem("authToken");
 
       const payload = {

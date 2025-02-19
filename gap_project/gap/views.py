@@ -34,7 +34,8 @@ def login_user(request):
     if user:
         token, created = Token.objects.get_or_create(user=user)
         is_admin = username == 'GAPAdmin'
-        return Response({'token' : token.key, 'username': user.username, 'is_admin' : is_admin})
+        role = "admin" if is_admin else "consultant"
+        return Response({'token' : token.key, 'username': user.username, 'is_admin' : is_admin, 'role': role })
     else:
         return Response({'error': "Invalid credentials"}, status= 404)
 
@@ -343,7 +344,7 @@ def company_latest_total_score(request, company_name):
     if not latest_analysis:
         return Response({"name": company.name, "score": 0})  # if no analysisi data return 0
     try:
-        gap_data = json.loads(latest_analysis.gap_data)
+        gap_data = (latest_analysis.gap_data)
         total_score = sum(sum(scores) for scores in gap_data.values() if isinstance(scores, list))
     except (json.JSONDecodeError, TypeError, ValueError) as e:
         print(f"Error processing gap_data for company {company.name}: {e}")
