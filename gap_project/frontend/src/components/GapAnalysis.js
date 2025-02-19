@@ -55,6 +55,9 @@ function Elements() {
       setAnswers(getDefaultAnswers());
     }
   }, [answers]);
+  useEffect(() => {
+    localStorage.setItem("answers", JSON.stringify(answers)); //changed
+  }, [answers]);
 
   useEffect(() => {
     if (answers && typeof answers === "object") {

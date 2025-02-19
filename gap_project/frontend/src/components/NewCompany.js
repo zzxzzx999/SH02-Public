@@ -17,7 +17,8 @@ function NewCompany() {
 
   const [companyName, setCompanyName] = useState("");
   const [additionalNotes, setAdditionalNotes] =useState("");
-  
+  const navigate = useNavigate();
+
   const handleSubmit = async (event) => { 
     event.preventDefault();
       const token = localStorage.getItem("authToken");
@@ -76,7 +77,7 @@ function NewCompany() {
                     placeholder = "Additional Notes"
                 />
             </label>
-            <input className = "submitButton" type="submit" value= {userRole === "admin" ? "Create New Company" : "Create New Company"}/>
+            <input className = "submitButton" type="submit" value= {userRole === "admin" ? "Create New Company" : "Create New GAP"}/>
 
         </form>
         </div>
