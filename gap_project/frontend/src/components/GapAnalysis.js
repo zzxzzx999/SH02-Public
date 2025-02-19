@@ -586,5 +586,4 @@ function GapAnalysis() {
     </div>
   );
 }
-//problem is i cant use the same logic as used in elements because iscomplete and submitanswerstoapi are defined in elements and i cant duplicate that much code. ive tried putting try/catch blocks since it just needs to catch the error and redirect it to the home page (you cant go back to the information page anyway, therefore there will never be answers to save so just need it to catch the error, however, i cannot find the event handler that can catch the error, why is handle submit never used? it is in gray meaning not used in the code)
 export default GapAnalysis;
