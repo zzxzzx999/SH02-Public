@@ -1,7 +1,7 @@
-import React, {useState} from "react";
-import '../css/Login.css';
-import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import '../css/Login.css';
 
 function Login(){
     const [username, setName] = useState("");
@@ -20,10 +20,11 @@ function Login(){
                 username,
                 password,
             });
-            const { token, username: loggedInUsername, is_admin} = response.data;
+            const { token, username: loggedInUsername, is_admin, role} = response.data;
             localStorage.setItem('authToken', token);
             localStorage.setItem('username', loggedInUsername);
             localStorage.setItem('isAdmin', is_admin);
+            localStorage.setItem('role', role);
             if (is_admin === true) {
                 localStorage.setItem('userRole', "admin");
                 navigate('/list-of-companies')

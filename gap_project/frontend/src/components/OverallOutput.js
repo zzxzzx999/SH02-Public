@@ -1,16 +1,12 @@
-//import { CategoryScale, Chart as ChartJS, LinearScale, LineElement, PointElement } from 'chart.js';
-//import { Line } from 'react-chartjs-2'; 
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import '../css/NavBar.css';
 import '../css/OverallOutput.css';
 import NavBar from "./NavBar";
-import BarChart from "./charts/BarChart";
-import LineChart from "./charts/LineChart";
+import BarChart from "./charts/BarPotential";
+import LineChart from "./charts/LinePotential";
 
-// registe Chart.js
-//ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
 
 function OverallOutput() {
     // store total score
@@ -70,7 +66,7 @@ const linksForPage3 = [
   { name: 'Improvement Planning', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Improvement Planning')}` },
 ];
 
-// Dummy data for bar chart (to be changed)
+// fetch data for bar chart 
 useEffect(() => {
   let currentGapId = searchParams.get("gap_id");
   if (currentGapId) {
@@ -132,13 +128,13 @@ useEffect(() => {
             {/* Left large chart */}
             <div className="chart-container overall-large-chart">
               <h2>Score over Time (Potential)</h2>
-              <div className="overall-output-chart-placeholder"><LineChart chartData={lineData}/></div>
+              <div className="overall-output-chart-placeholder"><LineChart chartData={lineData} potentialScore={600}/></div>
             </div>
             
             {/* Right small chart */}
             <div className="chart-container small-chart">
               <h2>Score over Time (Potential)</h2>
-              <div className="overall-output-chart-placeholder"><BarChart chartData={barData}/></div>
+              <div className="overall-output-chart-placeholder"><BarChart chartData={barData} potentialScore={50}/></div>
             </div>
           </div>
         </div>

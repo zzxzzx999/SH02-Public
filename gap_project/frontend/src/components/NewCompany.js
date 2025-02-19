@@ -17,9 +17,9 @@ function NewCompany() {
 
   const [companyName, setCompanyName] = useState("");
   const [additionalNotes, setAdditionalNotes] =useState("");
-  const navigate = useNavigate();
+  
   const handleSubmit = async (event) => { 
-      event.preventDefault();
+    event.preventDefault();
       const token = localStorage.getItem("authToken");
 
       const payload = {

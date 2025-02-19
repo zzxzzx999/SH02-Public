@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import NavBar from './NavBar';
+import Accordion from './Accordion'
 import { SubmitProvider } from './SubmitContext';
 import '../css/GapAnalysis.css';
 import { useLocation } from 'react-router-dom';
@@ -115,7 +116,7 @@ function Elements() {
     { name: 'Training Plan', path: `/gap-analysis/training-plan?company=${encodeURIComponent(companyName)}&element=8&gap_id=${encodeURIComponent(gapID)}`, image: '' },
     { name: 'Risk Management Process', path: `/gap-analysis/risk-management-process?company=${encodeURIComponent(companyName)}&element=9&gap_id=${encodeURIComponent(gapID)}`, image: '' },
     { name: 'Audit & Inspection Process', path: `/gap-analysis/audit-and-inspection-process?company=${encodeURIComponent(companyName)}&element=10&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Improvement Planning', path: `/gap-analysis/policy?improvement-planning=${encodeURIComponent(companyName)}&element=11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Improvement Planning', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
   ];
 
   // Format answers for backend
@@ -187,6 +188,15 @@ function Elements() {
         const questionData = await fetchQuestion(set + 1, i);
         allQuestions = [...allQuestions, ...questionData];
       }
+      //add an 11th page : the summary page
+      allQuestions.push({
+        Section_Name: "Summary of " + allQuestions[0].Section_Name,
+        Questions: {
+          Question_Number: 'Summary', 
+          Question_Name: "",
+        },
+        isSummaryPage: true
+      });
       setQuestions(allQuestions);
       setCurrentQuestionIndex(0); 
     };
@@ -268,42 +278,56 @@ function Elements() {
 
       {questions.length > 0 && (
         <div>
-          <h1 className="section-title" style={{ marginLeft: '16px' }}>
-            {questions[currentQuestionIndex]?.Section_Name}
-          </h1>
-
-          <div className="question-text">
-            <p style={{ marginLeft: '16px' }}>
-              <strong>{questions[currentQuestionIndex]?.Questions?.Question_Number}: </strong>
-              {questions[currentQuestionIndex]?.Questions?.Question_Name}
-            </p>
+          {questions[currentQuestionIndex]?.isSummaryPage ? (
+          <div className="summary-page">
+              <h1 className="section-title" style={{ marginLeft: '16px' }}>
+                {questions[currentQuestionIndex]?.Section_Name}
+              </h1>
+            {/*questions.map((question, index) => (
+              <p key={index}>{question.Questions.Question_Name}</p>
+            ))*/}
+            <Accordion data={questions} answers={answers} improvement={improvementPlan.improvement} evidence={improvementPlan.evidence}/>
           </div>
+            ) : (
+            <div>
+              <h1 className="section-title" style={{ marginLeft: '16px' }}>
+                {questions[currentQuestionIndex]?.Section_Name}
+              </h1>
+  
+              <div className="question-text">
+                <p style={{ marginLeft: '16px' }}>
+                  <strong>{questions[currentQuestionIndex]?.Questions?.Question_Number}: </strong>
+                  {questions[currentQuestionIndex]?.Questions?.Question_Name}
+                </p>
+              </div>
 
-          <Compliance
-            question={questions[currentQuestionIndex]?.Questions}
-            handleAnswerChange={handleAnswerChange}  
-            savedAnswer={
-              answers[`${questions[currentQuestionIndex]?.Section_Number}`]?.[questions[currentQuestionIndex]?.Questions?.Question_Number &&
-                String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1] &&
-                String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
-              ]
-            }
-            savedImprovement = {
-              improvementPlan.improvement[
-                String(questions[currentQuestionIndex]?.Section_Number)
-              ]?.[
-                String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
-              ]
-            }
-            savedEvidence = {
-              improvementPlan.evidence[
-                String(questions[currentQuestionIndex]?.Section_Number)
-              ]?.[
-                String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
-              ]
-            }
-            
-          />
+              <Compliance
+                question={questions[currentQuestionIndex]?.Questions}
+                handleAnswerChange={handleAnswerChange}  
+                savedAnswer={
+                  answers[`${questions[currentQuestionIndex]?.Section_Number}`]?.[
+                    questions[currentQuestionIndex]?.Questions?.Question_Number &&
+                    String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1] &&
+                    String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
+                  ]
+                }
+                savedImprovement = {
+                  improvementPlan.improvement[
+                    String(questions[currentQuestionIndex]?.Section_Number)
+                  ]?.[
+                    String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
+                  ]
+                }
+                savedEvidence = {
+                  improvementPlan.evidence[
+                    String(questions[currentQuestionIndex]?.Section_Number)
+                  ]?.[
+                    String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
+                  ]
+                }
+              />
+              </div>
+            )}
 
           <div className="navigation-buttons-container">
             <div className="navigation-buttons">
@@ -313,7 +337,9 @@ function Elements() {
                   onClick={() => navigateToQuestion(index)}
                   className={currentQuestionIndex === index ? "active" : ""}
                 >
-                  {String(question.Questions.Question_Number).split('.')[1]?.slice(0, 2)}
+                  {question.isSummaryPage ? ( <span style={{ fontWeight: "bold" }}>Summary</span>) : 
+                   (String(question.Questions.Question_Number).split('.')[1]?.slice(0, 2))
+                  }
                 </button>
               ))}
 
@@ -526,7 +552,7 @@ function GapAnalysis() {
               { name: 'Training Plan', path: `/gap-analysis/training-plan?company=${encodeURIComponent(companyName)}&element=8&gap_id=${encodeURIComponent(gapID)}`, image: '' },
               { name: 'Risk Management Process', path: `/gap-analysis/risk-management-process?company=${encodeURIComponent(companyName)}&element=9&gap_id=${encodeURIComponent(gapID)}`, image: '' },
               { name: 'Audit & Inspection Process', path: `/gap-analysis/audit-and-inspection-process?company=${encodeURIComponent(companyName)}&element=10&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Improvement Planning', path: `/gap-analysis/policy?improvement-planning=${encodeURIComponent(companyName)}&element=11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Improvement Planning', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
             ];
           
           

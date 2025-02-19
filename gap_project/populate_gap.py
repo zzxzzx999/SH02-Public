@@ -30,6 +30,8 @@ for i in range(1, 13):
     
 def create_test_data():
     company, created = Company.objects.get_or_create(name="test")
+    if created:
+        company.notes="testsettsetsettsetste tsettset  tset sets et se"
     
     gap_data={
         "1":[1, 3, 2, 4, 5, 5, 2, 3, 1, 2],"2":[3, 4, 5, 2, 3, 1, 4, 5, 2, 1],
@@ -43,14 +45,30 @@ def create_test_data():
         company=company,
         date="2025-01-01",  
         consultant="Tester",
-        defaults={"gap_data":json.dumps(gap_data)},
+        defaults={"gap_data":(gap_data)},
+        
     )
 
-    gap_analysis.gap_data = json.dumps(gap_data)
+    gap_data_2={
+        "1":[1, 3, 2, 1, 2, 1, 1, 3, 1, 2],"2":[3, 4, 5, 2, 3, 2, 1, 2, 2, 1],
+        "3":[2,3,1,4,5,2,3,4,1,1], "4":[1,2,3,2,2,1,4,2,3,1], "5":[1,3,4,5,4,3,2,4,5,3],
+        "6":[5,4,5,4,5,3,4,2,3,1], "7":[2,3,4,5,2,1,2,2,3,4], "8":[1,3,1,4,3,4,3,2,4,3],
+        "9":[3,2,4,5,4,5,2,3,1,1],"10":[4,3,2,3,5,1,2,2,3,5], 
+        "11":[1,2,1,3,1,2,3,2,2,3], "12":[5,2,3,1,2,3,2,1,3,1]
+    }
+
+    gap_analysis_2, created = GapAnalysis.objects.get_or_create(
+        company=company,
+        date="2024-12-01",  
+        consultant="Tester",
+        defaults={"gap_data":(gap_data_2)},
+    )
+
+    gap_analysis.gap_data = (gap_data)
     gap_analysis.save()
+    gap_analysis_2.save()
     company.save()
-    print(company.dateRegistered) 
-    print(gap_analysis.id)
+    
     
 def populate():
     create_test_data()
@@ -93,13 +111,12 @@ def add_gap(date, c, i):
     g = GapAnalysis.objects.get_or_create(date = date, company = c, )[0]
     print(date)
     g.title = f"Gap Analysis{i} : {date}"
-    g.gap_data = json.dumps(question_answer_set.copy())
-    g.improvement_plan = json.dumps(improvment_plan.copy())
+    g.gap_data = (question_answer_set.copy())
+    g.improvement_plan = (improvment_plan.copy())
     g.save()
     
 if __name__ == '__main__':
     print("Starting Gap Analysis population")
     populate()
-    
-            
-    
+
+
