@@ -98,18 +98,11 @@ function Elements() {
   //instead they can click the back button and things wont be lost, 
   //it will take them to the element they were previously on instead of the information page
   useEffect(() => {
-    const preventBackNavigation = () => {
-      window.history.pushState(null, "", window.location.href);
-    };
-  
-    preventBackNavigation(); // Push initial state
-    window.addEventListener("popstate", preventBackNavigation);
-  
-    return () => {
-      window.removeEventListener("popstate", preventBackNavigation);
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+      window.history.go(1);
     };
   }, []);
-  
 
   const links = [
     { name: 'Policy', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=0&gap_id=${encodeURIComponent(gapID)}`, image: '' },
