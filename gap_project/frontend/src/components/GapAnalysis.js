@@ -533,7 +533,7 @@ function GapAnalysis() {
             setLinks(newLinks);
         } catch (err) {
             setError("Error fetching gap analysis ID.");
-            console.error("Hello Jessics"+err);
+            console.error(err);
         }
       };
       getGapID();
