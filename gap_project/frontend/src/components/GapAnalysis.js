@@ -94,9 +94,8 @@ function Elements() {
     }
   }, []);
 
-  // sort of prevents user from going back - which would delete all their answers, 
-  //instead they can click the back button and things wont be lost, 
-  //it will take them to the element they were previously on instead of the information page
+  // sort of prevents user from going using the back button - for some reason it only prevents them from going out of the question set by using the back button (on the browser), 
+  //so it keeps them in the question set and also no answers get lost when it is clicked
   useEffect(() => {
     window.history.pushState(null, null, window.location.href);
     window.onpopstate = function () {
