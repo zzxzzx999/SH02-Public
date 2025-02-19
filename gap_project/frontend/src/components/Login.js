@@ -25,9 +25,11 @@ function Login(){
             localStorage.setItem('username', loggedInUsername);
             localStorage.setItem('isAdmin', is_admin);
             if (is_admin === true) {
+                localStorage.setItem('userRole', "admin");
                 navigate('/list-of-companies')
             }
             else {
+                localStorage.setItem('userRole', "client");
                 navigate('/home')
             }
         } catch (err) {

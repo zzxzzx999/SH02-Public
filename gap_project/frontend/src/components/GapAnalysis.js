@@ -94,6 +94,23 @@ function Elements() {
     }
   }, []);
 
+  // sort of prevents user from going back - which would delete all their answers, 
+  //instead they can click the back button and things wont be lost, 
+  //it will take them to the element they were previously on instead of the information page
+  useEffect(() => {
+    const preventBackNavigation = () => {
+      window.history.pushState(null, "", window.location.href);
+    };
+  
+    preventBackNavigation(); // Push initial state
+    window.addEventListener("popstate", preventBackNavigation);
+  
+    return () => {
+      window.removeEventListener("popstate", preventBackNavigation);
+    };
+  }, []);
+  
+
   const links = [
     { name: 'Policy', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=0&gap_id=${encodeURIComponent(gapID)}`, image: '' },
     { name: 'Management', path: `/gap-analysis/management?company=${encodeURIComponent(companyName)}&element=1&gap_id=${encodeURIComponent(gapID)}`, image: '' },
@@ -524,7 +541,7 @@ function GapAnalysis() {
             setLinks(newLinks);
         } catch (err) {
             setError("Error fetching gap analysis ID.");
-            console.error(err);
+            console.error("Hello Jessics"+err);
         }
       };
       getGapID();
@@ -535,7 +552,7 @@ function GapAnalysis() {
   return (
     <div>
       <div className="gap-intro">
-        <NavBar className="elements" links={links} />
+        <NavBar className="elements" links={links} logout={true}/>
 
         <p className="move-to-gap"> To move onto the GAP analysis use the navigation bar</p>
         <div className="purpose-benchmarking">
@@ -577,5 +594,5 @@ function GapAnalysis() {
     </div>
   );
 }
-
+//problem is i cant use the same logic as used in elements because iscomplete and submitanswerstoapi are defined in elements and i cant duplicate that much code. ive tried putting try/catch blocks since it just needs to catch the error and redirect it to the home page (you cant go back to the information page anyway, therefore there will never be answers to save so just need it to catch the error, however, i cannot find the event handler that can catch the error, why is handle submit never used? it is in gray meaning not used in the code)
 export default GapAnalysis;

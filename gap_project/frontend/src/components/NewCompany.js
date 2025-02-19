@@ -5,8 +5,14 @@ import '../css/Login.css';
 import NavBar from './NavBar'; // Import the Navbar component
 
 function NewCompany() {
+  const userRole = localStorage.getItem("userRole"); // Get the stored role
+
   const linksForPage2 = [
-    { name: 'Previous Page', path: '/list-of-company', image:'/back-button.png'},
+    { 
+      name: 'Previous Page', 
+      path: userRole === "admin" ? "/list-of-company" : "/home", // Conditional path
+      image: "/back-button.png" 
+    }
   ];
 
   const [companyName, setCompanyName] = useState("");
@@ -29,7 +35,13 @@ function NewCompany() {
           });
           setCompanyName("");
           setAdditionalNotes("");
-          navigate(`/new-gap-confirm?company=${encodeURIComponent(companyName)}`);
+          if(userRole === "admin"){
+            navigate("/list-of-companies");
+            
+          }else{
+            navigate(`/new-gap-confirm?company=${encodeURIComponent(companyName)}`);
+            
+          }
       } catch (error) {
           console.error("Error : ", error.response || error.message);
       }
@@ -64,7 +76,7 @@ function NewCompany() {
                     placeholder = "Additional Notes"
                 />
             </label>
-            <input className = "submitButton" type="submit" value="Create New GAP"/>
+            <input className = "submitButton" type="submit" value= {userRole === "admin" ? "Create New Company" : "Create New Company"}/>
 
         </form>
         </div>
