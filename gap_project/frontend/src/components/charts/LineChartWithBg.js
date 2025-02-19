@@ -58,20 +58,28 @@ const LineChartWithBackground = ({ chartData }) => {
           lineStyle: {
             color: 'blue', // Line color remains constant
           },
+          markLine: {
+            symbol: 'none',
+            label: { formatter: 'Potential Score', position: 'end', color: 'black', offset: [-80, -10] },
+            data: [{yAxis: 50}],
+            lineStyle: {color: 'red', type: 'dashed'}
+          }
         },
       ],
     };
 
     chartInstance.setOption(chartOptions);
-
+    const handleResize = () => chartInstance.resize();
+    window.addEventListener('resize', handleResize);
     // Cleanup function
     return () => {
+      window.removeEventListener('resize', handleResize)
       chartInstance.dispose();
     };
   }, [chartData]);
 
   return (
-    <div style={{width: '26em', height: '35em', marginTop: '-3.5em', marginLeft: '0em'}} ref={chartRef}></div>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} ref={chartRef}></div>
   );
 };
 
