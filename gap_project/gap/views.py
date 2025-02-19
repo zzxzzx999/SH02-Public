@@ -153,6 +153,7 @@ def getQuestionOrWriteAnswer(request):
         print("Incoming request data:", data)
         finished = data.get("finished")
         company = Company.objects.get(name = data.get("company_name"))
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" , company)
         print(data.get("id"))
         try:
             gap = GapAnalysis.objects.get(id=data.get("id"))
@@ -410,7 +411,6 @@ def get_total_score_over_time(request, company_name):
             total_score = 0 
 
         total_scores.append(total_score)
-    print(total_score)
 
     return JsonResponse({
         "gap_date": gap_dates,
