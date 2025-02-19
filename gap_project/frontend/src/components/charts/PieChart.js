@@ -35,10 +35,16 @@ const PieChart = ({ chartData }) => {
         {
           //name: 'Sales',
           type: 'pie',
-          radius: '50%',
-          data: chartData.map(item => ({
+          radius: '80%',
+          center: ['50%', '50%'],
+
+
+          data: chartData.filter(item => item.value > 0).map(item => ({
             value: item.value,
-            name: item.name,
+            
+            name: item.name === 'needsImprovement'
+            ? 'Needs Improvement' //fixes piechart needs improvement
+            : item.name[0].toUpperCase() + item.name.slice(1), //capitilizes
             itemStyle: {
               color: COLOR_MAP[item.name] || '#9E9E9E',}
           })),
@@ -47,13 +53,17 @@ const PieChart = ({ chartData }) => {
     };
 
     chartInstance.setOption(options);
+    const handleResize = () => chartInstance.resize();
+    window.addEventListener('resize', handleResize);
+
 
     return () => {
+      window.removeEventListener('resize', handleResize);
       chartInstance.dispose();
     };
   }, [chartData]);
 
-  return <div ref={chartRef} style={{width: '26em', height: '35em', marginTop: '-3.5em', marginLeft: '0em'}} />;
+  return <div className="pie-chart" ref={chartRef} />;
 };
 
 export default PieChart;

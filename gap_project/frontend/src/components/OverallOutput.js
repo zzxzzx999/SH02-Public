@@ -4,8 +4,8 @@ import { useLocation, useSearchParams } from "react-router-dom";
 import '../css/NavBar.css';
 import '../css/OverallOutput.css';
 import NavBar from "./NavBar";
-import BarChart from "./charts/BarChart";
-import LineChart from "./charts/LineChart";
+import BarChart from "./charts/BarPotential";
+import LineChart from "./charts/LinePotential";
 
 
 function OverallOutput() {
@@ -16,7 +16,6 @@ function OverallOutput() {
       needsImprovement: 0,
       unsatisfactory: 0,
     });
-    const [categories, setCategories] = useState([]); // API fetched categories
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const companyName = params.get('company');
@@ -129,13 +128,13 @@ useEffect(() => {
             {/* Left large chart */}
             <div className="chart-container overall-large-chart">
               <h2>Score over Time (Potential)</h2>
-              <div className="overall-output-chart-placeholder"><LineChart chartData={lineData}/></div>
+              <div className="overall-output-chart-placeholder"><LineChart chartData={lineData} potentialScore={600}/></div>
             </div>
             
             {/* Right small chart */}
             <div className="chart-container small-chart">
               <h2>Score over Time (Potential)</h2>
-              <div className="overall-output-chart-placeholder"><BarChart chartData={barData}/></div>
+              <div className="overall-output-chart-placeholder"><BarChart chartData={barData} potentialScore={50}/></div>
             </div>
           </div>
         </div>

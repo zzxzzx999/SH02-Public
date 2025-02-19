@@ -71,6 +71,7 @@ def create_test_data():
     
     
 def populate():
+    create_test_data()
     joes_gap_analyses = [
         "2016-11-02", "2015-11-03", "2017-06-11", "2018-06-11"
     ]
@@ -117,4 +118,5 @@ def add_gap(date, c, i):
 if __name__ == '__main__':
     print("Starting Gap Analysis population")
     populate()
+
 
