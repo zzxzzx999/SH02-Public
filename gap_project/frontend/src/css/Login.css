@@ -9,14 +9,16 @@
 }
 
 .bubble-container {
+    min-width: 460px;
+    width: auto;
+    height: auto;
     z-index: 3;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 90%; /* Flexible width */
-    max-width: 500px; /* Limit width on larger screens */
-    padding: 1rem; /* Ensure padding adapts */
+    max-width: 550px; /* Limit width on larger screens */
+    padding: 1vw; /* Ensure padding adapts */
     border-radius: 35px;
     background-color: white;
     box-shadow: 0 4px 6px rgba(189, 70, 70, 0.1);
@@ -67,7 +69,6 @@
 /* Add responsive design with media queries */
 @media (max-width: 768px) {
     .bubble-container {
-        width: 95%; /* Adjust width for smaller screens */
         padding: 1.5rem; /* Reduce padding */
     }
     .submitButton {
@@ -79,13 +80,13 @@
 
 /*for new company title*/
 .bubble-container h2 {
-    font-size: 2vw;
+    font-size: clamp(19px, 2.5vw, 26px);
     margin: 2%;
   }
 
 
 textarea{
-    font-size: 1.2vw;
+    font-size: 14px;
     resize: none;
 }
 

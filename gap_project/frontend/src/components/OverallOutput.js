@@ -21,6 +21,7 @@ function OverallOutput() {
     const companyName = params.get('company');
     const gapId = params.get('gap_id')
     const [searchParams, setSearchParams] = useSearchParams();
+    const userRole = localStorage.getItem("userRole");
 
     const [lineData, setLineData] = useState({
       categories: [],
@@ -50,8 +51,7 @@ function OverallOutput() {
         });
 }, [companyName,gapId]);
 
-const linksForPage3 = [
-  { name: 'Registed Company', path: `/registed-company?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}`, image: '/back-button.png' },
+const commonLinks = [
   { name: 'Policy', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Policy')}` },
   { name: 'Management', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Management')}` },
   { name: 'Documented System', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Documented System')}` },
@@ -64,6 +64,12 @@ const linksForPage3 = [
   { name: 'Risk Management Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Risk Management Process')}` },
   { name: 'Audit & Inspection Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Audit & Inspection Process')}` },
   { name: 'Improvement Planning', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Improvement Planning')}` },
+];
+const linksForPage3 = [
+  userRole === 'admin'
+    ? { name: 'Registered Company', path: `/registed-company?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}`, image: '/back-button.png' }
+    : { name: 'Home Page', path: `/home`, image: '/back-button.png' },
+  ...commonLinks
 ];
 
 // fetch data for bar chart 
@@ -97,6 +103,14 @@ useEffect(() => {
   }
 }, [companyName]);
   
+useEffect(() => {
+  if(userRole === 'client'){
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+      window.history.go(1);
+    };
+  }
+}, []);
     return (
       // force refresh
       <div key={location.pathname} class="main-content" className="gap-intro"> 
@@ -127,13 +141,13 @@ useEffect(() => {
           <div className="charts">
             {/* Left large chart */}
             <div className="chart-container overall-large-chart">
-              <h2>Score over Time (Potential)</h2>
+              <h2>Benchmark Improvement</h2>
               <div className="overall-output-chart-placeholder"><LineChart chartData={lineData} potentialScore={600}/></div>
             </div>
             
             {/* Right small chart */}
             <div className="chart-container small-chart">
-              <h2>Score over Time (Potential)</h2>
+              <h2>Summary of Sections</h2>
               <div className="overall-output-chart-placeholder"><BarChart chartData={barData} potentialScore={50}/></div>
             </div>
           </div>

@@ -25,7 +25,7 @@ function CreateNewCompany(){
                     {/* Additional comments */}
                     <div className="form-group">
                         <label htmlFor="add-comments">Additional Comments:</label>
-                        <textarea id="add_cmments" name="add-comments" ></textarea>
+                        <textarea id="add_comments" name="add-comments" ></textarea>
                     </div>
 
                     {/* button */}
