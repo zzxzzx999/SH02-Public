@@ -114,24 +114,15 @@ function NavBar({links, logout, isComplete}) {
     {isPopupOpen && (
       <Popup ref={popUpRef} onClose={() => setIsPopupOpen(false)}>
       <button className="close-button" onClick={() => setIsPopupOpen(false)}>X</button>
-        <h2>Company Name</h2>
-        {isComplete ? (
-          <>
-            <p>Are you finished?<br></br>If not, you can save and come back later.</p>
-            <button className="submitButton" onClick={async () => { await submitAnswersToAPI(finished=false); navigate('/home'); }}>
-              SAVE AND EXIT
-            </button>
-            <button className="submitButton" style={{ margin: '15px' }} onClick={async () => { await submitAnswersToAPI(finished=true); navigate(`/overall-output?company=${companyName}&gap_id=${encodeURIComponent(gapID)}`);}}>
-              FINISHED, GO TO RESULTS <br></br> (YOU CAN'T UNDO THIS ACTION)
-            </button>
-          </>)
-          : (
-          <>
-            <p>Would you like to save and come back later?</p>
-            <button className="submitButton" onClick={async () => { await submitAnswersToAPI(finished=false); navigate('/home'); }}>
-              SAVE AND EXIT
-            </button>
-          </>)
+        <h2>{companyName}</h2>
+        <p>Are you finished?<br></br>If not, you can save and come back later.</p>
+        <button className="submitButton" onClick={async () => { await submitAnswersToAPI(finished=false); navigate('/home'); }}>
+          SAVE AND EXIT
+        </button>
+        {isComplete &&
+          <button className="submitButton" style={{ margin: '15px' }} onClick={async () => { await submitAnswersToAPI(finished=true); navigate(`/overall-output?company=${companyName}&gap_id=${encodeURIComponent(gapID)}`);}}>
+            FINISHED, GO TO RESULTS
+          </button>
         }
       </Popup>
     )}
@@ -143,7 +134,7 @@ export default NavBar;
 
 const Popup = forwardRef(({ onClose, children }, ref) => {
   return (
-    <div className="bubble-container" style={{ width: '500px', marginTop: '40px' }} onClick={(e) => e.stopPropagation()} ref={ref}>
+    <div className="bubble-container" style={{ width: '500px', height:'270px', display: 'flex', justifycontent: 'center', alignitems: 'center', position: 'fixed'}} onClick={(e) => e.stopPropagation()} ref={ref}>
       {children}
     </div>
   );

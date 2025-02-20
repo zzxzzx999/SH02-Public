@@ -192,6 +192,10 @@
   text-align: center;
   padding-left: 10px;
 }
+.add_comment{
+  text-align: center;
+  padding-left: 10px;
+}
   
   /* delete button */
   .delete-column{

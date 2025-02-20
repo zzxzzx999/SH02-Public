@@ -55,6 +55,7 @@ function Elements() {
       setAnswers(getDefaultAnswers());
     }
   }, [answers]);
+  
 
   useEffect(() => {
     if (answers && typeof answers === "object") {
@@ -93,6 +94,15 @@ function Elements() {
     } else {
       setImprovementPlan(getDefaultImprovementPlan());
     }
+  }, []);
+
+  // sort of prevents user from going using the back button - for some reason it only prevents them from going out of the question set by using the back button (on the browser), 
+  //so it keeps them in the question set and also no answers get lost when it is clicked
+  useEffect(() => {
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+      window.history.go(1);
+    };
   }, []);
 
   const links = [
@@ -561,7 +571,7 @@ function GapAnalysis() {
   return (
     <div>
       <div className="gap-intro">
-        <NavBar className="elements" links={links} />
+        <NavBar className="elements" links={links} logout={true}/>
 
         <p className="move-to-gap"> To move onto the GAP analysis use the navigation bar</p>
         <div className="purpose-benchmarking">
@@ -603,5 +613,4 @@ function GapAnalysis() {
     </div>
   );
 }
-
 export default GapAnalysis;

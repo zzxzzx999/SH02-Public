@@ -74,7 +74,7 @@ function GapInformation(){
   return (
   <div className="gap-info">
   <NavBar links={links} logout={true}/>
-  <div className = "bubble-container" style={{width:'600px', height:'475px'}}>
+  <div className = "bubble-container" style={{padding:'15px'}}>
   <h2>{companyName}</h2>
   <form onSubmit={handleSubmit} className="form">
       <label>
