@@ -4,16 +4,12 @@ import '../css/NavBar.css';
 import { useSubmit } from './SubmitContext';
 
 function NavBar({links, logout, isComplete}) {
-
-  let clear = false;
   const submitAnswersToAPI = useSubmit();
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const navigate = useNavigate();
   const pageRef = useRef(null);
   const popUpRef = useRef(null);
-
-  let finished = false;
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -118,17 +114,17 @@ function NavBar({links, logout, isComplete}) {
         {isComplete ? (
           <>
             <p>Are you finished?<br></br>If not, you can save and come back later.</p>
-            <button className="submitButton" onClick={async () => { await submitAnswersToAPI(finished=false); navigate('/home'); }}>
+            <button className="submitButton" onClick={async () => { await submitAnswersToAPI(false); navigate('/home'); }}>
               SAVE AND EXIT
             </button>
-            <button className="submitButton" style={{ margin: '15px' }} onClick={async () => { await submitAnswersToAPI(finished=true); navigate(`/overall-output?company=${companyName}&gap_id=${encodeURIComponent(gapID)}`);}}>
+            <button className="submitButton" style={{ margin: '15px' }} onClick={async () => { await submitAnswersToAPI(true); navigate(`/overall-output?company=${companyName}&gap_id=${encodeURIComponent(gapID)}`);}}>
               FINISHED, GO TO RESULTS <br></br> (YOU CAN'T UNDO THIS ACTION)
             </button>
           </>)
           : (
           <>
             <p>Would you like to save and come back later?</p>
-            <button className="submitButton" onClick={async () => { await submitAnswersToAPI(finished=false); navigate('/home'); }}>
+            <button className="submitButton" onClick={async () => { await submitAnswersToAPI(false); navigate('/home'); }}>
               SAVE AND EXIT
             </button>
           </>)

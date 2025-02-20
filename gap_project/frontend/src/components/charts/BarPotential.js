@@ -102,7 +102,7 @@ const BarChart = ({ chartData, potentialScore  }) => {
       window.removeEventListener('resize', handleResize);
       chartInstance.dispose();
     };
-  }, [chartData]);
+  }, [chartData, potentialScore]);
 
   return (
     <div style={{ width: '100%', height: '100%'}} ref={chartRef}></div>

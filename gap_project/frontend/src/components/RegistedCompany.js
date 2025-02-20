@@ -130,7 +130,7 @@ function RegistedCompany() {
                 })
                 .catch(error => console.error("Error fetching line chart with background data:", error));
         }
-    }, [searchParams]);
+    }, [searchParams, companyName]);
 
     return(
         <div class="main-content">

@@ -21,7 +21,7 @@ function ListofCompany(){
     const [searchKeyword, setSearchKeyword] = useState(""); 
     const [scores, setScores] = useState({});
     const [searchParams] = useSearchParams();
-    const [gapId, setGapId] = useState(null);
+    const [, setGapId] = useState(null);
     const [analyses, setAnalyses] = useState([])
     
     
