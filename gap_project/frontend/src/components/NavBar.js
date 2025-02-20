@@ -115,14 +115,23 @@ function NavBar({links, logout, isComplete}) {
       <Popup ref={popUpRef} onClose={() => setIsPopupOpen(false)}>
       <button className="close-button" onClick={() => setIsPopupOpen(false)}>X</button>
         <h2>{companyName}</h2>
-        <p>Are you finished?<br></br>If not, you can save and come back later.</p>
-        <button className="submitButton" onClick={async () => { await submitAnswersToAPI(finished=false); navigate('/home'); }}>
-          SAVE AND EXIT
-        </button>
-        {isComplete &&
-          <button className="submitButton" style={{ margin: '15px' }} onClick={async () => { await submitAnswersToAPI(finished=true); navigate(`/overall-output?company=${companyName}&gap_id=${encodeURIComponent(gapID)}`);}}>
-            FINISHED, GO TO RESULTS
-          </button>
+        {isComplete ? (
+          <>
+            <p>Are you finished?<br></br>If not, you can save and come back later.</p>
+            <button className="submitButton" onClick={async () => { await submitAnswersToAPI(finished=false); navigate('/home'); }}>
+              SAVE AND EXIT
+            </button>
+            <button className="submitButton" style={{ margin: '15px' }} onClick={async () => { await submitAnswersToAPI(finished=true); navigate(`/overall-output?company=${companyName}&gap_id=${encodeURIComponent(gapID)}`);}}>
+              FINISHED, GO TO RESULTS <br></br> (YOU CAN'T UNDO THIS ACTION)
+            </button>
+          </>)
+          : (
+          <>
+            <p>Would you like to save and come back later?</p>
+            <button className="submitButton" onClick={async () => { await submitAnswersToAPI(finished=false); navigate('/home'); }}>
+              SAVE AND EXIT
+            </button>
+          </>)
         }
       </Popup>
     )}
