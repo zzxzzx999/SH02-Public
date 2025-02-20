@@ -49,6 +49,7 @@ function GapInformation(){
   const [consultant, setConsultant] = useState("");
   const [companyRep, setCompanyRep] = useState("");
   const [companyEmail, setCompanyEmail] = useState("");
+  const [url, setUrl] = useState("");
   const [additionalNotes, setAdditionalNotes] = useState("");
 
   const navigate = useNavigate(); 
@@ -111,6 +112,20 @@ function GapInformation(){
           value={companyEmail}
           onChange={(e) => setCompanyEmail(e.target.value)}
           placeholder = "Company Representative Email"
+          required
+          style ={{
+            width:'350px',
+            marginTop:'10px',
+          }}
+      />
+      </label>
+
+      <label>
+      <input 
+          type="text" 
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder = "Gap Analysis Evidence URL"
           required
           style ={{
             width:'350px',
