@@ -20,7 +20,7 @@ function OverallOutput() {
     const params = new URLSearchParams(location.search);
     const companyName = params.get('company');
     const gapId = params.get('gap_id')
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const userRole = localStorage.getItem("userRole");
 
     const [lineData, setLineData] = useState({
@@ -110,7 +110,7 @@ useEffect(() => {
       window.history.go(1);
     };
   }
-}, []);
+}, [userRole]);
     return (
       // force refresh
       <div key={location.pathname} class="main-content" className="gap-intro"> 

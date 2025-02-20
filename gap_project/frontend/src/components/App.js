@@ -11,7 +11,6 @@ import NewCompany from './NewCompany';
 import OverallOutput from './OverallOutput';
 import PrivateRoute from './PrivateRoute';
 import RegistedCompany from './RegistedCompany';
-import Accordion from './Accordion';
 import Results from './Results';
 import Template from './Template';
 

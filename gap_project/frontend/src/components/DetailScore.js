@@ -102,7 +102,7 @@ useEffect(() => {
       window.history.go(1);
     };
   }
-}, []);
+}, [userRole]);
 
   return (
     <div class="main-content" className="gap-intro">
