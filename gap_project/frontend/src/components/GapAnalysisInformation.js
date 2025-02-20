@@ -86,7 +86,7 @@ function GapInformation(){
           placeholder = "Consultant"
           required
           style ={{
-            marginTop:'30px',
+            marginTop:'15px',
             width:'350px'
           }}
       />
@@ -101,7 +101,7 @@ function GapInformation(){
           required
           style ={{
             width:'350px',
-            marginTop:'10px',
+            marginTop:'5px',
           }}
       />
       </label>
@@ -115,7 +115,7 @@ function GapInformation(){
           required
           style ={{
             width:'350px',
-            marginTop:'10px',
+            marginTop:'5px',
           }}
       />
       </label>
@@ -129,7 +129,7 @@ function GapInformation(){
           required
           style ={{
             width:'350px',
-            marginTop:'10px',
+            marginTop:'5px',
           }}
       />
       </label>
@@ -146,7 +146,7 @@ function GapInformation(){
           }}
       />
       </label>
-      <input className = "submitButton" type="submit" value="Create New GAP" style={{marginTop:'30px'}}/>
+      <input className = "submitButton" type="submit" value="Create New GAP" style={{marginTop:'15px'}}/>
   </form>
   </div>
   </div>
