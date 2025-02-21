@@ -41,7 +41,8 @@
   margin-top: 0;
 }
 
-.company-info, .url-link {
+.company-info, .url-link, .no-url{
+  display: block;
   margin-bottom: 20px;
   background-color: #e9e9e9;
   border-radius: 10px;

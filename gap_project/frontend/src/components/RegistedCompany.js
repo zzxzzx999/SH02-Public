@@ -151,7 +151,13 @@ function RegistedCompany() {
                 </div>
                 <div className="url-section"> 
                 <h2>Evidence URL</h2> 
-                    <p className="url-link">{url}</p>
+                {url === "no url given" ? (
+                    <p className="no-url">No URL provided</p>
+                ) : (
+                    <a href={url} className="url-link" target="_blank" rel="noopener noreferrer">
+                    {url}
+                    </a>
+                )}
                 </div>
                 <div className="past-gap">
                 <h2>Past GAP Analysis</h2>
