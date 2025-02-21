@@ -21,6 +21,7 @@ function RegistedCompany() {
 
     const navigate = useNavigate(); 
     const [companyNotes, setCompanyNotes]=useState('')
+    const [url, setUrl]=useState('')
     const [analyses, setAnalyses] = useState([])
 
     // State for chart data
@@ -69,6 +70,8 @@ function RegistedCompany() {
                         setSearchParams({ company: companyName, gap_id: latestAnalysis.gap_id });
                         setTitle(`Overview (${latestAnalysis.date})`); // Set title for the latest analysis
                         setGapId(latestAnalysis.gap_id);
+                        setUrl(latestAnalysis.url);
+                        console.log(latestAnalysis.gap_id)
                     }
                 }
             })
@@ -87,6 +90,7 @@ function RegistedCompany() {
                     setTitle(selectedAnalysis.date); // Other analyses
                 }
                 setGapId(selectedAnalysis.gap_id); // save gap_id
+                setUrl(selectedAnalysis.url);
             }
         } else {
             setTitle("Overview");
@@ -132,6 +136,8 @@ function RegistedCompany() {
         }
     }, [searchParams, companyName]);
 
+    console.log(url);
+
     return(
         <div class="main-content">
         <NavBar links={linksForPage3}  logout={true}/>
@@ -142,6 +148,10 @@ function RegistedCompany() {
                     <p>
                     {companyNotes|| "No additional notes."}
                     </p>
+                </div>
+                <h2>Evidence URL</h2>
+                <div className="company-info">  
+                    <p>{url}</p>
                 </div>
                 <div className="past-gap">
                 <h2>Past GAP Analysis</h2>
