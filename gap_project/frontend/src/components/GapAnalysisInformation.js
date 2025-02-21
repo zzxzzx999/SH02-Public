@@ -64,6 +64,7 @@ function GapInformation(){
         company_rep: companyRep,
         company_email: companyEmail,
         additional_notes: additionalNotes,
+        url: url,
       });
       navigate(`/gap-analysis?company=${companyName}`);
     } catch (error) {
