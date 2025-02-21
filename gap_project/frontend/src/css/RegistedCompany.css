@@ -1,11 +1,11 @@
 .overview-container {
-  top: 50%;
-  left: 50%;
+  top: 48%;
+  left: 52%;
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: row;
-  width: 80%;
-  height: 80vh;
+  width: 85vw;
+  height: 85vh;
   margin: 0 auto;
   gap: 20px;
   background-color: transparent;
@@ -13,14 +13,13 @@
   z-index:3;
   position: fixed;
   text-align: center;
-
 }
 
 /* left part */
 .left-part {
-  height: 97%;
-  width: 22%;
-  flex: 0.8;
+  height: 100%;
+  width: 100%;
+  flex: 1;
   background-color: white;
   border-radius: 25px;
   padding: 20px;
@@ -54,6 +53,8 @@
   overflow: auto;
   max-height: 20vh;
   max-width: 30vh;
+  margin:auto;
+  margin-top:1vh;
 }
 
 .past-gap{
@@ -69,6 +70,7 @@
 }
 
 .analysis-list{
+  max-height: 20vh;
   overflow-y: auto;
   outline: none;
   background-color: #f5f5f5;
