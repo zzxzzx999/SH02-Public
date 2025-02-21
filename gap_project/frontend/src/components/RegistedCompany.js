@@ -149,9 +149,9 @@ function RegistedCompany() {
                     {companyNotes|| "No additional notes."}
                     </p>
                 </div>
-                <h2>Evidence URL</h2>
-                <div className="company-info">  
-                    <p>{url}</p>
+                <div className="url-section"> 
+                <h2>Evidence URL</h2> 
+                    <p className="url-link">{url}</p>
                 </div>
                 <div className="past-gap">
                 <h2>Past GAP Analysis</h2>
