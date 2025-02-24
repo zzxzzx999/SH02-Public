@@ -10,14 +10,15 @@ variables:
   BACKEND_DIR: "$CI_PROJECT_DIR/gap_project"
   FRONTEND_DIR: "$BACKEND_DIR/frontend"
   REPORTS_DIR: "$BACKEND_DIR/reports"
-  # Define the reports directory
-  REACT_LINT_REPORT: "$REPORTS_DIR/react-lint-report.txt"
-  DJANGO_LINT_FLAKE8_REPORT: "$REPORTS_DIR/django-lint-flake8-report.txt"
-  DJANGO_LINT_MYPY_REPORT: "$REPORTS_DIR/django-lint-mypy-report.txt"
-  DJANGO_TEST_COVERAGE_REPORT: "$REPORTS_DIR/django-test-coverage-report.txt"
+
   # Define the test user
   TEST_USER: "GAPAdmin"
   TEST_USER_PASSWORD: "1"
+  
+  # Define docker variables
+  DOCKER_DRIVER: overlay2
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+
   # Define the feature branch pattern
   FEATURE_BRANCH_PATTERN: "^feature/issue-\\d+/.+"
 
@@ -29,9 +30,9 @@ lint-backend:
     - pip install flake8 mypy
   script:
     - cd "$BACKEND_DIR"
-    - flake8 ./gap > "$DJANGO_LINT_FLAKE8_REPORT" --exit-zero || echo "Flake8 issues found." 
+    - flake8 ./gap > "$REPORTS_DIR/django-lint-flake8-report.txt" --exit-zero || echo "Flake8 issues found." 
     # Formatting issues, unused imports, indentation errors
-    - mypy ./gap > "$DJANGO_LINT_MYPY_REPORT" || echo "Mypy issues found, but continuing the pipeline."
+    - mypy ./gap > "$REPORTS_DIR/django-lint-mypy-report.txt" || echo "Mypy issues found, but continuing the pipeline."
     # Type mismatches, incorrect return types
 
 # TODO: Add frontend linting
@@ -41,7 +42,7 @@ lint-backend:
 #   script:
 #     - cd "$FRONTEND_DIR"
 #     - npm install -g eslint
-#     - npx eslint . > "$REACT_LINT_REPORT" || echo "Eslint issues found."
+#     - npx eslint . > "$REPORTS_DIR/react-lint-report.txt" || echo "Eslint issues found."
 #     # --max-warnings=0 # (This makes the pipeline fail if styling errors detected)
 
 build-backend:
@@ -86,9 +87,9 @@ test-backend:
     - python manage.py migrate
   script:
     - coverage run --source='.' manage.py test
-    - coverage report -m > "$DJANGO_TEST_COVERAGE_REPORT"
-  rules:
-    - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
+    - coverage report -m > "$REPORTS_DIR/django-test-coverage-report.txt"
+  #rules:
+  #  - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
 
 test-frontend:
   stage: test
@@ -98,8 +99,8 @@ test-frontend:
     - npm install
   script:
     - npm test -- --watchAll=false
-  rules:
-  - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
+  # rules:
+  # - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
 
 #security:
 #  stage: security
