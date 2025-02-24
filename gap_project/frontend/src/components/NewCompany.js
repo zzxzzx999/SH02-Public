@@ -14,7 +14,7 @@ function NewCompany() {
 
   const [companyName, setCompanyName] = useState("");
   const [additionalNotes, setAdditionalNotes] =useState("");
-  
+
   const handleSubmit = async (event) => { 
     event.preventDefault();
       const token = localStorage.getItem("authToken");
@@ -32,7 +32,12 @@ function NewCompany() {
           });
           setCompanyName("");
           setAdditionalNotes("");
-          navigate(`/new-gap-confirm?company=${encodeURIComponent(companyName)}`);
+
+          if (role === "admin"){
+            navigate ("/list-of-company");
+          }else{
+            navigate(`/new-gap-confirm?company=${encodeURIComponent(companyName)}`);
+          }
       } catch (error) {
           console.error("Error : ", error.response || error.message);
       }
