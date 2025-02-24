@@ -25,10 +25,11 @@ test:
     POSTGRES_USER: notadmin
     POSTGRES_PASSWORD: 1
   before_script:
+    - cd gap_project/
     - apt-get update
     - apt-get install -y python3 python3-pip
-    - pip install django djangorestframework django-cors-headers coverage
-    - cd gap_project/
+    - pip install --upgrade pip
+    - pip install -r requirements.txt
     - python manage.py makemigrations --merge
     - python manage.py migrate
   script:
