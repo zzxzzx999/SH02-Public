@@ -1,7 +1,8 @@
 stages:
   - lint
-  - test
   - build
+  - test
+  - docker
   - security
   - deploy
 
@@ -101,6 +102,28 @@ test-frontend:
     - npm test -- --watchAll=false
   # rules:
   # - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
+
+# Build the Docker image
+build_image:
+  stage: docker
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker build -t $IMAGE_TAG .
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - docker tag $IMAGE_TAG $CI_REGISTRY_IMAGE:latest
+
+# Push the Docker image to GitLab Container Registry
+push_image:
+  stage: docker
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - docker push $IMAGE_TAG
+    - docker push $CI_REGISTRY_IMAGE:latest
 
 #security:
 #  stage: security
