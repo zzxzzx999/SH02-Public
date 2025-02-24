@@ -107,7 +107,12 @@ build_image:
   stage: docker
   image: docker:latest
   services:
-    - docker:dind
+    - name: docker:dind
+      alias: docker
+      command: ["--tls=false"]
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_TLS_CERTDIR: ""
   script:
     - docker build -t $IMAGE_TAG .
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
