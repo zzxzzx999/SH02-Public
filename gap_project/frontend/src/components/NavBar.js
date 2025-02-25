@@ -3,8 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import '../css/NavBar.css';
 import { useSubmit } from './SubmitContext.js';
 
-function NavBar({links, logout}) {
-  let clear = false;
+function NavBar({links, logout, isComplete}) {
   const submitAnswersToAPI = useSubmit();
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -12,12 +11,11 @@ function NavBar({links, logout}) {
   const pageRef = useRef(null);
   const popUpRef = useRef(null);
 
-  let finished = false;
-
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const companyName = params.get('company');
   localStorage.setItem("companyName", companyName);
+  const gapID = params.get("gap_id");
 
   const handleOutsideClick = (e) => {
     if (
@@ -112,15 +110,25 @@ function NavBar({links, logout}) {
     {isPopupOpen && (
       <Popup ref={popUpRef} onClose={() => setIsPopupOpen(false)}>
       <button className="close-button" onClick={() => setIsPopupOpen(false)}>X</button>
-        <h2>Company Name</h2>
-        <p>Are you finished?<br></br>If not, you can save and come back later.</p>
-        <button className="submitButton" onClick={async () => { await submitAnswersToAPI(finished=false); navigate('/home'); }}>
-          SAVE AND EXIT
-        </button>
-        <button className="submitButton" style={{ margin: '15px' }} onClick={async () => { await submitAnswersToAPI(finished=true); navigate(`/overall-output?company=${companyName}`);}}>
-          FINISHED, GO TO RESULTS
-        </button>
-
+        <h2>{companyName}</h2>
+        {isComplete ? (
+          <>
+            <p>Are you finished?<br></br>If not, you can save and come back later.</p>
+            <button className="submitButton" onClick={async () => { await submitAnswersToAPI(false); navigate('/home'); }}>
+              SAVE AND EXIT
+            </button>
+            <button className="submitButton" style={{ margin: '15px' }} onClick={async () => { await submitAnswersToAPI(true); navigate(`/overall-output?company=${companyName}&gap_id=${encodeURIComponent(gapID)}`);}}>
+              FINISHED, GO TO RESULTS <br></br> (YOU CAN'T UNDO THIS ACTION)
+            </button>
+          </>)
+          : (
+          <>
+            <p>Would you like to save and come back later?</p>
+            <button className="submitButton" onClick={async () => { await submitAnswersToAPI(false); navigate('/home'); }}>
+              SAVE AND EXIT
+            </button>
+          </>)
+        }
       </Popup>
     )}
     </div>
@@ -131,7 +139,7 @@ export default NavBar;
 
 const Popup = forwardRef(({ onClose, children }, ref) => {
   return (
-    <div className="bubble-container" style={{ width: '500px', marginTop: '40px' }} onClick={(e) => e.stopPropagation()} ref={ref}>
+    <div className="bubble-container" style={{ width: '500px', height:'270px', display: 'flex', justifycontent: 'center', alignitems: 'center', position: 'fixed'}} onClick={(e) => e.stopPropagation()} ref={ref}>
       {children}
     </div>
   );

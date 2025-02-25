@@ -9,44 +9,85 @@
 }
 
 .bubble-container {
-    z-index:3;
+    min-width: 460px;
+    width: auto;
+    height: auto;
+    z-index: 3;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 30%;
-    height: 50%;
-    padding: 2%;
+    max-width: 550px; /* Limit width on larger screens */
+    padding: 1vw; /* Ensure padding adapts */
     border-radius: 35px;
-    background-color : white;
+    background-color: white;
     box-shadow: 0 4px 6px rgba(189, 70, 70, 0.1);
     text-align: center;
-    display: flex; /* Add Flexbox */
-    flex-direction: column; /* Stack children vertically */
-    align-items: center; /* Center children horizontally */
-
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box; /* Include padding in dimensions */
 }
+
+/* Input fields styling */
+.bubble-container input[type="text"], 
+.bubble-container input[type="password"] {
+    width: 100%; /* Take up the full width */
+    max-width: 350px; /* Limit input field size */
+    height: 40px;
+    border-radius: 10px;
+    border: 2px solid #dcdcdc;
+    margin-bottom: 20px;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+/* Submit button styling */
+.submitButton {
+    width: 100%; /* Button takes full width */
+    max-width: 350px;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background-color: #4691B7;
+    color: white;
+    text-align: center;
+    font-weight: 500;
+    font-size: 17px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Logo styling */
+.gordon-text-logo {
+    width: auto;
+    height: 100px; /* Adjust height */
+    position: relative;
+    top: -30px;
+}
+
+/* Add responsive design with media queries */
+@media (max-width: 768px) {
+    .bubble-container {
+        padding: 1.5rem; /* Reduce padding */
+    }
+    .submitButton {
+        font-size: 15px; /* Adjust button font size */
+    }
+}
+
+
 
 /*for new company title*/
 .bubble-container h2 {
-    font-size: 2vw;
+    font-size: clamp(19px, 2.5vw, 26px);
     margin: 2%;
   }
 
 
 textarea{
-    font-size: 1.2vw;
+    font-size: 14px;
     resize: none;
-}
-
-.bubble-container input[type="text"], input[type="password"]{
-    width: 90%;
-    height: 35px;
-    border-radius: 10px;
-    border: 2px solid #dcdcdc;
-    margin-bottom:20px;
-    margin-top: 20px;
-    font-size: 1.2vw;
 }
 
 .bubble-container textarea{
@@ -58,33 +99,10 @@ textarea{
     max-height: 125px;
 }
 
-.submitButton {
-    width: 14em;
-    padding: 5px; /* Add padding for consistency */
-    border-radius: 10px;
-    border: none;
-    background-color: #4691B7;
-    color: white;
-    text-align: center; /* Ensure text inside is centered */
-    display: block;
-    margin: 0 auto;
-    margin-top : 45px;
-    font-weight: 500;
-    font-size: 17px;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-    text-decoration: none;
-}
-
 .submitButton:hover {
     background-color: #85AFC1; /* Lighter background color on hover */
   }
 
-.gordon-text-logo {
-    width : 175px;
-    height : 100px;
-    margin-bottom : 25px;
-}
 
 .show-hide-icons {
     position: absolute;
@@ -99,5 +117,3 @@ textarea{
 .form{
     width:100%;
 }
-
-  

@@ -6,6 +6,7 @@ import NavBar from "./NavBar.js";
 import BarChart from "./charts/BarChart.js";
 import LineChart from "./charts/LineChart.js";
 import LineChartWithBackground from "./charts/LineChartWithBg.js";
+import { pdfDownload } from "./PfPlan.js";
 
 function RegistedCompany() {
     const linksForPage3 = [
@@ -21,27 +22,36 @@ function RegistedCompany() {
 
     const navigate = useNavigate(); 
     const [companyNotes, setCompanyNotes]=useState('')
+    const [url, setUrl]=useState('')
     const [analyses, setAnalyses] = useState([])
+    const [PDFTitle, setPDFTitle] = useState(null);
 
-    const handleDownload = () => {
-        // achieve easy download function
-        const link = document.createElement('a');
-        link.href = '/path-to-your-file.pdf'; // replace to file path
-        link.download = 'Analysis_Report.pdf'; // default name of download file
-        link.click();
-      };
+    // State for chart data
+    const [barData, setBarData] = useState({
+        categories: [],
+        values: [],
+    });
+    const [lineData, setLineData] = useState({
+        categories: [],
+        values: [],
+    });
+    const [lineBgData, setLineBgData] = useState({
+        categories: [],
+        values: [],
+    });
 
     useEffect(() => {
         document.title = title; // set page's title as title in URL
     }, [title]);  
 
+    // Fetch company notes
     useEffect(() => {
         fetch(`http://localhost:8000/api/companies/?name=${encodeURIComponent(companyName)}`)
         .then(r => r.json())
         .then(d => setCompanyNotes(d[0].notes));
     }, [companyName]);
 
-
+    // Fetch past analyses
     useEffect(() => {
         fetch(`http://localhost:8000/api/past_analyses/${encodeURIComponent(companyName)}`)
             .then(response => response.json())
@@ -54,6 +64,7 @@ function RegistedCompany() {
                         setSearchParams({ company: companyName, gap_id: latestAnalysis.gap_id });
                         setTitle(`Overview (${latestAnalysis.date})`); // Set title for the latest analysis
                         setGapId(latestAnalysis.gap_id);
+                        setUrl(latestAnalysis.url);
                     }
                 }
             })
@@ -72,6 +83,10 @@ function RegistedCompany() {
                     setTitle(selectedAnalysis.date); // Other analyses
                 }
                 setGapId(selectedAnalysis.gap_id); // save gap_id
+                setUrl(selectedAnalysis.url);
+                const pdfTitle = companyName + "-" + selectedAnalysis.date
+                console.log("date: " + selectedAnalysis.date)
+                setPDFTitle(pdfTitle)
             }
         } else {
             setTitle("Overview");
@@ -79,23 +94,45 @@ function RegistedCompany() {
         }
     }, [searchParams, analyses]);
 
-// Dummy data for bar chart (to be changed)
-const [barData] = useState({
-    categories: ['Section 1', 'Section 2', 'Section 3', 'Section 4', 'Section 5', 'Section 6', 'Section 7', 'Section 8', 'Section 9', 'Section 10'],
-    values: [2, 20, 15, 50, 34, 45, 30, 20, 10, 5],
-    });
+    // Fetch chart data based on gap_id
+    useEffect(() => {
+        const currentGapId = searchParams.get("gap_id");
+        if (currentGapId) {
+            // Fetch bar chart data
+            fetch(`http://localhost:8000/api/analysis/${currentGapId}/bar-chart-data`)
+                .then(response => response.json())
+                .then(data => {
+                    setBarData({
+                        categories: data.categories || [],
+                        values: data.values || [],
+                    });
+                })
+                .catch(error => console.error("Error fetching bar chart data:", error));
+            // Fetch line chart data
+            fetch(`http://localhost:8000/api/analysis/${encodeURIComponent(companyName)}/total-score-over-time`)
+                .then(response => response.json())
+                .then(data => {
+                    setLineData({
+                        categories: data.gap_date || [],
+                        values: data.total_score || [],
+                    });
+                })
+                .catch(error => console.error("Error fetching line chart data:", error));
 
-// Dummy data for line chart (to be changed)
-const [lineData] = useState({
-    categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    values: [120, 200, 150, 80, 70, 110, 130],
-});
+            // Fetch line chart with background 
+            fetch(`http://localhost:8000/api/analysis/${currentGapId}/bar-chart-data`)
+                .then(response => response.json())
+                .then(data => {
+                    setLineBgData({
+                        categories: data.categories || [],
+                        values: data.values || [],
+                    });
+                })
+                .catch(error => console.error("Error fetching line chart with background data:", error));
+        }
+    }, [searchParams, companyName]);
 
-// Dummy data for line chart with background (to be changed)
-const [lineBgData] = useState({
-    categories: ['Section 1', 'Section 2', 'Section 3', 'Section 4', 'Section 5', 'Section 6', 'Section 7', 'Section 8', 'Section 9', 'Section 10'],
-    values: [2, 20, 15, 50, 34, 45, 30, 20, 10, 5],
-});
+    console.log(PDFTitle);
 
     return(
         <div class="main-content">
@@ -107,6 +144,16 @@ const [lineBgData] = useState({
                     <p>
                     {companyNotes|| "No additional notes."}
                     </p>
+                </div>
+                <div className="url-section"> 
+                <h2>Evidence URL</h2> 
+                {url === "no url given" ? (
+                    <p className="no-url">No URL provided</p>
+                ) : (
+                    <a href={url} className="url-link" target="_blank" rel="noopener noreferrer">
+                    {url}
+                    </a>
+                )}
                 </div>
                 <div className="past-gap">
                 <h2>Past GAP Analysis</h2>
@@ -143,7 +190,7 @@ const [lineBgData] = useState({
                     <img
                         src="/download.png" 
                         alt="Download"
-                        onClick={handleDownload}
+                        onClick={() => pdfDownload(PDFTitle)}
                         className="download-icon"
                     />
                 </div>

@@ -20,8 +20,7 @@ function AboutUs() {
       setData([]);
       return;
     }
-
-    const token = localStorage.getItem("authToken");
+    
     const endpoint = `${url}/companies/?name=${searchText}`
 
     try {

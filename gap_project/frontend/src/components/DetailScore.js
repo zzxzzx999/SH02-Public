@@ -14,6 +14,7 @@ function DetailScore() {
   const companyName = params.get('company');
   const elementName = params.get('title');
   const gapId = params.get("gap_id");
+  const userRole = localStorage.getItem("userRole");  
   localStorage.setItem("companyName", companyName);
 
   console.log("company name: " + companyName);
@@ -21,6 +22,8 @@ function DetailScore() {
 
   const [scores, setScores] = useState({}); // store score
   const [totalScore, setTotalScore] = useState(0);
+
+  const [pieData, setPieData] = useState([]);
 
   // Calculate total score
   useEffect(() => {
@@ -64,6 +67,17 @@ function DetailScore() {
         }
       }
     };
+
+  //fetch data of pie chart
+  useEffect(() => {
+    axios.get(`http://localhost:8000/api/element-scores/${gapId}/${elementName}/`)
+      .then(response => {
+        setPieData(response.data);
+      })
+      .catch(error => {
+        console.error("Error fetching element scores:", error);
+      });
+  }, [gapId, elementName]);
   
   //Navbar
   const linksForPage3 = [
@@ -81,15 +95,15 @@ function DetailScore() {
     { name: 'Audit & Inspection Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Audit & Inspection Process')}` },
     { name: 'Improvement Planning', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Improvement Planning')}` },
 ];
+useEffect(() => {
+  if(userRole === 'client'){
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+      window.history.go(1);
+    };
+  }
+}, [userRole]);
 
-const [pieData] = useState([
-  { name: 'Mon', value: 120 },
-  { name: 'Tue', value: 200 },
-  { name: 'Wed', value: 150 },
-  { name: 'Thu', value: 80 },
-  { name: 'Fri', value: 70 },
-]);
-  
   return (
     <div class="main-content" className="gap-intro">
       <NavBar links={linksForPage3} logout={true}/>

@@ -10,7 +10,7 @@ import * as echarts from 'echarts';
 //      values: [120, 200, 150, 80, 70, 110, 130],
 // });
 
-const LineChart = ({ chartData }) => {
+const LineChart = ({ chartData, potentialScore }) => {
   const chartRef = useRef(null);
 
   // Function to determine color based on increasing or decreasing trend
@@ -71,6 +71,12 @@ const LineChart = ({ chartData }) => {
           lineStyle: {
             color: 'blue', // Line color remains constant
           },
+          markLine: {
+            symbol: 'none',
+            label: { formatter: 'Potential Score', position: 'end', color: 'black', offset: [-100, -10] },
+            data: [{yAxis: potentialScore}],
+            lineStyle: {color: 'red', type: 'dashed'}
+          }
         },
       ],
     };
@@ -83,7 +89,7 @@ const LineChart = ({ chartData }) => {
       window.removeEventListener('resize', handleResize);
       chartInstance.dispose();
     };
-  }, [chartData]);
+  }, [chartData, potentialScore]);
 
   return (
     <div style={{width: '100%', height: '100%'}} ref={chartRef}></div>

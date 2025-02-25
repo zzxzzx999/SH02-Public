@@ -5,15 +5,22 @@ import '../css/Login.css';
 import NavBar from './NavBar.js'; // Import the Navbar component
 
 function NewCompany() {
+  const userRole = localStorage.getItem("userRole"); // Get the stored role
+
   const linksForPage2 = [
-    { name: 'Previous Page', path: '/list-of-company', image:'/back-button.png'},
+    { 
+      name: 'Previous Page', 
+      path: userRole === "admin" ? "/list-of-company" : "/home", // Conditional path
+      image: "/back-button.png" 
+    }
   ];
 
   const [companyName, setCompanyName] = useState("");
   const [additionalNotes, setAdditionalNotes] =useState("");
   const navigate = useNavigate();
+
   const handleSubmit = async (event) => { 
-      event.preventDefault();
+    event.preventDefault();
       const token = localStorage.getItem("authToken");
 
       const payload = {
@@ -29,7 +36,13 @@ function NewCompany() {
           });
           setCompanyName("");
           setAdditionalNotes("");
-          navigate(`/new-gap-confirm?company=${encodeURIComponent(companyName)}`);
+          if(userRole === "admin"){
+            navigate("/list-of-companies");
+            
+          }else{
+            navigate(`/new-gap-confirm?company=${encodeURIComponent(companyName)}`);
+            
+          }
       } catch (error) {
           console.error("Error : ", error.response || error.message);
       }
@@ -37,8 +50,8 @@ function NewCompany() {
   return (
     <div className="create-new-company">
         <NavBar links = {linksForPage2} logout={true}/>
-        <div className="bubble-container" style = {{width:'500px'}}>
-        <h2> CREATE NEW COMPANY </h2>
+        <div className="bubble-container" style = {{width:'500px', padding:'30px'}}>
+        <h2 style={{fontSize:'24px'}}> CREATE NEW COMPANY </h2>
             <form className="form" onSubmit={handleSubmit}>
                 {/* company name */}
 
@@ -49,19 +62,22 @@ function NewCompany() {
                         value={companyName} // Controlled input
                         onChange={(e) => setCompanyName(e.target.value)} // Update state
                         placeholder = "Company Name"
+                        required
                     />
 
 
                 {/* Additional comments */}
             <label> 
                 <textarea
+                    id="add_comments"
+                    style={{width:'350px'}}
                     type="text" 
                     value={additionalNotes}
                     onChange={(e) => setAdditionalNotes(e.target.value)}
                     placeholder = "Additional Notes"
                 />
             </label>
-            <input className = "submitButton" type="submit" value="Create New GAP"/>
+            <input className = "submitButton" type="submit" value= {userRole === "admin" ? "Create New Company" : "Create New GAP"}/>
 
         </form>
         </div>

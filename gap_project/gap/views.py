@@ -16,11 +16,14 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from .serializers import *
 from .models import Company, GapAnalysis
-from .pdfGeneration import generateImprovementPlan
+from .pdfGeneration import *
 from .jsonReadWrite import *
 import os
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.decorators import action
+from django.http import FileResponse
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -33,7 +36,8 @@ def login_user(request):
     if user:
         token, created = Token.objects.get_or_create(user=user)
         is_admin = username == 'GAPAdmin'
-        return Response({'token' : token.key, 'username': user.username, 'is_admin' : is_admin})
+        role = "admin" if is_admin else "consultant"
+        return Response({'token' : token.key, 'username': user.username, 'is_admin' : is_admin, 'role': role })
     else:
         return Response({'error': "Invalid credentials"}, status= 404)
 
@@ -61,6 +65,7 @@ def create_gap(request):
     company_rep = request.data.get('company_rep')
     company_email = request.data.get('company_email')
     additional_notes = request.data.get('additional_notes')
+    url = request.data.get('url')
 
     try:
         company_instance = Company.objects.get(name=company_name)
@@ -69,7 +74,8 @@ def create_gap(request):
             consultant=consultant, 
             companyRep=company_rep,
             companyEmail=company_email, 
-            additionalNotes=additional_notes
+            additionalNotes=additional_notes,
+            url=url
         )
         company_instance.current_gap = True
         serializer = GapAnalysisSerializer(gap)
@@ -101,22 +107,44 @@ def get_latest_gap(request):
         return Response({"error": "Company not found."}, status=404)
 
 
-class PdfView(APIView):
-    
+pdf_filename = ""
+class PdfView(APIView): 
     serializer_class = GapAnalysisSerializer
     
+    @action(detail=True, methods=['get'], renderer_classes=(BinaryFileRenderer,))
     def get(self, request):
-        gapAnalysis = GapAnalysis.objects.all()[0]
-        response = {"name" : pdf_filename}
-        c, pdf_filename = generateImprovementPlan(gapAnalysis)
-        return Response(response)
-    
+        # Open the PDF in binary mode
+        try:
+            pdf_path = 'gap/src/improvementPlan.pdf'
+            return FileResponse(
+                open(pdf_path, 'rb'),
+                as_attachment=True,  # Forces download
+                filename = pdf_filename  # Sets the downloaded file name
+            )
+        except FileNotFoundError:
+            return Response({'error': 'File not found'}, status=404)        
     def post(self, request):
-        serializer = GapAnalysisSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            print(serializer.data)
-            return Response(serializer.data)
+        #return download(request)
+        gapId = request.data.get('id')
+        #gap = GapAnalysis.objects.get(id=gapId) #This will be the actual line, but need specific test data that works
+        gap = GapAnalysis.objects.get(company = Company.objects.get(name ="Resolution Today"), date = "2018-06-11")
+        generatePdfPlan(gap)
+        pdf_filename = f"{gap.title}.pdf"
+        return Response({'pdf' : pdf_filename}, status=200)
+        
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_incomplete_answers(request):
+    gap_id = request.query_params.get("gap_id")
+
+    try:
+        gap = GapAnalysis.objects.get(id=gap_id)
+    except GapAnalysis.DoesNotExist:
+        return Response({"error": "GapAnalysis not found"}, status=404)
+
+    serializer = AnswersSerializer(gap)
+    return Response(serializer.data, status=200)
+
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -138,7 +166,12 @@ def getQuestionOrWriteAnswer(request):
         print("Incoming request data:", data)
         finished = data.get("finished")
         company = Company.objects.get(name = data.get("company_name"))
-        gap = GapAnalysis.objects.get(id = data.get("id"))
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" , company)
+        print(data.get("id"))
+        try:
+            gap = GapAnalysis.objects.get(id=data.get("id"))
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': 'GapAnalysis record not found for the given gapID'}, status=404)
         gap.gap_data = data.get("answers")
         gap.improvement_plan = data.get("improvementPlan")
         print("finished: ", finished)
@@ -187,7 +220,7 @@ def get_scores(request, gap_id, element_name):
         return JsonResponse({"error": f"GapAnalysis with id {gap_id} not found."}, status=404)
 
 
-    gap_data = json.loads(analysis.gap_data)
+    gap_data = analysis.gap_data
     element_names = [
         "Policy", "Management", "Documented System", "Meetings", "Performance Measurement",
         "Committee & Representatives", "Investigation Process", "Incident Reporting", "Training Plan",
@@ -197,11 +230,11 @@ def get_scores(request, gap_id, element_name):
     element_scores = gap_data.get((element_index), [])
 
     scores = {
-        "exceptionalCompliance": sum(score for score in element_scores if score == 5),
-        "goodCompliance": sum(score for score in element_scores if score == 4),
-        "basicCompliance": sum(score for score in element_scores if score == 3),
-        "needsImprovement": sum(score for score in element_scores if score == 2),
-        "unsatisfactory": sum(score for score in element_scores if score == 1)
+        "exceptionalCompliance": sum(int(score) for score in element_scores if int(score) == 5),
+        "goodCompliance": sum(int(score) for score in element_scores if int(score) == 4),
+        "basicCompliance": sum(int(score) for score in element_scores if int(score) == 3),
+        "needsImprovement": sum(int(score) for score in element_scores if int(score) == 2),
+        "unsatisfactory": sum(int(score) for score in element_scores if int(score) == 1)
         }
 
     return JsonResponse({
@@ -219,15 +252,16 @@ def get_past_analysis(request, company_name):
     # Get the most recent analysis
     most_recent_analysis = analyses.first()
     recent_title = f"Overview ({most_recent_analysis.date.strftime('%Y-%m-%d')})" if most_recent_analysis else "Overview"
-
     data=[
         {
             "gap_id": analysis.id,
             "date": analysis.date.strftime("%Y-%m-%d"),
-            "title":analysis.title
+            "title":analysis.title,
+            "url" : analysis.url
         }
         for analysis in analyses
     ]
+
     return Response({"company_name": company_name, "past_analyses": data, "recent_title": recent_title}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
@@ -241,7 +275,7 @@ def overall_scores(request, gap_id):
         return JsonResponse({"error": "Analysis not found for given gap_id"}, status=404)
     
 
-    gap_data=json.loads(analysis.gap_data)
+    gap_data=analysis.gap_data
     #company_name=analysis.company.name
 
     total_score = 0
@@ -255,7 +289,8 @@ def overall_scores(request, gap_id):
         totals["basic"] += sum(1 for score in scores if score == 3)
         totals["needsImprovement"] += sum(1 for score in scores if score == 2)
         totals["unsatisfactory"] += sum(1 for score in scores if score == 1)
-        total_score += sum(scores) 
+        total_score += sum(int(score) for score in scores if isinstance(score, (int, float)) or score.isdigit())
+
 
     unsatisfactory_percentage = (totals["unsatisfactory"] / total_number) * 100
     needs_improvement_percentage = (totals["needsImprovement"] / total_number) * 100
@@ -322,7 +357,7 @@ def company_latest_total_score(request, company_name):
     if not latest_analysis:
         return Response({"name": company.name, "score": 0})  # if no analysisi data return 0
     try:
-        gap_data = json.loads(latest_analysis.gap_data)
+        gap_data = (latest_analysis.gap_data)
         total_score = sum(sum(scores) for scores in gap_data.values() if isinstance(scores, list))
     except (json.JSONDecodeError, TypeError, ValueError) as e:
         print(f"Error processing gap_data for company {company.name}: {e}")
@@ -333,3 +368,95 @@ def company_latest_total_score(request, company_name):
         "gap_id": latest_analysis.id,
         "score": total_score
     })
+
+
+#API for bar charts
+@api_view(['GET'])
+def get_bar_chart_data(request, gap_id):
+    try:
+        analysis = GapAnalysis.objects.get(id=gap_id)
+    except GapAnalysis.DoesNotExist:
+        return JsonResponse({"error": f"GapAnalysis with id {gap_id} not found."}, status=404)
+
+    gap_data = analysis.gap_data
+    element_names = [
+        "Policy", "Management", "Documented System", "Meetings", "Performance Measurement",
+        "Committee & Representatives", "Investigation Process", "Incident Reporting", "Training Plan",
+        "Risk Management Process", "Audit & Inspection Process", "Improvement Planning"
+    ]
+
+    categories = element_names
+    values = []
+
+    for element_name in element_names:
+        element_index = str(element_names.index(element_name) + 1)  # index starts from 1
+        element_scores = gap_data.get(element_index, [])
+        total_score = sum(int(score) for score in element_scores if isinstance(score, (int, float)) or str(score).isdigit()) if element_scores else 0 # Sum of all scores for the element, default to 0 if no scores
+        values.append(total_score)
+
+    return JsonResponse({
+        "categories": categories,
+        "values": values
+    })
+
+# API for line chart
+@api_view(['GET'])
+def get_total_score_over_time(request, company_name):
+    try:
+        # Fetch all GAP analyses for the company
+        analyses = GapAnalysis.objects.filter(company__name=company_name).order_by('date')
+    except GapAnalysis.DoesNotExist:
+        return JsonResponse({"error": f"No GAP analyses found for company {company_name}."}, status=404)
+
+    gap_dates = []
+    total_scores = []
+
+    for analysis in analyses:
+        gap_dates.append(analysis.date.strftime("%Y-%m-%d"))  # Format date as string
+        gap_data = analysis.gap_data
+        
+        # get the total scores for each of the gap analyses in the company
+        if gap_data:
+            total_score = 0
+            for scores in gap_data.values(): 
+                for score in scores: 
+                    total_score += int(score) 
+        else:
+            total_score = 0 
+
+        total_scores.append(total_score)
+
+    return JsonResponse({
+        "gap_date": gap_dates,
+        "total_score": total_scores
+    })
+
+# API for bar chart 
+@api_view(['GET'])
+def get_pie_chart_data(request, gap_id,element_name):
+    try:
+        analysis = GapAnalysis.objects.get(id=gap_id)
+    except GapAnalysis.DoesNotExist:
+        return Response({"error": f"GapAnalysis with id {gap_id} not found."}, status=404)
+    gap_data = analysis.gap_data
+    element_names = [
+        "Policy", "Management", "Documented System", "Meetings", "Performance Measurement",
+        "Committee & Representatives", "Investigation Process", "Incident Reporting", "Training Plan",
+        "Risk Management Process", "Audit & Inspection Process", "Improvement Planning"
+    ]
+    element_index = str(element_names.index(element_name) + 1) # change to the key of gap_data which is string
+    element_scores = gap_data.get(element_index, []) # get all data of this element
+    print(element_scores)
+    
+    score_counts = {
+        "exceptional": sum(1 for score in element_scores if int(score) == 5),
+        "good": sum(1 for score in element_scores if int(score) == 4),
+        "basic": sum(1 for score in element_scores if int(score) == 3),
+        "needsImprovement": sum(1 for score in element_scores if int(score) == 2),
+        "unsatisfactory": sum(1 for score in element_scores if int(score) == 1)
+    }
+    pie_data = [{"name": category, "value": count} for category, count in score_counts.items()]
+
+    return Response(pie_data)
+
+

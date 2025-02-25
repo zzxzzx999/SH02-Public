@@ -21,7 +21,7 @@ class CompanySerializer(serializers.ModelSerializer):
 class GapAnalysisSerializer(serializers.ModelSerializer):
     class Meta:
         model = GapAnalysis
-        fields = ('title', 'company', 'consultant', 'companyRep', 'companyEmail', 'additionalNotes', 'gap_data', 'improvement_plan')
+        fields = ('title', 'company', 'consultant', 'companyRep', 'companyEmail', 'additionalNotes', 'url', 'gap_data', 'improvement_plan')
 
     def create(self, validated_data):
         """ Handle JSON fields properly """
@@ -35,4 +35,13 @@ class GapAnalysisSerializer(serializers.ModelSerializer):
 
 class QuestionsSerializer(serializers.Serializer):
     GetOrWrite = serializers.CharField(max_length=10, required=False)
+
+class AnswersSerializer(serializers.ModelSerializer):
+    gap_data = serializers.JSONField()
+    improvement_plan = serializers.JSONField()
+
+    class Meta:
+        model = GapAnalysis
+        fields = ['id', 'gap_data', 'improvement_plan']
+
     

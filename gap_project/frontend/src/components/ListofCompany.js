@@ -7,7 +7,6 @@ import NavBar from './NavBar.js';
 
 function ListofCompany(){
     const linksForPage2 = [
-        { name: 'Previous Page', path: '/home' , image:'/back-button.png'},
         { name: 'Add New Company', path: '/new-company' , image:'/add-new-company.png'},
         
       ];
@@ -22,7 +21,7 @@ function ListofCompany(){
     const [searchKeyword, setSearchKeyword] = useState(""); 
     const [scores, setScores] = useState({});
     const [searchParams] = useSearchParams();
-    const [gapId, setGapId] = useState(null);
+    const [, setGapId] = useState(null);
     const [analyses, setAnalyses] = useState([])
     
     

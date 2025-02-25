@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
 import * as echarts from 'echarts';
+import React, { useEffect, useRef } from 'react';
 
 // For "Specifc Output"
 // TODO: Colors for the pie chart are yet to be changed to FIGMA
@@ -13,6 +13,14 @@ import * as echarts from 'echarts';
 //     { name: 'Fri', value: 70 },
 //   ]);
 
+const COLOR_MAP = {
+  exceptional: '#006613', 
+  good: '#42C259',
+  basic: '#7CCC8B', 
+  needsImprovement: '#FFC546', 
+  unsatisfactory: '#FF0B0B', 
+};
+
 const PieChart = ({ chartData }) => {
   const chartRef = useRef(null);
 
@@ -25,25 +33,37 @@ const PieChart = ({ chartData }) => {
       },
       series: [
         {
-          name: 'Sales',
+          //name: 'Sales',
           type: 'pie',
-          radius: '50%',
-          data: chartData.map(item => ({
+          radius: '80%',
+          center: ['50%', '50%'],
+
+
+          data: chartData.filter(item => item.value > 0).map(item => ({
             value: item.value,
-            name: item.name,
+            
+            name: item.name === 'needsImprovement'
+            ? 'Needs Improvement' //fixes piechart needs improvement
+            : item.name[0].toUpperCase() + item.name.slice(1), //capitilizes
+            itemStyle: {
+              color: COLOR_MAP[item.name] || '#9E9E9E',}
           })),
         },
       ],
     };
 
     chartInstance.setOption(options);
+    const handleResize = () => chartInstance.resize();
+    window.addEventListener('resize', handleResize);
+
 
     return () => {
+      window.removeEventListener('resize', handleResize);
       chartInstance.dispose();
     };
   }, [chartData]);
 
-  return <div ref={chartRef} style={{width: '26em', height: '35em', marginTop: '-3.5em', marginLeft: '0em'}} />;
+  return <div className="pie-chart" ref={chartRef} />;
 };
 
 export default PieChart;
