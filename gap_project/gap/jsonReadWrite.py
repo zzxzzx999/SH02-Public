@@ -20,7 +20,6 @@ def getImprovementAnswer(element, question, gapAnalysis):
 
 def getAllElement(element):
     print("PINK PONY GIRLS")
-    print(os.getcwd())
     with open('gap/src/elements-questions.json', 'r', encoding='utf-8') as file:
         data = json.loads(file.read())[element-1]
     return data
@@ -29,9 +28,12 @@ def getAllElementQuestions(element):
     return getAllElement(element)["Questions"]
 
 def getQuestion(element, question):
-    question = {}
-    question["Question"] = getAllElementQuestions(element)[question-1]
-    return question
+    file_path = os.path.join(settings.BASE_DIR, 'gap/src/elements-questions.json')
+    with open(file_path, 'r', encoding='UTF-8') as file:
+        data = json.load(file)[element-1]
+        
+    data["Questions"] = data["Questions"][question-1]
+    return data
 
 def getElementHeading(element):
     return getAllElement(element)["Section_Name"]

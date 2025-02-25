@@ -31,7 +31,7 @@ def createElementTable(issues, improvements, element, scores):
     return Table(table_data), title
 
 
-def generatePDF(gap):
+def generatePdfPlan(gap):
     # Create PDF
     const_filename = "gap/src/improvementPlan.pdf"
     pdf = SimpleDocTemplate(const_filename, pagesize=letter)

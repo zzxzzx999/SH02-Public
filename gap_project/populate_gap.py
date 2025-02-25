@@ -53,7 +53,7 @@ def populate():
     for company in companies:
         c = add_comp(company)
         for i, date in enumerate(company["Gap Analyses"]):
-            if i != len(company["GapAnalysis"]):
+            if i != len(company["Gap Analyses"]):
                 add_gap(date, c)
             else:
                 add_gap(date, c, True)
