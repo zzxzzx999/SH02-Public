@@ -5,6 +5,7 @@ import '../css/DetailScore.css';
 import '../css/NavBar.css';
 import NavBar from "./NavBar";
 import PieChart from "./charts/PieChart";
+import ChartTable from "./charts/Tally";
 
 
 function DetailScore() {
@@ -139,7 +140,10 @@ useEffect(() => {
         </div>
 
         {/* Pie Chart Placeholder */}
-        <div className="pie-chart"><PieChart chartData={pieData}/></div>
+        <div className="pie-chart">
+          <PieChart chartData={pieData}/>
+          <ChartTable data={pieData}/>
+        </div>
 
         <button className="previous-button" onClick={handlePrevious}>&lt;</button>
         <button className="next-button" onClick={handleNext}>&gt;</button>
