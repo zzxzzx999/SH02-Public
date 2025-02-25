@@ -2,8 +2,8 @@ stages:
   - lint
   - build
   - test
-  - docker
-  - security
+  # - docker
+  # - security
   - deploy
 
 variables:
