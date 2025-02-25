@@ -49,6 +49,7 @@ function GapInformation(){
   const [consultant, setConsultant] = useState("");
   const [companyRep, setCompanyRep] = useState("");
   const [companyEmail, setCompanyEmail] = useState("");
+  const [url, setUrl] = useState("");
   const [additionalNotes, setAdditionalNotes] = useState("");
 
   const navigate = useNavigate(); 
@@ -63,6 +64,7 @@ function GapInformation(){
         company_rep: companyRep,
         company_email: companyEmail,
         additional_notes: additionalNotes,
+        url: url,
       });
       navigate(`/gap-analysis?company=${companyName}`);
     } catch (error) {
@@ -85,7 +87,7 @@ function GapInformation(){
           placeholder = "Consultant"
           required
           style ={{
-            marginTop:'30px',
+            marginTop:'15px',
             width:'350px'
           }}
       />
@@ -100,7 +102,7 @@ function GapInformation(){
           required
           style ={{
             width:'350px',
-            marginTop:'10px',
+            marginTop:'5px',
           }}
       />
       </label>
@@ -114,7 +116,21 @@ function GapInformation(){
           required
           style ={{
             width:'350px',
-            marginTop:'10px',
+            marginTop:'5px',
+          }}
+      />
+      </label>
+
+      <label>
+      <input 
+          type="text" 
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder = "Gap Analysis Evidence URL"
+          required
+          style ={{
+            width:'350px',
+            marginTop:'5px',
           }}
       />
       </label>
@@ -131,7 +147,7 @@ function GapInformation(){
           }}
       />
       </label>
-      <input className = "submitButton" type="submit" value="Create New GAP" style={{marginTop:'30px'}}/>
+      <input className = "submitButton" type="submit" value="Create New GAP" style={{marginTop:'15px'}}/>
   </form>
   </div>
   </div>

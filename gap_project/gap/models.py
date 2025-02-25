@@ -24,6 +24,7 @@ class GapAnalysis(models.Model):
     companyRep= models.CharField(max_length=128, unique=False, blank=False, null=False)
     companyEmail = models.EmailField(max_length=128, blank=False, null=False, default='example@company.com')
     additionalNotes = models.TextField(blank=True)
+    url = models.URLField(max_length=200, default="no url given")
     
     class Meta:
         verbose_name_plural = "Gap Analyses"

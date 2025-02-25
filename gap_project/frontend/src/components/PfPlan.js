@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React from "react";
 
-export async function pdfDownload() {
+export async function pdfDownload(PDFTitle) {
     try {
         const postResponse = await axios.post('http://localhost:8000/gap/pdfplan/', {
             key1: 'BOOOOOOOOO',
@@ -18,7 +18,8 @@ export async function pdfDownload() {
             const url = window.URL.createObjectURL(new Blob([pdfResponse.data]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'file.pdf');
+            const title = PDFTitle +".pdf"
+            link.setAttribute('download', title);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);

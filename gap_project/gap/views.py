@@ -65,6 +65,7 @@ def create_gap(request):
     company_rep = request.data.get('company_rep')
     company_email = request.data.get('company_email')
     additional_notes = request.data.get('additional_notes')
+    url = request.data.get('url')
 
     try:
         company_instance = Company.objects.get(name=company_name)
@@ -73,7 +74,8 @@ def create_gap(request):
             consultant=consultant, 
             companyRep=company_rep,
             companyEmail=company_email, 
-            additionalNotes=additional_notes
+            additionalNotes=additional_notes,
+            url=url
         )
         company_instance.current_gap = True
         serializer = GapAnalysisSerializer(gap)
@@ -250,15 +252,16 @@ def get_past_analysis(request, company_name):
     # Get the most recent analysis
     most_recent_analysis = analyses.first()
     recent_title = f"Overview ({most_recent_analysis.date.strftime('%Y-%m-%d')})" if most_recent_analysis else "Overview"
-
     data=[
         {
             "gap_id": analysis.id,
             "date": analysis.date.strftime("%Y-%m-%d"),
-            "title":analysis.title
+            "title":analysis.title,
+            "url" : analysis.url
         }
         for analysis in analyses
     ]
+
     return Response({"company_name": company_name, "past_analyses": data, "recent_title": recent_title}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])

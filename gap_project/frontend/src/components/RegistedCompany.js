@@ -22,7 +22,9 @@ function RegistedCompany() {
 
     const navigate = useNavigate(); 
     const [companyNotes, setCompanyNotes]=useState('')
+    const [url, setUrl]=useState('')
     const [analyses, setAnalyses] = useState([])
+    const [PDFTitle, setPDFTitle] = useState(null);
 
     // State for chart data
     const [barData, setBarData] = useState({
@@ -62,6 +64,7 @@ function RegistedCompany() {
                         setSearchParams({ company: companyName, gap_id: latestAnalysis.gap_id });
                         setTitle(`Overview (${latestAnalysis.date})`); // Set title for the latest analysis
                         setGapId(latestAnalysis.gap_id);
+                        setUrl(latestAnalysis.url);
                     }
                 }
             })
@@ -80,6 +83,10 @@ function RegistedCompany() {
                     setTitle(selectedAnalysis.date); // Other analyses
                 }
                 setGapId(selectedAnalysis.gap_id); // save gap_id
+                setUrl(selectedAnalysis.url);
+                const pdfTitle = companyName + "-" + selectedAnalysis.date
+                console.log("date: " + selectedAnalysis.date)
+                setPDFTitle(pdfTitle)
             }
         } else {
             setTitle("Overview");
@@ -125,6 +132,8 @@ function RegistedCompany() {
         }
     }, [searchParams, companyName]);
 
+    console.log(PDFTitle);
+
     return(
         <div class="main-content">
         <NavBar links={linksForPage3}  logout={true}/>
@@ -135,6 +144,16 @@ function RegistedCompany() {
                     <p>
                     {companyNotes|| "No additional notes."}
                     </p>
+                </div>
+                <div className="url-section"> 
+                <h2>Evidence URL</h2> 
+                {url === "no url given" ? (
+                    <p className="no-url">No URL provided</p>
+                ) : (
+                    <a href={url} className="url-link" target="_blank" rel="noopener noreferrer">
+                    {url}
+                    </a>
+                )}
                 </div>
                 <div className="past-gap">
                 <h2>Past GAP Analysis</h2>
@@ -171,7 +190,7 @@ function RegistedCompany() {
                     <img
                         src="/download.png" 
                         alt="Download"
-                        onClick={pdfDownload}
+                        onClick={() => pdfDownload(PDFTitle)}
                         className="download-icon"
                     />
                 </div>
