@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import NavBar from './NavBar';
 import Accordion from './Accordion'
 import { SubmitProvider } from './SubmitContext';
@@ -55,6 +55,7 @@ function Elements() {
       setAnswers(getDefaultAnswers());
     }
   }, [answers]);
+  
 
   useEffect(() => {
     if (answers && typeof answers === "object") {
@@ -95,6 +96,15 @@ function Elements() {
     }
   }, []);
 
+  // sort of prevents user from going using the back button - for some reason it only prevents them from going out of the question set by using the back button (on the browser), 
+  //so it keeps them in the question set and also no answers get lost when it is clicked
+  useEffect(() => {
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+      window.history.go(1);
+    };
+  }, []);
+
   const links = [
     { name: 'Policy', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=0&gap_id=${encodeURIComponent(gapID)}`, image: '' },
     { name: 'Management', path: `/gap-analysis/management?company=${encodeURIComponent(companyName)}&element=1&gap_id=${encodeURIComponent(gapID)}`, image: '' },
@@ -107,31 +117,8 @@ function Elements() {
     { name: 'Training Plan', path: `/gap-analysis/training-plan?company=${encodeURIComponent(companyName)}&element=8&gap_id=${encodeURIComponent(gapID)}`, image: '' },
     { name: 'Risk Management Process', path: `/gap-analysis/risk-management-process?company=${encodeURIComponent(companyName)}&element=9&gap_id=${encodeURIComponent(gapID)}`, image: '' },
     { name: 'Audit & Inspection Process', path: `/gap-analysis/audit-and-inspection-process?company=${encodeURIComponent(companyName)}&element=10&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Improvement Planning', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Improvement Planning', path: `/gap-analysis/improvement-planning?company=${encodeURIComponent(companyName)}&element=11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
   ];
-
-  // Format answers for backend
-  const prepareAnswers = () => {
-    const formattedAnswers = {};
-
-    Object.keys(answers).forEach(questionId => {
-      const [set, number] = questionId.split('.');
-      const answer = answers[questionId];
-      
-      const sequentialKey = parseInt(number); 
-
-      if (!formattedAnswers[sequentialKey]) {
-        formattedAnswers[sequentialKey] = 0;
-      }
-
-      if (answer && answer.selectedRating) {
-        formattedAnswers[sequentialKey] = parseInt(answer.selectedRating);
-      } else {
-        formattedAnswers[sequentialKey] = 0;
-      }
-    });
-    return formattedAnswers;
-  };
 
   // Send data to API to backend
   const submitAnswersToAPI = async (finished) => {
@@ -213,7 +200,7 @@ function Elements() {
       if (gapID) {
         getAnswers();
       }
-  }, [gapID]);
+  }, []);
 
   // Save to localStorage when answers or improvementPlan change (like when they first load in)
   useEffect(() => {
@@ -226,20 +213,20 @@ function Elements() {
     if (gapID) {
       localStorage.setItem("gapID", gapID);
     }
-  }, [answers, improvementPlan, gapID]);
+  }, [answers, improvementPlan]);
 
 
   const handleAnswerChange = (type, key, value, index) => {
     const updatedAnswers = { ...answers };
-    const updatedImprovementPlan = { ... improvementPlan};
+    const updatedImprovementPlan = { ...improvementPlan};
     index = index - 1
 
-    if (type == 'a'){
+    if (type === 'a'){
       updatedAnswers[key][index] = value;
       setAnswers(updatedAnswers);
       localStorage.setItem('answers', JSON.stringify(updatedAnswers));
     }
-    else if (type == 'i'){
+    else if (type === 'i'){
       updatedImprovementPlan.improvement[key][index] = value;
       setImprovementPlan(updatedImprovementPlan);
       localStorage.setItem('improvementPlan', JSON.stringify(updatedImprovementPlan));
@@ -354,43 +341,6 @@ function Compliance({ question, handleAnswerChange, savedAnswer, savedImprovemen
   const [selectedRatings, setSelectedRatings] = useState({});
   const [evidence, setEvidence] = useState({});
   const [improvement, setImprovement] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setLoading(true);
-    setError('');
-
-    const answersPayload = Object.keys(selectedRatings).map(questionId => ({
-      question: questionId,
-      selectedRating: selectedRatings[questionId],
-      improvementPlan: {
-        evidence: evidence[questionId] || '',
-        improvement: improvement[questionId] || ''
-      }
-    }));
-
-    // POST request to save answers
-    try {
-      const response = await axios.post(
-        'http://127.0.0.1:8000/api/getQuestionOrWriteAnswer/', 
-        {
-          GetOrWrite: "WRITE",
-          //gap id here
-          answers: answersPayload,
-        }
-      );
-
-      if (response.status === 201) {
-        alert('Answers saved successfully');
-      }
-    } catch (err) {
-      setError('Failed to save answers: ' + (err.response?.data?.error || err.message));
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     setSelectedRatings((prevState) => ({ 
@@ -521,7 +471,7 @@ function GapAnalysis() {
   const params = new URLSearchParams(location.search);
   const companyName = params.get('company');
 
-  const [error, setError] = useState('');
+  const [, setError] = useState('');
   const [links, setLinks] = useState([])
 
   useEffect(() => {
@@ -543,7 +493,7 @@ function GapAnalysis() {
               { name: 'Training Plan', path: `/gap-analysis/training-plan?company=${encodeURIComponent(companyName)}&element=8&gap_id=${encodeURIComponent(gapID)}`, image: '' },
               { name: 'Risk Management Process', path: `/gap-analysis/risk-management-process?company=${encodeURIComponent(companyName)}&element=9&gap_id=${encodeURIComponent(gapID)}`, image: '' },
               { name: 'Audit & Inspection Process', path: `/gap-analysis/audit-and-inspection-process?company=${encodeURIComponent(companyName)}&element=10&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Improvement Planning', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Improvement Planning', path: `/gap-analysis/improvement-planning?company=${encodeURIComponent(companyName)}&element=11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
             ];
           
           
@@ -555,13 +505,13 @@ function GapAnalysis() {
       };
       getGapID();
 
-  }, []);
+  }, [companyName]);
 
 
   return (
     <div>
       <div className="gap-intro">
-        <NavBar className="elements" links={links} />
+        <NavBar className="elements" links={links} logout={true}/>
 
         <p className="move-to-gap"> To move onto the GAP analysis use the navigation bar</p>
         <div className="purpose-benchmarking">
@@ -582,20 +532,20 @@ function GapAnalysis() {
               <li className="output-text">
                   A detailed review as an outcome of the 12 key theme question sets.
               </li>
-              <img src='/review.png' className="output-img" alt="Review Image" style={{width:"15%", height:"40%"}}/>
+              <img src='/review.png' className="output-img" alt="Review" style={{width:"15%", height:"40%"}}/>
             </div>
             <div className="output">
               <li className="output-text">
                   A benchmarking scorecard and dashboard.
               </li>
-              <img src='/benchmarking.png' className="output-img" alt="Benchmarking Image" style={{width:"30%", height: "50%"}}/>
+              <img src='/benchmarking.png' className="output-img" alt="Benchmarking" style={{width:"30%", height: "50%"}}/>
             </div>
 
             <div className="output">
               <li className="output-text">
                   A phased improvement plan to promote improvement.
               </li>
-              <img src='/improvement.png' className="output-img" alt="Improvement Image" style={{width:"30%", height: "50%"}}/>
+              <img src='/improvement.png' className="output-img" alt="Improvement" style={{width:"30%", height: "50%"}}/>
             </div>
           </ul>
         </div>
@@ -603,5 +553,4 @@ function GapAnalysis() {
     </div>
   );
 }
-
 export default GapAnalysis;

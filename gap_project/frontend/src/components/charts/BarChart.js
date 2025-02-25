@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
 
 // For "Summary of Sections"
-
 // chartData structure for bar charts eg:
 // const [barData] = useState({
 //     categories: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],

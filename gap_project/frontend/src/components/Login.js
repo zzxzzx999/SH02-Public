@@ -26,9 +26,11 @@ function Login(){
             localStorage.setItem('isAdmin', is_admin);
             localStorage.setItem('role', role);
             if (is_admin === true) {
+                localStorage.setItem('userRole', "admin");
                 navigate('/list-of-companies')
             }
             else {
+                localStorage.setItem('userRole', "client");
                 navigate('/home')
             }
         } catch (err) {
@@ -48,7 +50,7 @@ function Login(){
     };
 
     return (
-        <div className = "bubble-container">
+        <div className = "bubble-container" style={{height:'350px'}}>
         <img src='/GordonText.png' className="gordon-text-logo" alt="Gordon Foley Logo"/>
         <form onSubmit={handleSubmit} className="form">
             <label>

@@ -1,13 +1,13 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import '../css/Accordion.css'
 
 const compliance = {
-  1: {text:( <> Exceptional Compliance<br /> (Score 5) </> ), color: '#006613'},
-  2: {text:( <> Good Compliance<br /> (Score 4) </> ), color: '#42C259'},
+  1: {text:( <> Unsatisfactory<br /> (Score 1) </> ), color: '#FF0B0B'},
+  2: {text:( <> Needs Improvement<br /> (Score 2) </> ), color: '#FFC546'},
   3: {text:( <> Basic Compliance<br /> (Score 3) </> ), color: '#7CCC8B'},
-  4: {text:( <> Needs Improvement<br /> (Score 2) </> ), color: '#FFC546'},
-  5: {text:( <> Unsatisfactory<br /> (Score 1) </> ), color: '#FF0B0B'}
+  4: {text:( <> Good Compliance<br /> (Score 4) </> ), color: '#42C259'},
+  5: {text:( <> Exceptional Compliance<br /> (Score 5) </> ), color: '#006613'}
 };
 
 const AccordionItem = ({ question, score, improvement, evidence, isOpen, onClick, index }) => {

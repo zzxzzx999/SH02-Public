@@ -6,6 +6,7 @@ import NavBar from "./NavBar";
 import BarChart from "./charts/BarChart";
 import LineChart from "./charts/LineChart";
 import LineChartWithBackground from "./charts/LineChartWithBg";
+import { pdfDownload } from "./PfPlan";
 
 function RegistedCompany() {
     const linksForPage3 = [
@@ -21,7 +22,9 @@ function RegistedCompany() {
 
     const navigate = useNavigate(); 
     const [companyNotes, setCompanyNotes]=useState('')
+    const [url, setUrl]=useState('')
     const [analyses, setAnalyses] = useState([])
+    const [PDFTitle, setPDFTitle] = useState(null);
 
     // State for chart data
     const [barData, setBarData] = useState({
@@ -36,14 +39,6 @@ function RegistedCompany() {
         categories: [],
         values: [],
     });
-
-    const handleDownload = () => {
-        // achieve easy download function
-        const link = document.createElement('a');
-        link.href = '/path-to-your-file.pdf'; // replace to file path
-        link.download = 'Analysis_Report.pdf'; // default name of download file
-        link.click();
-      };
 
     useEffect(() => {
         document.title = title; // set page's title as title in URL
@@ -69,6 +64,7 @@ function RegistedCompany() {
                         setSearchParams({ company: companyName, gap_id: latestAnalysis.gap_id });
                         setTitle(`Overview (${latestAnalysis.date})`); // Set title for the latest analysis
                         setGapId(latestAnalysis.gap_id);
+                        setUrl(latestAnalysis.url);
                     }
                 }
             })
@@ -87,6 +83,10 @@ function RegistedCompany() {
                     setTitle(selectedAnalysis.date); // Other analyses
                 }
                 setGapId(selectedAnalysis.gap_id); // save gap_id
+                setUrl(selectedAnalysis.url);
+                const pdfTitle = companyName + "-" + selectedAnalysis.date
+                console.log("date: " + selectedAnalysis.date)
+                setPDFTitle(pdfTitle)
             }
         } else {
             setTitle("Overview");
@@ -130,7 +130,9 @@ function RegistedCompany() {
                 })
                 .catch(error => console.error("Error fetching line chart with background data:", error));
         }
-    }, [searchParams]);
+    }, [searchParams, companyName]);
+
+    console.log(PDFTitle);
 
     return(
         <div class="main-content">
@@ -142,6 +144,16 @@ function RegistedCompany() {
                     <p>
                     {companyNotes|| "No additional notes."}
                     </p>
+                </div>
+                <div className="url-section"> 
+                <h2>Evidence URL</h2> 
+                {url === "no url given" ? (
+                    <p className="no-url">No URL provided</p>
+                ) : (
+                    <a href={url} className="url-link" target="_blank" rel="noopener noreferrer">
+                    {url}
+                    </a>
+                )}
                 </div>
                 <div className="past-gap">
                 <h2>Past GAP Analysis</h2>
@@ -178,7 +190,7 @@ function RegistedCompany() {
                     <img
                         src="/download.png" 
                         alt="Download"
-                        onClick={handleDownload}
+                        onClick={() => pdfDownload(PDFTitle)}
                         className="download-icon"
                     />
                 </div>

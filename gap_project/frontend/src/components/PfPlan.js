@@ -1,51 +1,41 @@
-import React, { Component, useEffect, useState } from "react";
-import axios from "axios";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import axios from 'axios';
+import React from "react";
 
-class PdfPlan extends React.Component {
+export async function pdfDownload(PDFTitle) {
+    try {
+        const postResponse = await axios.post('http://localhost:8000/gap/pdfplan/', {
+            key1: 'BOOOOOOOOO',
+            id: 1,
+        });
 
-    state = {
-        filename : [],
-    }
-        
-    onButtonClick() {
-        let data ;
+        if (postResponse.status === 200) {
+            console.log('POST request successful:', postResponse.data);
 
-        axios.get('http://localhost:8000/gap/pdfplan/')
-        .then(res => {
-            data = res.data;
-            this.setState({
-                filename : data   
+            const pdfResponse = await axios.get('http://localhost:8000/gap/pdfplan/', {
+                responseType: 'blob',
             });
-        })
-        .catch(err => {})
 
-
-        const pdfTitle = this.filename;
-        console.log(pdfTitle)
-        const pdfUrl = "../../gap/improvementPlan.pdf";
-        const link = document.createElement("a");
-        link.href = pdfUrl;
-        link.download = pdfTitle; // specify the filename
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-    render() {    
-        return (
-            <>
-                <center>
-                    <h3>
-                        Click on below button to download improvement plan
-                        file
-                    </h3>
-                    <button onClick={this.onButtonClick}>
-                        Download PDF
-                    </button>
-                </center>
-            </>
-        );
+            const url = window.URL.createObjectURL(new Blob([pdfResponse.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            const title = PDFTitle +".pdf"
+            link.setAttribute('download', title);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } else {
+            console.error('POST request failed:', postResponse);
+        }
+    } catch (error) {
+        console.error('Error occurred:', error);
     }
+}
+
+const PdfPlan = () => {
+    return (
+        <button onClick={pdfDownload}>Download .pdf file</button>
+    );
 };
 
 export default PdfPlan;

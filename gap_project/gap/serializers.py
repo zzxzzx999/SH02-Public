@@ -21,7 +21,7 @@ class CompanySerializer(serializers.ModelSerializer):
 class GapAnalysisSerializer(serializers.ModelSerializer):
     class Meta:
         model = GapAnalysis
-        fields = ('title', 'company', 'consultant', 'companyRep', 'companyEmail', 'additionalNotes', 'gap_data', 'improvement_plan')
+        fields = ('title', 'company', 'consultant', 'companyRep', 'companyEmail', 'additionalNotes', 'url', 'gap_data', 'improvement_plan')
 
     def create(self, validated_data):
         """ Handle JSON fields properly """
