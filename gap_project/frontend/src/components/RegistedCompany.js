@@ -6,6 +6,7 @@ import NavBar from "./NavBar";
 import BarChart from "./charts/BarChart";
 import LineChart from "./charts/LineChart";
 import LineChartWithBackground from "./charts/LineChartWithBg";
+import { pdfDownload } from "./PfPlan";
 
 function RegistedCompany() {
     const linksForPage3 = [
@@ -37,14 +38,6 @@ function RegistedCompany() {
         categories: [],
         values: [],
     });
-
-    const handleDownload = () => {
-        // achieve easy download function
-        const link = document.createElement('a');
-        link.href = '/path-to-your-file.pdf'; // replace to file path
-        link.download = 'Analysis_Report.pdf'; // default name of download file
-        link.click();
-      };
 
     useEffect(() => {
         document.title = title; // set page's title as title in URL
@@ -194,7 +187,7 @@ function RegistedCompany() {
                     <img
                         src="/download.png" 
                         alt="Download"
-                        onClick={handleDownload}
+                        onClick={pdfDownload}
                         className="download-icon"
                     />
                 </div>
