@@ -16,12 +16,14 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from .serializers import *
 from .models import Company, GapAnalysis
-from .pdfGeneration import generateImprovementPlan
+from .pdfGeneration import *
 from .jsonReadWrite import *
 import os
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.decorators import action
+from django.http import FileResponse
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -103,22 +105,30 @@ def get_latest_gap(request):
         return Response({"error": "Company not found."}, status=404)
 
 
-class PdfView(APIView):
-    
+pdf_filename = ""
+class PdfView(APIView): 
     serializer_class = GapAnalysisSerializer
     
+    @action(detail=True, methods=['get'], renderer_classes=(BinaryFileRenderer,))
     def get(self, request):
-        gapAnalysis = GapAnalysis.objects.all()[0]
-        response = {"name" : pdf_filename}
-        c, pdf_filename = generateImprovementPlan(gapAnalysis)
-        return Response(response)
-    
+        # Open the PDF in binary mode
+        try:
+            pdf_path = 'gap/src/improvementPlan.pdf'
+            return FileResponse(
+                open(pdf_path, 'rb'),
+                as_attachment=True,  # Forces download
+                filename = pdf_filename  # Sets the downloaded file name
+            )
+        except FileNotFoundError:
+            return Response({'error': 'File not found'}, status=404)        
     def post(self, request):
-        serializer = GapAnalysisSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            print(serializer.data)
-            return Response(serializer.data)
+        #return download(request)
+        gapId = request.data.get('id')
+        #gap = GapAnalysis.objects.get(id=gapId) #This will be the actual line, but need specific test data that works
+        gap = GapAnalysis.objects.get(company = Company.objects.get(name ="Resolution Today"), date = "2018-06-11")
+        generatePdfPlan(gap)
+        pdf_filename = f"{gap.title}.pdf"
+        return Response({'pdf' : pdf_filename}, status=200)
         
 @api_view(['GET'])
 @permission_classes([AllowAny])
