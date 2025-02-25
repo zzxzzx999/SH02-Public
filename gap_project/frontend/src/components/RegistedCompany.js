@@ -200,23 +200,33 @@ function RegistedCompany() {
                     <div className="left-chart">
                         <div className="chart-placeholder">
                             <h2>Summary of Sections</h2>
-                            <div className="chart-box"><BarChart chartData={barData}/></div>
+                            <div className="chart-box">
+                                {gapId ? <BarChart chartData={barData}/> : <p>No gap data available now</p>}
+                            </div>
                         </div>
                         <div className="chart-placeholder">
                             <h2>Benchmark Improvement</h2>
-                            <div className="chart-box"><LineChart chartData={lineData}/></div>
+                            <div className="chart-box">
+                                {gapId ? <LineChart chartData={lineData}/>: <p>No gap data available now</p>}
+                            </div>
                         </div>
                     </div>
 
                     {/* right part chart */}
                     <div className="chart-placeholder large-chart">
                         <h2>Potential Score Comparison</h2>
-                        <div className="chart-box"><LineChartWithBackground chartData={lineBgData}/></div>
+                        <div className="chart-box">
+                            {gapId ? <LineChartWithBackground chartData={lineBgData} /> : <p>No gap data available now</p>}
+                        </div>
                     </div>
-                    {/* View Full Analysis */}
-                    <div className="full-analysis">
-                        <button onClick={() => navigate(`/overall-output?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}`)}>View Full Analysis</button> {/*&gap_id=${encodeURIComponent(gapId)} */}
-                    </div>
+                    {/* View Full Analysis, only show when gapid exist*/}
+                    {gapId && (
+                        <div className="full-analysis">
+                            <button onClick={() => navigate(`/overall-output?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}`)}>
+                                View Full Analysis
+                            </button>
+                        </div>
+                    )}
                 </div>   
             </main>
         </div> 
