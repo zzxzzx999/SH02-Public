@@ -140,9 +140,9 @@ useEffect(() => {
         </div>
 
         {/* Pie Chart Placeholder */}
-        <div className="chart-and-table">
-          <div className="chart-container"> <PieChart chartData={pieData}/></div>
-          <div className="table-container"><ChartTable data={pieData}/></div>
+        <div className="pie-chart">
+          <PieChart chartData={pieData}/>
+          <ChartTable data={pieData}/>
         </div>
 
         <button className="previous-button" onClick={handlePrevious}>&lt;</button>

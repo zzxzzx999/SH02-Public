@@ -2,7 +2,6 @@ import React from 'react';
 
 
 const ChartTable = ({ data }) => {
-  // Helper to format category names like the pie chart
   const formatCategory = (name) => {
     if (name === 'needsImprovement') {
       return 'Needs Improvement';

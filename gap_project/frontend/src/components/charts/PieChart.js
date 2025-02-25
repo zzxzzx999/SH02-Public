@@ -63,7 +63,7 @@ const PieChart = ({ chartData }) => {
     };
   }, [chartData]);
 
-  return <div className="pie-chart" ref={chartRef} />;
+  return <div className="echart-container" ref={chartRef} />;
 };
 
 export default PieChart;
