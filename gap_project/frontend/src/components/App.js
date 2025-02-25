@@ -13,6 +13,7 @@ import PrivateRoute from './PrivateRoute.js';
 import RegistedCompany from './RegistedCompany.js';
 import Results from './Results.js';
 import Template from './Template.js';
+import PdfPlan from './PfPlan.js';
 
 function App() {
   return (

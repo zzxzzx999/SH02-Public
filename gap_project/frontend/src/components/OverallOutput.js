@@ -1,16 +1,11 @@
-//import { CategoryScale, Chart as ChartJS, LinearScale, LineElement, PointElement } from 'chart.js';
-//import { Line } from 'react-chartjs-2'; 
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import '../css/NavBar.css';
 import '../css/OverallOutput.css';
 import NavBar from "./NavBar.js";
 import LineChart from "./charts/LineChart.js";
 import BarChart from "./charts/BarChart.js";
-
-// registe Chart.js
-//ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
 
 function OverallOutput() {
     // store total score
@@ -24,6 +19,19 @@ function OverallOutput() {
     const params = new URLSearchParams(location.search);
     const companyName = params.get('company');
     const gapId = params.get('gap_id')
+    const [searchParams] = useSearchParams();
+    const userRole = localStorage.getItem("userRole");
+
+    const [lineData, setLineData] = useState({
+      categories: [],
+      values: [],
+  });
+
+  const [barData, setBarData] = useState({
+    categories: [],
+    values: [],
+});
+  
 
     // cal total score
     useEffect(() => {
@@ -42,8 +50,7 @@ function OverallOutput() {
         });
 }, [companyName,gapId]);
 
-const linksForPage3 = [
-  { name: 'Registed Company', path: `/registed-company?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}`, image: '/back-button.png' },
+const commonLinks = [
   { name: 'Policy', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Policy')}` },
   { name: 'Management', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Management')}` },
   { name: 'Documented System', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Documented System')}` },
@@ -57,19 +64,52 @@ const linksForPage3 = [
   { name: 'Audit & Inspection Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Audit & Inspection Process')}` },
   { name: 'Improvement Planning', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Improvement Planning')}` },
 ];
+const linksForPage3 = [
+  userRole === 'admin'
+    ? { name: 'Registered Company', path: `/registed-company?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}`, image: '/back-button.png' }
+    : { name: 'Home Page', path: `/home`, image: '/back-button.png' },
+  ...commonLinks
+];
 
-// Dummy data for bar chart (to be changed)
-const [barData] = useState({
-  categories: ['Section 1', 'Section 2', 'Section 3', 'Section 4', 'Section 5', 'Section 6', 'Section 7', 'Section 8', 'Section 9', 'Section 10'],
-  values: [2, 20, 15, 50, 34, 45, 30, 20, 10, 5],
-});
+// fetch data for bar chart 
+useEffect(() => {
+  let currentGapId = searchParams.get("gap_id");
+  if (currentGapId) {
+      // Fetch bar chart data
+      fetch(`http://localhost:8000/api/analysis/${currentGapId}/bar-chart-data`)
+          .then(response => response.json())
+          .then(data => {
+              setBarData({
+                  categories: data.categories,
+                  values: data.values,
+              });
+          })}
+      }, [searchParams]);
 
-// Dummy data for line chart (to be changed)
-const [lineData] = useState({
-  categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-  values: [120, 200, 150, 80, 70, 110, 130],
-});
+// fetch data for line chart 
+useEffect(() => {
+  if (companyName) {
+      // Fetch line chart data
+      fetch(`http://localhost:8000/api/analysis/${encodeURIComponent(companyName)}/total-score-over-time/`)
+          .then(response => response.json())
+          .then(data => {
+              setLineData({
+                  categories: data.gap_date,
+                  values: data.total_score, 
+              });
+          })
+          .catch(error => console.error("Error fetching line chart data:", error));
+  }
+}, [companyName]);
   
+useEffect(() => {
+  if(userRole === 'client'){
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+      window.history.go(1);
+    };
+  }
+}, [userRole]);
     return (
       // force refresh
       <div key={location.pathname} class="main-content" className="gap-intro"> 
@@ -100,14 +140,14 @@ const [lineData] = useState({
           <div className="charts">
             {/* Left large chart */}
             <div className="chart-container overall-large-chart">
-              <h2>Score over Time (Potential)</h2>
-              <div className="overall-output-chart-placeholder"><LineChart chartData={lineData}/></div>
+              <h2>Benchmark Improvement</h2>
+              <div className="overall-output-chart-placeholder"><LineChart chartData={lineData} potentialScore={600}/></div>
             </div>
             
             {/* Right small chart */}
             <div className="chart-container small-chart">
-              <h2>Score over Time (Potential)</h2>
-              <div className="overall-output-chart-placeholder"><BarChart chartData={barData}/></div>
+              <h2>Summary of Sections</h2>
+              <div className="overall-output-chart-placeholder"><BarChart chartData={barData} potentialScore={50}/></div>
             </div>
           </div>
         </div>

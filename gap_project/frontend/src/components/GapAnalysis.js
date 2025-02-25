@@ -1,40 +1,61 @@
 import React, { useState, useEffect } from "react";
 import NavBar from './NavBar.js';
+import Accordion from './Accordion.js'
 import { SubmitProvider } from './SubmitContext.js';
 import '../css/GapAnalysis.css';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
-let gapID = null
+let gapID = null;
 
 function Elements() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const set = parseInt(params.get('element'));
   const companyName = params.get('company');
-
-  console.log("gapid: " + gapID);
-
-  const links = [
-    { name: 'Policy', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=0`, image: '' },
-    { name: 'Management', path: `/gap-analysis/management?company=${encodeURIComponent(companyName)}&element=1`, image: '' },
-    { name: 'Documented System', path: `/gap-analysis/documented-system?company=${encodeURIComponent(companyName)}&element=2`, image: '' },
-    { name: 'Meetings', path: `/gap-analysis/meetings?company=${encodeURIComponent(companyName)}&element=3`, image: '' },
-    { name: 'Performance Measurement', path: `/gap-analysis/performance-measurement?company=${encodeURIComponent(companyName)}&element=4`, image: '' },
-    { name: 'Committee & Representatives', path: `/gap-analysis/committee-and-representatives?company=${encodeURIComponent(companyName)}&element=5`, image: '' },
-    { name: 'Investigation Process', path: `/gap-analysis/investigation-process?company=${encodeURIComponent(companyName)}&element=6`, image: '' },
-    { name: 'Incident Reporting', path: `/gap-analysis/incident-reporting?company=${encodeURIComponent(companyName)}&element=7`, image: '' },
-    { name: 'Training Plan', path: `/gap-analysis/training-plan?company=${encodeURIComponent(companyName)}&element=8`, image: '' },
-    { name: 'Risk Management Process', path: `/gap-analysis/risk-management-process?company=${encodeURIComponent(companyName)}&element=9`, image: '' },
-    { name: 'Audit & Inspection Process', path: `/gap-analysis/audit-and-inspection-process?company=${encodeURIComponent(companyName)}&element=10`, image: '' },
-    { name: 'Improvement Planning', path: `/gap-analysis/policy?improvement-planning=${encodeURIComponent(companyName)}&element=11`, image: '' },
-  ];
-
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState({}); 
-  const [improvementPlan, setImprovementPlan] = useState({});
   const [isComplete, setIsComplete] = useState(false);
+
+  // set up improvement plan
+  const getDefaultImprovementPlan = () => {
+    return {
+      evidence: Object.fromEntries(
+        Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill("")]) 
+      ),
+      improvement: Object.fromEntries(
+        Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill("")]) 
+      ),
+    };
+  }
+
+  // try to set improvement plan with default
+  const [improvementPlan, setImprovementPlan] = useState(getDefaultImprovementPlan());
+  
+  // if answers is not populated yet, fill it with empty entries
+  useEffect(() => {
+    if (!improvementPlan.improvement) {
+      setImprovementPlan(getDefaultImprovementPlan());
+    }
+  }, [improvementPlan]);
+
+  // set up answers
+  const getDefaultAnswers = () => {
+    return Object.fromEntries(
+      Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill(0)])
+    );
+  };
+
+  // try to set answers to default when initialising it
+  const [answers, setAnswers] = useState(getDefaultAnswers()); 
+
+  // if answers is not populated yet, fill it with empty entries (0s)
+  useEffect(() => {
+    if (!answers || Object.keys(answers).length === 0) {
+      setAnswers(getDefaultAnswers());
+    }
+  }, [answers]);
+  
 
   useEffect(() => {
     if (answers && typeof answers === "object") {
@@ -46,17 +67,15 @@ function Elements() {
     }
   }, [answers]);
 
-
+  // keep incase user refreshes page
   useEffect(() => {
     const savedAnswers = localStorage.getItem('answers');
     const savedImprovementPlan = localStorage.getItem('improvementPlan');
   
-    console.log("rendered answers: " + savedAnswers);
     if (savedAnswers) {
       try {
         const parsedAnswers = JSON.parse(savedAnswers);
         setAnswers(parsedAnswers);
-        console.log("parsed answers: " + parsedAnswers);
       } catch (error) {
         console.error("Error parsing saved answers:", error);
         setAnswers(getDefaultAnswers());
@@ -77,70 +96,53 @@ function Elements() {
     }
   }, []);
   
-
-  const getDefaultImprovementPlan = () => {
-    return {
-      evidence: Object.fromEntries(
-        Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill("")]) 
-      ),
-      improvement: Object.fromEntries(
-        Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill("")]) 
-      ),
+  // sort of prevents user from going using the back button - for some reason it only prevents them from going out of the question set by using the back button (on the browser), 
+  //so it keeps them in the question set and also no answers get lost when it is clicked
+  useEffect(() => {
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+      window.history.go(1);
     };
-  }
+  }, []);
 
-  const getDefaultAnswers = () => {
-    return Object.fromEntries(
-      Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill(0)])
-    );
-  };
-   
-  // Format answers for backend
-  const prepareAnswers = () => {
-    const formattedAnswers = {};
-
-    Object.keys(answers).forEach(questionId => {
-      const [set, number] = questionId.split('.');
-      const answer = answers[questionId];
-      
-      const sequentialKey = parseInt(number); 
-
-      if (!formattedAnswers[sequentialKey]) {
-        formattedAnswers[sequentialKey] = 0;
-      }
-
-      if (answer && answer.selectedRating) {
-        formattedAnswers[sequentialKey] = parseInt(answer.selectedRating);
-      } else {
-        formattedAnswers[sequentialKey] = 0;
-      }
-  });
-
-  return formattedAnswers;
-};
+  const links = [
+    { name: 'Policy', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=0&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Management', path: `/gap-analysis/management?company=${encodeURIComponent(companyName)}&element=1&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Documented System', path: `/gap-analysis/documented-system?company=${encodeURIComponent(companyName)}&element=2&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Meetings', path: `/gap-analysis/meetings?company=${encodeURIComponent(companyName)}&element=3&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Performance Measurement', path: `/gap-analysis/performance-measurement?company=${encodeURIComponent(companyName)}&element=4&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Committee & Representatives', path: `/gap-analysis/committee-and-representatives?company=${encodeURIComponent(companyName)}&element=5&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Investigation Process', path: `/gap-analysis/investigation-process?company=${encodeURIComponent(companyName)}&element=6&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Incident Reporting', path: `/gap-analysis/incident-reporting?company=${encodeURIComponent(companyName)}&element=7&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Training Plan', path: `/gap-analysis/training-plan?company=${encodeURIComponent(companyName)}&element=8&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Risk Management Process', path: `/gap-analysis/risk-management-process?company=${encodeURIComponent(companyName)}&element=9&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Audit & Inspection Process', path: `/gap-analysis/audit-and-inspection-process?company=${encodeURIComponent(companyName)}&element=10&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Improvement Planning', path: `/gap-analysis/improvement-planning?company=${encodeURIComponent(companyName)}&element=11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+  ];
 
   // Send data to API to backend
   const submitAnswersToAPI = async (finished) => {
-    //localStorage.clear(answers);
-    //localStorage.clear(improvementPlan);
-    //localStorage.clear(companyName);
+    localStorage.removeItem("answers");
+    localStorage.removeItem("improvementPlan");
+    localStorage.removeItem("companyName");
+    for (let key in answers) {
+      answers[key] = answers[key].filter(value => value !== '').map(value => Number(value));
+    }
     try {
       await axios.post("http://127.0.0.1:8000/api/getQuestionOrWriteAnswer/", {
         GetOrWrite: "WRITE",
-        id: gapID,
+        id: localStorage.getItem("gapID"),
         answers: answers,
         improvementPlan: improvementPlan,
         finished: finished,
         company_name: companyName,
       });
-      console.log("Data successfully submitted: ", answers);
-      console.log(improvementPlan);
     } catch (error) {
       console.error("Error submitting answers:", error.response?.data || error.message);
-      console.log("Data successfully submitted: ", answers);
-      console.log(improvementPlan);
     }
+    localStorage.removeItem("gapID");
   };
+  
   
   // Effect to fetch questions from the API 
   useEffect(() => {
@@ -164,6 +166,15 @@ function Elements() {
         const questionData = await fetchQuestion(set + 1, i);
         allQuestions = [...allQuestions, ...questionData];
       }
+      //add an 11th page : the summary page
+      allQuestions.push({
+        Section_Name: "Summary of " + allQuestions[0].Section_Name,
+        Questions: {
+          Question_Number: 'Summary', 
+          Question_Name: "",
+        },
+        isSummaryPage: true
+      });
       setQuestions(allQuestions);
       setCurrentQuestionIndex(0); 
     };
@@ -171,17 +182,51 @@ function Elements() {
     fetchData();
   }, [set]);
 
+    // get incomplete data from backend when resuming gap analysis
+    useEffect(() => {
+      const getAnswers = async () => {
+        try {
+          const response = await axios.get("http://127.0.0.1:8000/api/get_incomplete_answers/", {
+            params: { gap_id: gapID },
+          });
+          setAnswers(response.data["gap_data"]);
+          setImprovementPlan(response.data["improvement_plan"])
+
+        } catch (error) {
+          console.error("Error fetching incomplete answers:", error.response?.data || error.message);
+        }
+      };
+  
+      if (gapID) {
+        getAnswers();
+      }
+  }, []);
+
+  // Save to localStorage when answers or improvementPlan change (like when they first load in)
+  useEffect(() => {
+    if (answers && Object.keys(answers).length > 0) {
+      localStorage.setItem("answers", JSON.stringify(answers));
+    }
+    if (improvementPlan && Object.keys(improvementPlan).length > 0) {
+      localStorage.setItem("improvementPlan", JSON.stringify(improvementPlan));
+    }
+    if (gapID) {
+      localStorage.setItem("gapID", gapID);
+    }
+  }, [answers, improvementPlan]);
+
+
   const handleAnswerChange = (type, key, value, index) => {
     const updatedAnswers = { ...answers };
-    const updatedImprovementPlan = { ... improvementPlan};
+    const updatedImprovementPlan = { ...improvementPlan};
     index = index - 1
 
-    if (type == 'a'){
+    if (type === 'a'){
       updatedAnswers[key][index] = value;
       setAnswers(updatedAnswers);
       localStorage.setItem('answers', JSON.stringify(updatedAnswers));
     }
-    else if (type == 'i'){
+    else if (type === 'i'){
       updatedImprovementPlan.improvement[key][index] = value;
       setImprovementPlan(updatedImprovementPlan);
       localStorage.setItem('improvementPlan', JSON.stringify(updatedImprovementPlan));
@@ -211,6 +256,18 @@ function Elements() {
 
       {questions.length > 0 && (
         <div>
+          {questions[currentQuestionIndex]?.isSummaryPage ? (
+          <div className="summary-page">
+              <h1 className="section-title" style={{ marginLeft: '16px' }}>
+                {questions[currentQuestionIndex]?.Section_Name}
+              </h1>
+            {/*questions.map((question, index) => (
+              <p key={index}>{question.Questions.Question_Name}</p>
+            ))*/}
+            <Accordion data={questions} answers={answers} improvement={improvementPlan.improvement} evidence={improvementPlan.evidence}/>
+          </div>
+            ) : (
+        <div>
           <h1 className="section-title" style={{ marginLeft: '16px' }}>
             {questions[currentQuestionIndex]?.Section_Name}
           </h1>
@@ -226,7 +283,8 @@ function Elements() {
             question={questions[currentQuestionIndex]?.Questions}
             handleAnswerChange={handleAnswerChange}  
             savedAnswer={
-              answers[`${questions[currentQuestionIndex]?.Section_Number}`]?.[questions[currentQuestionIndex]?.Questions?.Question_Number &&
+                  answers[`${questions[currentQuestionIndex]?.Section_Number}`]?.[
+                    questions[currentQuestionIndex]?.Questions?.Question_Number &&
                 String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1] &&
                 String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
               ]
@@ -245,8 +303,9 @@ function Elements() {
                 String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
               ]
             }
-            
           />
+              </div>
+            )}
 
           <div className="navigation-buttons-container">
             <div className="navigation-buttons">
@@ -256,7 +315,9 @@ function Elements() {
                   onClick={() => navigateToQuestion(index)}
                   className={currentQuestionIndex === index ? "active" : ""}
                 >
-                  {String(question.Questions.Question_Number).split('.')[1]?.slice(0, 2)}
+                  {question.isSummaryPage ? ( <span style={{ fontWeight: "bold" }}>Summary</span>) : 
+                   (String(question.Questions.Question_Number).split('.')[1]?.slice(0, 2))
+                  }
                 </button>
               ))}
 
@@ -280,45 +341,6 @@ function Compliance({ question, handleAnswerChange, savedAnswer, savedImprovemen
   const [selectedRatings, setSelectedRatings] = useState({});
   const [evidence, setEvidence] = useState({});
   const [improvement, setImprovement] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setLoading(true);
-    setError('');
-
-    const answersPayload = Object.keys(selectedRatings).map(questionId => ({
-      question: questionId,
-      selectedRating: selectedRatings[questionId],
-      improvementPlan: {
-        evidence: evidence[questionId] || '',
-        improvement: improvement[questionId] || ''
-      }
-    }));
-    
-    console.log(answersPayload)
-
-    // POST request to save answers
-    try {
-      const response = await axios.post(
-        'http://127.0.0.1:8000/api/getQuestionOrWriteAnswer/', 
-        {
-          GetOrWrite: "WRITE",
-          //gap id here
-          answers: answersPayload,
-        }
-      );
-
-      if (response.status === 201) {
-        alert('Answers saved successfully');
-      }
-    } catch (err) {
-      setError('Failed to save answers: ' + (err.response?.data?.error || err.message));
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     setSelectedRatings((prevState) => ({ 
@@ -349,7 +371,6 @@ function Compliance({ question, handleAnswerChange, savedAnswer, savedImprovemen
 
     handleAnswerChange('a', key, value, index); 
   };
-  
   
   const handleEvidenceChange = (questionNumber, value) => {
     setEvidence(prevState => ({
@@ -393,8 +414,8 @@ function Compliance({ question, handleAnswerChange, savedAnswer, savedImprovemen
             id={`question_${question.Question_Number}_${option.value}`}
             name={`question_${question.Question_Number}`} 
             value={option.value}
-            checked={selectedRatings[question.Question_Number] === option.value}
-            onChange={() => handleRadioChange(question.Question_Number, option.value)}
+            checked={selectedRatings[question.Question_Number] === Number(option.value)}
+            onChange={() => handleRadioChange(question.Question_Number, Number(option.value))}
           />
           <label htmlFor={`question_${question.Question_Number}_${option.value}`} className={`compliance ${option.className}`}>
             {option.label}
@@ -450,7 +471,7 @@ function GapAnalysis() {
   const params = new URLSearchParams(location.search);
   const companyName = params.get('company');
 
-  const [error, setError] = useState('');
+  const [, setError] = useState('');
   const [links, setLinks] = useState([])
 
   useEffect(() => {
@@ -458,22 +479,24 @@ function GapAnalysis() {
         try {
             const response = await axios.get(`http://127.0.0.1:8000/api/get-latest-gap/?company_name=${companyName}`);
             gapID = response.data.gap_id;
-            console.log(gapID);
+            localStorage.setItem("gapID", gapID);
 
             const newLinks = [
-              { name: 'Policy', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=0&gapid=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Management', path: `/gap-analysis/management?company=${encodeURIComponent(companyName)}&element=1&gapid=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Documented System', path: `/gap-analysis/documented-system?company=${encodeURIComponent(companyName)}&element=2&gapid=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Meetings', path: `/gap-analysis/meetings?company=${encodeURIComponent(companyName)}&element=3&gapid=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Performance Measurement', path: `/gap-analysis/performance-measurement?company=${encodeURIComponent(companyName)}&element=4&gapid=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Committee & Representatives', path: `/gap-analysis/committee-and-representatives?company=${encodeURIComponent(companyName)}&element=5&gapid=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Investiagtion Process', path: `/gap-analysis/investigation-process?company=${encodeURIComponent(companyName)}&element=6&gapid=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Incident Reporting', path: `/gap-analysis/incident-reporting?company=${encodeURIComponent(companyName)}&element=7&gapid=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Training Plan', path: `/gap-analysis/training-plan?company=${encodeURIComponent(companyName)}&element=8&gapid=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Risk Management Process', path: `/gap-analysis/risk-management-process?company=${encodeURIComponent(companyName)}&element=9&gapid=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Audit & Inspection Process', path: `/gap-analysis/audit-and-inspection-process?company=${encodeURIComponent(companyName)}&element=10&gapid=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Improvement Planning', path: `/gap-analysis/improvement-planning?company=${encodeURIComponent(companyName)}&element=11&gapid=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Policy', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=0&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Management', path: `/gap-analysis/management?company=${encodeURIComponent(companyName)}&element=1&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Documented System', path: `/gap-analysis/documented-system?company=${encodeURIComponent(companyName)}&element=2&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Meetings', path: `/gap-analysis/meetings?company=${encodeURIComponent(companyName)}&element=3&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Performance Measurement', path: `/gap-analysis/performance-measurement?company=${encodeURIComponent(companyName)}&element=4&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Committee & Representatives', path: `/gap-analysis/committee-and-representatives?company=${encodeURIComponent(companyName)}&element=5&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Investigation Process', path: `/gap-analysis/investigation-process?company=${encodeURIComponent(companyName)}&element=6&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Incident Reporting', path: `/gap-analysis/incident-reporting?company=${encodeURIComponent(companyName)}&element=7&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Training Plan', path: `/gap-analysis/training-plan?company=${encodeURIComponent(companyName)}&element=8&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Risk Management Process', path: `/gap-analysis/risk-management-process?company=${encodeURIComponent(companyName)}&element=9&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Audit & Inspection Process', path: `/gap-analysis/audit-and-inspection-process?company=${encodeURIComponent(companyName)}&element=10&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Improvement Planning', path: `/gap-analysis/improvement-planning?company=${encodeURIComponent(companyName)}&element=11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
             ];
+          
+          
             setLinks(newLinks);
         } catch (err) {
             setError("Error fetching gap analysis ID.");
@@ -482,13 +505,13 @@ function GapAnalysis() {
       };
       getGapID();
 
-  }, []);
+  }, [companyName]);
 
 
   return (
     <div>
       <div className="gap-intro">
-        <NavBar className="elements" links={links} />
+        <NavBar className="elements" links={links} logout={true}/>
 
         <p className="move-to-gap"> To move onto the GAP analysis use the navigation bar</p>
         <div className="purpose-benchmarking">
@@ -509,20 +532,20 @@ function GapAnalysis() {
               <li className="output-text">
                   A detailed review as an outcome of the 12 key theme question sets.
               </li>
-              <img src='/review.png' className="output-img" alt="Review Image" style={{width:"15%", height:"40%"}}/>
+              <img src='/review.png' className="output-img" alt="Review" style={{width:"15%", height:"40%"}}/>
             </div>
             <div className="output">
               <li className="output-text">
                   A benchmarking scorecard and dashboard.
               </li>
-              <img src='/benchmarking.png' className="output-img" alt="Benchmarking Image" style={{width:"30%", height: "50%"}}/>
+              <img src='/benchmarking.png' className="output-img" alt="Benchmarking" style={{width:"30%", height: "50%"}}/>
             </div>
 
             <div className="output">
               <li className="output-text">
                   A phased improvement plan to promote improvement.
               </li>
-              <img src='/improvement.png' className="output-img" alt="Improvement Image" style={{width:"30%", height: "50%"}}/>
+              <img src='/improvement.png' className="output-img" alt="Improvement" style={{width:"30%", height: "50%"}}/>
             </div>
           </ul>
         </div>
@@ -530,5 +553,4 @@ function GapAnalysis() {
     </div>
   );
 }
-
 export default GapAnalysis;
