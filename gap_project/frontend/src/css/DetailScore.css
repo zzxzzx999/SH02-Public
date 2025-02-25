@@ -124,6 +124,33 @@
     text-align: center;
 
 }
+/* ChartTable.css */
+.chart-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .chart-table th,
+  .chart-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .chart-table th {
+    background-color: #f2f2f2;
+  }
+  
+  /* DetailScore.css additions */
+  .chart-and-table {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 20px 0;
+  }
+
+  
 
 .previous-button {
     position: fixed; 
