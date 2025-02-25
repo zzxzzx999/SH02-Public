@@ -88,8 +88,8 @@ test-backend:
   script:
     - coverage run --source='.' manage.py test
     - coverage report -m > "$REPORTS_DIR/django-test-coverage-report.txt"
-  rules:
-    - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
+  #rules:
+  #  - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
 
 test-frontend:
   stage: test
@@ -99,8 +99,8 @@ test-frontend:
     - npm install
   script:
     - npm test -- --watchAll=false
-  rules:
-    - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
+  #rules:
+  #  - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
 
 # Build the Docker image
 build_image:
