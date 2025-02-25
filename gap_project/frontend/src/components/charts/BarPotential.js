@@ -64,6 +64,7 @@ const BarChart = ({ chartData, potentialScore  }) => {
           type: 'bar',
           data: chartData.categories.map(() => potentialScore),
           barGap: '-100%',
+          barCategoryGap: '0%',
           itemStyle: { color: '#f0f0f0' },
           silent: true
           },
@@ -72,7 +73,7 @@ const BarChart = ({ chartData, potentialScore  }) => {
             type: 'bar',
             data: chartData.values,
             barCategoryGap: '0%',
-            barGap: '0%',
+            barGap: '-100%',
             label: {
               show: true,
               position: 'insideLeft', // Show labels inside the bars

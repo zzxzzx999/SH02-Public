@@ -49,6 +49,7 @@ const LineChart = ({ chartData, potentialScore }) => {
       },
       yAxis: {
         type: 'value',
+        max: 600,
         splitLine: {
           show: true,
           lineStyle: {
