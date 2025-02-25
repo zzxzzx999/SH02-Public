@@ -44,7 +44,7 @@ def populate():
     ]
     
     companies = [
-        {"Name": "Joe's Plumming Ltd", "Date Registered": "2014-11-02", "Gap Analyses": joes_gap_analyses},
+        {"Name": "Joe's Plumming Ltd", "Date Registered": "2014-11-02", "Gap Analyses": joes_gap_analyses,},
         {"Name": "Resolution Today", "Date Registered": "2014-03-08", "Gap Analyses": res_gap_analyses},
         {"Name": "Resolve Merge", "Date Registered": "2016-05-23", "Gap Analyses": res_gap_analyses},
         
@@ -77,6 +77,7 @@ def add_gap(date, c, base_set_bool = False):
     else:
         g.gap_data = getFullRandScore()
     g.improvement_plan = improvment_plan.copy()
+    g.url = "https://gordon-foley.com/"
     g.save()
     
 if __name__ == '__main__':
