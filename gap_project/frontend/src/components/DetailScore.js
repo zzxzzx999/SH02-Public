@@ -118,24 +118,24 @@ useEffect(() => {
         {/* Compliance Scores */}
         <div className="compliance-scores">
           <div className="block detail-exceptional-compliance">
-            <div class="upper">Exceptional Compliance <span>(Score 5)</span></div>
+            <div className="upper">Exceptional Compliance <span>(Score 5)</span></div>
             <div class="lower">{scores.exceptionalCompliance}</div>
           </div>
           <div className="block detail-good-compliance">
-            <div class="upper">Good Compliance <span>(Score 4)</span></div>
-            <div class="lower">{scores.goodCompliance}</div>
+            <div className="upper">Good Compliance <span>(Score 4)</span></div>
+            <div className="lower">{scores.goodCompliance}</div>
           </div>
           <div className="block detail-basic-compliance">
-            <div class="upper">Basic Compliance <span>(Score 3)</span></div>
-            <div class="lower">{scores.basicCompliance}</div>
+            <div className="upper">Basic Compliance <span>(Score 3)</span></div>
+            <div className="lower">{scores.basicCompliance}</div>
           </div>
           <div className="block detail-needs-improvement">
-            <div class="upper">Needs Improvement <span>(Score 2)</span></div>
-            <div class="lower">{scores.needsImprovement}</div>
+            <div className="upper">Needs Improvement <span>(Score 2)</span></div>
+            <div className="lower">{scores.needsImprovement}</div>
           </div>
           <div className="block detail-unsatisfactory">
-            <div class="upper">Unsatisfactory <span>(Score 1)</span></div>
-            <div class="lower">{scores.unsatisfactory}</div>
+            <div className="upper">Unsatisfactory <span>(Score 1)</span></div>
+            <div className="lower">{scores.unsatisfactory}</div>
           </div>
         </div>
 
