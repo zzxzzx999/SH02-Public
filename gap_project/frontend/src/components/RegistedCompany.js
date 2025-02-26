@@ -92,7 +92,7 @@ function RegistedCompany() {
             setTitle("Overview");
             setGapId(null);
         }
-    }, [searchParams, analyses]);
+    }, [searchParams, analyses, companyName]);
 
     // Fetch chart data based on gap_id
     useEffect(() => {
@@ -190,7 +190,7 @@ function RegistedCompany() {
                     <img
                         src="/download.png" 
                         alt="Download"
-                        onClick={() => pdfDownload(PDFTitle)}
+                        onClick={() => pdfDownload(gapId, PDFTitle)}
                         className="download-icon"
                     />
                 </div>
