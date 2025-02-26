@@ -1,11 +1,11 @@
 import axios from 'axios';
 import React from "react";
 
-export async function pdfDownload(PDFTitle) {
+export async function pdfDownload(gapID, PDFTitle) {
     try {
         const postResponse = await axios.post('http://localhost:8000/gap/pdfplan/', {
             key1: 'BOOOOOOOOO',
-            id: 1,
+            id: gapID,
         });
 
         if (postResponse.status === 200) {

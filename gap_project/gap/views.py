@@ -126,8 +126,7 @@ class PdfView(APIView):
     def post(self, request):
         #return download(request)
         gapId = request.data.get('id')
-        #gap = GapAnalysis.objects.get(id=gapId) #This will be the actual line, but need specific test data that works
-        gap = GapAnalysis.objects.get(company = Company.objects.get(name ="Resolution Today"), date = "2018-06-11")
+        gap = GapAnalysis.objects.get(id=gapId) #This will be the actual line, but need specific test data that works
         generatePdfPlan(gap)
         pdf_filename = f"{gap.title}.pdf"
         return Response({'pdf' : pdf_filename}, status=200)
