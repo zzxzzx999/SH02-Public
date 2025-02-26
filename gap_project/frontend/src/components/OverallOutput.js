@@ -3,10 +3,9 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import '../css/NavBar.css';
 import '../css/OverallOutput.css';
-import NavBar from "./NavBar";
-import BarChart from "./charts/BarPotential";
-import LineChart from "./charts/LinePotential";
-
+import NavBar from "./NavBar.js";
+import LineChart from "./charts/LinePotential.js";
+import BarChart from "./charts/BarPotential.js";
 
 function OverallOutput() {
     // store total score

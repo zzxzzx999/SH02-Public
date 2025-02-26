@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import '../css/Login.css';
-import NavBar from './NavBar'; // Import the Navbar component
+import NavBar from './NavBar.js'; // Import the Navbar component
 
 function NewCompany() {
   const userRole = localStorage.getItem("userRole"); // Get the stored role

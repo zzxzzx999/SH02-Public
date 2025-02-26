@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from 'react-router-dom';
 import '../css/ListofCompany.css';
 import '../css/NavBar.css';
-import NavBar from './NavBar';
+import NavBar from './NavBar.js';
 
 function ListofCompany(){
     const linksForPage2 = [

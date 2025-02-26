@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import '../css/NavBar.css';
 import "../css/RegistedCompany.css";
-import NavBar from "./NavBar";
-import BarChart from "./charts/BarChart";
-import LineChart from "./charts/LineChart";
-import LineChartWithBackground from "./charts/LineChartWithBg";
-import { pdfDownload } from "./PfPlan";
+import NavBar from "./NavBar.js";
+import BarChart from "./charts/BarChart.js";
+import LineChart from "./charts/LineChart.js";
+import LineChartWithBackground from "./charts/LineChartWithBg.js";
+import { pdfDownload } from "./PfPlan.js";
 
 function RegistedCompany() {
     const linksForPage3 = [

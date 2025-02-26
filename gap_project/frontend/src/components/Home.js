@@ -1,4 +1,4 @@
-import NavBar from './NavBar';
+import NavBar from './NavBar.js';
 import React, {useState} from "react";
 import '../css/NavBar.css';
 import '../css/Home.css';

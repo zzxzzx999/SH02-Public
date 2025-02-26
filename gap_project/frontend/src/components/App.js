@@ -1,19 +1,19 @@
 import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import '../css/App.css';
-import DetailScore from './DetailScore';
-import GapAnalysis, { Elements } from './GapAnalysis';
-import GapAnalysisConfirm, { GapInformation } from './GapAnalysisInformation';
-import Home from './Home';
-import { default as ListofCompany, default as ListOfCompany } from './ListofCompany';
-import Login from './Login';
-import NewCompany from './NewCompany';
-import OverallOutput from './OverallOutput';
-import PrivateRoute from './PrivateRoute';
-import RegistedCompany from './RegistedCompany';
-import Results from './Results';
-import Template from './Template';
-import PdfPlan from './PfPlan';
+import DetailScore from './DetailScore.js';
+import GapAnalysis, { Elements } from './GapAnalysis.js';
+import GapAnalysisConfirm, { GapInformation } from './GapAnalysisInformation.js';
+import Home from './Home.js';
+import { default as ListofCompany, default as ListOfCompany } from './ListofCompany.js';
+import Login from './Login.js';
+import NewCompany from './NewCompany.js';
+import OverallOutput from './OverallOutput.js';
+import PrivateRoute from './PrivateRoute.js';
+import RegistedCompany from './RegistedCompany.js';
+import Results from './Results.js';
+import Template from './Template.js';
+import PdfPlan from './PfPlan.js';
 
 function App() {
   return (

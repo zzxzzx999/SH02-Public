@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import NavBar from './NavBar';
-import Accordion from './Accordion'
-import { SubmitProvider } from './SubmitContext';
+import NavBar from './NavBar.js';
+import Accordion from './Accordion.js'
+import { SubmitProvider } from './SubmitContext.js';
 import '../css/GapAnalysis.css';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -95,7 +95,7 @@ function Elements() {
       setImprovementPlan(getDefaultImprovementPlan());
     }
   }, []);
-
+  
   // sort of prevents user from going using the back button - for some reason it only prevents them from going out of the question set by using the back button (on the browser), 
   //so it keeps them in the question set and also no answers get lost when it is clicked
   useEffect(() => {
@@ -143,7 +143,7 @@ function Elements() {
     localStorage.removeItem("gapID");
   };
   
-
+  
   // Effect to fetch questions from the API 
   useEffect(() => {
     const fetchQuestion = async (set, number) => {
@@ -267,43 +267,43 @@ function Elements() {
             <Accordion data={questions} answers={answers} improvement={improvementPlan.improvement} evidence={improvementPlan.evidence}/>
           </div>
             ) : (
-            <div>
-              <h1 className="section-title" style={{ marginLeft: '16px' }}>
-                {questions[currentQuestionIndex]?.Section_Name}
-              </h1>
-  
-              <div className="question-text">
-                <p style={{ marginLeft: '16px' }}>
-                  <strong>{questions[currentQuestionIndex]?.Questions?.Question_Number}: </strong>
-                  {questions[currentQuestionIndex]?.Questions?.Question_Name}
-                </p>
-              </div>
+        <div>
+          <h1 className="section-title" style={{ marginLeft: '16px' }}>
+            {questions[currentQuestionIndex]?.Section_Name}
+          </h1>
 
-              <Compliance
-                question={questions[currentQuestionIndex]?.Questions}
-                handleAnswerChange={handleAnswerChange}  
-                savedAnswer={
+          <div className="question-text">
+            <p style={{ marginLeft: '16px' }}>
+              <strong>{questions[currentQuestionIndex]?.Questions?.Question_Number}: </strong>
+              {questions[currentQuestionIndex]?.Questions?.Question_Name}
+            </p>
+          </div>
+
+          <Compliance
+            question={questions[currentQuestionIndex]?.Questions}
+            handleAnswerChange={handleAnswerChange}  
+            savedAnswer={
                   answers[`${questions[currentQuestionIndex]?.Section_Number}`]?.[
                     questions[currentQuestionIndex]?.Questions?.Question_Number &&
-                    String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1] &&
-                    String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
-                  ]
-                }
-                savedImprovement = {
-                  improvementPlan.improvement[
-                    String(questions[currentQuestionIndex]?.Section_Number)
-                  ]?.[
-                    String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
-                  ]
-                }
-                savedEvidence = {
-                  improvementPlan.evidence[
-                    String(questions[currentQuestionIndex]?.Section_Number)
-                  ]?.[
-                    String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
-                  ]
-                }
-              />
+                String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1] &&
+                String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
+              ]
+            }
+            savedImprovement = {
+              improvementPlan.improvement[
+                String(questions[currentQuestionIndex]?.Section_Number)
+              ]?.[
+                String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
+              ]
+            }
+            savedEvidence = {
+              improvementPlan.evidence[
+                String(questions[currentQuestionIndex]?.Section_Number)
+              ]?.[
+                String(Number(String(questions[currentQuestionIndex]?.Questions?.Question_Number).split(".")[1]) - 1)
+              ]
+            }
+          />
               </div>
             )}
 
