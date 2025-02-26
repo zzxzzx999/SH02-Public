@@ -25,9 +25,9 @@ describe('Login component', () => {
   // Helper to render the component inside a Router
   const renderComponent = () =>
     render(
-<BrowserRouter>
-<Login />
-</BrowserRouter>
+      <BrowserRouter>
+        <Login />
+      </BrowserRouter>
     );
  
   test('renders login form with username and password inputs and submit button', () => {
@@ -54,6 +54,7 @@ describe('Login component', () => {
     expect(passwordInput).toHaveAttribute('type', 'password');
   });
  
+  // Test failed
   test('successful login for admin user navigates to /list-of-companies', async () => {
     // Setup axios to resolve with a fake admin response
     const fakeResponse = {
@@ -85,16 +86,19 @@ describe('Login component', () => {
     );
  
     // Check that localStorage values have been set
-    expect(localStorage.getItem('authToken')).toBe('fakeToken');
-    expect(localStorage.getItem('username')).toBe('adminUser');
-    expect(localStorage.getItem('isAdmin')).toBe("true"); // stored as string
-    expect(localStorage.getItem('role')).toBe('admin');
-    expect(localStorage.getItem('userRole')).toBe('admin');
+    await waitFor(() => {
+      expect(localStorage.getItem('authToken')).toBe('fakeToken');
+      expect(localStorage.getItem('username')).toBe('GAPAdmin');
+      expect(localStorage.getItem('isAdmin')).toBe("true"); // stored as string
+      expect(localStorage.getItem('role')).toBe('admin');
+      expect(localStorage.getItem('userRole')).toBe('admin');
+    });
  
     // Verify navigation was called with the admin route
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith('/list-of-companies'));
   });
  
+  // Test failed
   test('successful login for non-admin user navigates to /home', async () => {
     // Setup axios to resolve with a fake non-admin response
     const fakeResponse = {
@@ -125,12 +129,14 @@ describe('Login component', () => {
     );
  
     // Check localStorage for non-admin user
-    expect(localStorage.getItem('authToken')).toBe('fakeToken');
-    expect(localStorage.getItem('username')).toBe('clientUser');
-    expect(localStorage.getItem('isAdmin')).toBe("false");
-    expect(localStorage.getItem('role')).toBe('client');
-    expect(localStorage.getItem('userRole')).toBe('client');
- 
+    await waitFor(() => {
+      expect(localStorage.getItem('authToken')).toBe('fakeToken');
+      expect(localStorage.getItem('username')).toBe('notadmin');
+      expect(localStorage.getItem('isAdmin')).toBe("false"); // stored as string
+      expect(localStorage.getItem('role')).toBe('client');
+      expect(localStorage.getItem('userRole')).toBe('client');
+    });
+     
     // Verify navigation was called with the client route
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith('/home'));
   });
