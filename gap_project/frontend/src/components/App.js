@@ -11,7 +11,6 @@ import NewCompany from './NewCompany.js';
 import OverallOutput from './OverallOutput.js';
 import PrivateRoute from './PrivateRoute.js';
 import RegistedCompany from './RegistedCompany.js';
-import Results from './Results.js';
 import Template from './Template.js';
 import PdfPlan from './PfPlan.js';
 
@@ -43,7 +42,6 @@ function App() {
               <Route path="/gap-analysis/risk-management-process" element={<PrivateRoute element={Elements} />} />
               <Route path="/gap-analysis/audit-and-inspection-process" element={<PrivateRoute element={Elements} />} />
               <Route path="/gap-analysis/improvement-planning" element={<PrivateRoute element={Elements} />} />
-            <Route path="/results" element={<PrivateRoute element={Results} />}/>
 
             <Route path="/list-of-companies" element={<PrivateRoute element={ListOfCompany} />}/>
           </Routes>
