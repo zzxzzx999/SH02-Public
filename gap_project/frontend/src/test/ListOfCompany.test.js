@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import axios from 'axios';
 import React from 'react';
 import { MemoryRouter } from "react-router-dom";
@@ -24,37 +24,41 @@ describe ('ListOfCompany Component', () => {
     };
 
     beforeEach(() => {
-        // Mock the companies API response
-        axios.get.mockResolvedValueOnce({
-          data: mockCompanies,
-        });
-    
-        // Mock the scores API response
-        axios.get.mockResolvedValueOnce({
-          data: { score: 378},
-        });
-    
-        axios.get.mockResolvedValueOnce({
-          data: { score: 359 },
+        jest.spyOn(axios, "get").mockImplementation((url) => {
+            if (url.includes("companies")) {
+                return Promise.resolve({
+                    data: [
+                        { name: "Resolve Merge", dateRegistered: "2016-05-23" },
+                        { name: "Joe's Plumming Ltd", dateRegistered: "2014-11-02" }
+                    ]
+                });
+            }
+            if (url.includes("company-latest-total-score")) {
+                const companyName = decodeURIComponent(url.split("/").pop());
+                return Promise.resolve({
+                    data: { score: mockScores[companyName] || 0 } 
+                });
+            }
+            return Promise.reject(new Error("Unexpected API call"));
         });
 
-        // Render the component before each test
         render(
             <MemoryRouter>
-                <ListofCompany/>
+                <ListofCompany />
             </MemoryRouter>
         );
       });
     
     afterEach(() => {
-        jest.clearAllMocks();
+        jest.restoreAllMocks();
       });
     
-    it('renders the component and fetches companies', async () => {
+    test('renders the component and fetches companies', async () => {
         // Wait for companies to be fetched and rendered
         await waitFor(() => {
             expect(screen.getByText('Resolve Merge')).toBeInTheDocument();
-            expect(screen.getByText("Joe's Plumming Ltd")).toBeInTheDocument();
+            expect(screen.getByText("Joe's Plumming Ltd")).toBeInTheDocument();});
+        await waitFor(() => {
             expect(screen.getByText('378')).toBeInTheDocument();
             expect(screen.getByText('359')).toBeInTheDocument();
             const expectedDate = new Date('2016-05-23').toLocaleDateString();
@@ -62,7 +66,7 @@ describe ('ListOfCompany Component', () => {
         });
     });
 
-    it ('search company in searchbar', async() =>{
+    test('search company in searchbar', async() =>{
         // Wait for companies to be rendered
         await waitFor(() => {
             expect(screen.getByText('Resolve Merge')).toBeInTheDocument();
@@ -76,31 +80,32 @@ describe ('ListOfCompany Component', () => {
         });
     });
 
-    it('filter companys', async() =>{
-        // Wait for companies to be rendered
-        await waitFor(() => {
-            expect(screen.getByText('Resolve Merge')).toBeInTheDocument();
+    test("filters companies correctly", async () => {
+        await act(async () => {
+            await waitFor(() => expect(screen.getByText("Resolve Merge")).toBeInTheDocument());
         });
-        // Click the filter button 
-        const filterButton = screen.getByText('Filter');
+        const filterButton = screen.getByText("Filter");
         fireEvent.click(filterButton);
-        //test already analysis button
-        const option = screen.getByText('Already Analysis');
-        fireEvent.click(option);
-        await waitFor (() => {
-            expect(screen.getByText('Resolve Merge')).toBeInTheDocument();
+        await act(async () => {
+            const alreadyAnalysisOption = screen.getByText("Already Analysis");
+            fireEvent.click(alreadyAnalysisOption);
+        });
+        await waitFor(() => {
+            expect(screen.getByText("Resolve Merge")).toBeInTheDocument();
             expect(screen.getByText("Joe's Plumming Ltd")).toBeInTheDocument();
-        })
-        // test no gap analysis button 
-        const noAnalysisOption = screen.getByText('No GAP Analysis');
-        fireEvent.click(noAnalysisOption);
-        await waitFor (()=>{
+        });
+        await act(async () => {
+            const noAnalysisOption = screen.getByText("No GAP Analysis");
+            fireEvent.click(noAnalysisOption);
+        });
+        await waitFor(() => {
+            expect(screen.queryByText("Resolve Merge")).toBeNull();
             expect(screen.queryByText("Joe's Plumming Ltd")).toBeNull();
-            expect(screen.queryByText('Resolve Merge')).toBeNull();
         });
     });
+    
 
-    it('sort company by score high to low', async()=>{
+    test('sort company by score high to low', async()=>{
         // Wait for companies to be rendered
         await waitFor(() => {
             expect(screen.getByText('Resolve Merge')).toBeInTheDocument();
@@ -118,7 +123,7 @@ describe ('ListOfCompany Component', () => {
         });
     });
 
-    it('sort company by date latest to earliest', async()=>{
+    test('sort company by date latest to earliest', async()=>{
         // Wait for companies to be rendered
         await waitFor(() => {
             expect(screen.getByText('Resolve Merge')).toBeInTheDocument();
@@ -137,7 +142,7 @@ describe ('ListOfCompany Component', () => {
         });
     });
 
-    it('show delete pop up when clicking delete button', async()=>{
+    test('show delete pop up when clicking delete button', async()=>{
         // Wait for companies to be rendered
         await waitFor(() => {
             expect(screen.getByText('Resolve Merge')).toBeInTheDocument();
@@ -154,7 +159,7 @@ describe ('ListOfCompany Component', () => {
         });
     });
 
-    it('delete company after comfire delete', async()=>{
+    test('delete company after comfire delete', async()=>{
         await waitFor(() => {
             expect(screen.getByText('Resolve Merge')).toBeInTheDocument();
         });
