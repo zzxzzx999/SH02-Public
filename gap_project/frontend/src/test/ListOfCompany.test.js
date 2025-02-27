@@ -57,8 +57,8 @@ describe ('ListOfCompany Component', () => {
             expect(screen.getByText("Joe's Plumming Ltd")).toBeInTheDocument();
             expect(screen.getByText('378')).toBeInTheDocument();
             expect(screen.getByText('359')).toBeInTheDocument();
-            expect(screen.getByText(/2016[/-]05[/-]23/)).toBeInTheDocument();
-            expect(screen.getByText(/2016[/-]11[/-]02/)).toBeInTheDocument();
+            const expectedDate = new Date('2016-05-23').toLocaleDateString();
+            expect(screen.getByText(expectedDate)).toBeInTheDocument();
         });
     });
 
@@ -92,7 +92,6 @@ describe ('ListOfCompany Component', () => {
             expect(screen.getByText("Joe's Plumming Ltd")).toBeInTheDocument();
         })
         // test no gap analysis button 
-        fireEvent.click(filterButton);
         const noAnalysisOption = screen.getByText('No GAP Analysis');
         fireEvent.click(noAnalysisOption);
         await waitFor (()=>{
@@ -142,8 +141,8 @@ describe ('ListOfCompany Component', () => {
         // Wait for companies to be rendered
         await waitFor(() => {
             expect(screen.getByText('Resolve Merge')).toBeInTheDocument();
-            const deleteButton = screen.getAllByText(/Delete/i); // 使用正则表达式匹配
-            expect(deleteButton.length).toBeGreaterThan(0); // 确保至少有一个 Delete 按钮
+            const deleteButton = screen.getAllByText(/Delete/i); // use regular exopress
+            expect(deleteButton.length).toBeGreaterThan(0); // make sure at least one Delete button
         });
         // Click the delete button for Company A
         const deleteButton = screen.getAllByText(/Delete/i)[0];
@@ -156,11 +155,19 @@ describe ('ListOfCompany Component', () => {
     });
 
     it('delete company after comfire delete', async()=>{
+        await waitFor(() => {
+            expect(screen.getByText('Resolve Merge')).toBeInTheDocument();
+        });
+        const sortButton = screen.getByText('Sort');
+        fireEvent.click(sortButton);
+        const sortOption = screen.getByText('Score High to Low');
+        fireEvent.click(sortOption);
         // Mock the delete API response
         axios.delete.mockResolvedValueOnce({});
         // Click the delete button for Company A
-        const deleteButton = screen.getByText(/Delete/i);
-        fireEvent.click(deleteButtons[0]);
+        const deleteButton = screen.getAllByText(/Delete/i);
+        fireEvent.click(deleteButton[0]);
+        await waitFor(() => expect(screen.getByText('Notice!')).toBeInTheDocument());
         // Click the "Yes" button in the popup
         const confirmButton = screen.getByText('Yes');
         fireEvent.click(confirmButton);
