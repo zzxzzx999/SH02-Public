@@ -117,4 +117,29 @@ describe('GapAnalysis component', () => {
                 expect(purposeText2).toBeInTheDocument();
             });
       });
+
+      // if gapID hasnt been sent from backend properly, should be an error
+      test('displays error when no gapID is returned', async () => {
+        // simulate no gap ID sent
+        axios.get.mockResolvedValue({ data: {} });
+    
+        renderComponent();
+    
+        // wait for the component to fetch data and render the error message
+        await waitFor(() => {
+            const errorMessage = screen.getByText(/No Gap ID available/i);
+            expect(errorMessage).toBeInTheDocument();
+        });
+    });
+
+    // when company could not be retrieved from the url
+    test('displays error when company not retrieved from url', async () => {
+        renderComponent();
+        
+        await waitFor(() => {
+            const errorMessage = screen.getByText(/Error fetching gap analysis ID. Company name is not valid./i); 
+            expect(errorMessage).toBeInTheDocument();
+        });
+    });
+    
 });

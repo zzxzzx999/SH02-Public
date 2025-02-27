@@ -468,17 +468,34 @@ export { Compliance };
 function GapAnalysis() {
 
   const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const companyName = params.get('company');
-
-  const [, setError] = useState('');
+  const [companyName, setCompanyName] = useState(null);
+  const [error, setError] = useState('');
   const [links, setLinks] = useState([])
+
+  useEffect(() => {
+    const getCompanyName = () => {
+        const params = new URLSearchParams(location.search);
+        const company = params.get('company');
+        if (!company) {
+            setError("Company name is missing in the URL.");
+        } else {
+            setCompanyName(company);
+        }
+    };
+    getCompanyName(); 
+  }, [location.search]); 
 
   useEffect(() => {
     const getGapID = async () => {
         try {
             const response = await axios.get(`http://127.0.0.1:8000/api/get-latest-gap/?company_name=${companyName}`);
             gapID = response.data.gap_id;
+
+            if (!gapID) {
+              setError("No Gap ID available.");
+              return;
+            }
+
             localStorage.setItem("gapID", gapID);
 
             const newLinks = [
@@ -495,11 +512,10 @@ function GapAnalysis() {
               { name: 'Audit & Inspection Process', path: `/gap-analysis/audit-and-inspection-process?company=${encodeURIComponent(companyName)}&element=10&gap_id=${encodeURIComponent(gapID)}`, image: '' },
               { name: 'Improvement Planning', path: `/gap-analysis/improvement-planning?company=${encodeURIComponent(companyName)}&element=11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
             ];
-          
-          
+
             setLinks(newLinks);
         } catch (err) {
-            setError("Error fetching gap analysis ID.");
+            setError("Error fetching gap analysis ID. Company name is not valid.");
             console.error(err);
         }
       };
@@ -507,6 +523,9 @@ function GapAnalysis() {
 
   }, [companyName]);
 
+  if (error) {
+    return <div className="error-message">{error}</div>;
+  }
 
   return (
     <div>
