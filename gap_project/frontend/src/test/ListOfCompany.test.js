@@ -24,22 +24,18 @@ describe ('ListOfCompany Component', () => {
     };
 
     beforeEach(() => {
-        jest.spyOn(axios, "get").mockImplementation((url) => {
-            if (url.includes("companies")) {
-                return Promise.resolve({
-                    data: [
-                        { name: "Resolve Merge", dateRegistered: "2016-05-23" },
-                        { name: "Joe's Plumming Ltd", dateRegistered: "2014-11-02" }
-                    ]
-                });
-            }
-            if (url.includes("company-latest-total-score")) {
-                const companyName = decodeURIComponent(url.split("/").pop());
-                return Promise.resolve({
-                    data: { score: mockScores[companyName] || 0 } 
-                });
-            }
-            return Promise.reject(new Error("Unexpected API call"));
+        // Mock the companies API response
+        axios.get.mockResolvedValueOnce({
+            data: mockCompanies,
+        });
+
+        // Mock the scores API response
+        axios.get.mockResolvedValueOnce({
+            data: { score: mockScores['Resolve Merge'] },
+        });
+
+        axios.get.mockResolvedValueOnce({
+            data: { score: mockScores["Joe's Plumming Ltd"] },
         });
 
         render(
@@ -50,7 +46,7 @@ describe ('ListOfCompany Component', () => {
       });
     
     afterEach(() => {
-        jest.restoreAllMocks();
+        jest.clearAllMocks();
       });
     
     test('renders the component and fetches companies', async () => {
