@@ -6,24 +6,27 @@ from gap.models import Company, GapAnalysis
 import random
 
 # Set up answer set template
-base_set_answers = [0] * 10
-improvment_plan_set_answers = [
-    "Hello, this should be question one of a set",
-    "Me again, this is question 2",
-    "sOrry for inconsistiency in numbering- 3 three",
-    "that last one was just question 3, not thirty three. This is qFour",
-    "Five. I am bored",
-    "6666666666",
-    "SEvvvennnnn",
-    "eigh",
-    "t. Nine",
-    "fjkdlsjfdklfjk10101010101001",
-]
 question_answer_set = {}
-improvment_plan = {}
-for i in range(1, 13):
-    question_answer_set[i] = base_set_answers.copy()
-    improvment_plan[i] = improvment_plan_set_answers.copy()
+improvment_plan = {'improvement' : {},
+                    'evidence' : {}}
+def createAnswerSets():
+    base_set_answers = [0] * 10
+    improvment_plan_set_answers = [
+        "Hello, this should be question one of a set",
+        "Me again, this is question 2",
+        "sOrry for inconsistiency in numbering- 3 three",
+        "that last one was just question 3, not thirty three. This is qFour",
+        "Five. I am bored",
+        "6666666666",
+        "SEvvvennnnn",
+        "eigh",
+        "t. Nine",
+        "fjkdlsjfdklfjk10101010101001",
+    ]
+    for i in range(1, 13):
+        question_answer_set[i] = base_set_answers.copy()
+        improvment_plan['improvement'][i] = improvment_plan_set_answers.copy()
+        improvment_plan['evidence'][i] = improvment_plan_set_answers.copy()
 
 def getRandSingleScore():
     return [random.randint(1, 5) for _ in range(10)]
@@ -82,4 +85,6 @@ def add_gap(date, c, base_set_bool = False):
     
 if __name__ == '__main__':
     print("Starting Gap Analysis population")
+    createAnswerSets()
+    print(improvment_plan)
     populate()
