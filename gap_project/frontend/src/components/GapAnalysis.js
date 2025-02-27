@@ -468,22 +468,11 @@ export { Compliance };
 function GapAnalysis() {
 
   const location = useLocation();
-  const [companyName, setCompanyName] = useState(null);
+  const params = new URLSearchParams(location.search);
+  const companyName = params.get('company');
+
   const [error, setError] = useState('');
   const [links, setLinks] = useState([])
-
-  useEffect(() => {
-    const getCompanyName = () => {
-        const params = new URLSearchParams(location.search);
-        const company = params.get('company');
-        if (!company) {
-            setError("Company name is missing in the URL.");
-        } else {
-            setCompanyName(company);
-        }
-    };
-    getCompanyName(); 
-  }, [location.search]); 
 
   useEffect(() => {
     const getGapID = async () => {
@@ -492,10 +481,8 @@ function GapAnalysis() {
             gapID = response.data.gap_id;
 
             if (!gapID) {
-              setError("No Gap ID available.");
-              return;
+              setError("Unable to retrieve gapID.")
             }
-
             localStorage.setItem("gapID", gapID);
 
             const newLinks = [
@@ -512,10 +499,11 @@ function GapAnalysis() {
               { name: 'Audit & Inspection Process', path: `/gap-analysis/audit-and-inspection-process?company=${encodeURIComponent(companyName)}&element=10&gap_id=${encodeURIComponent(gapID)}`, image: '' },
               { name: 'Improvement Planning', path: `/gap-analysis/improvement-planning?company=${encodeURIComponent(companyName)}&element=11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
             ];
-
+          
+          
             setLinks(newLinks);
         } catch (err) {
-            setError("Error fetching gap analysis ID. Company name is not valid.");
+            setError("Error fetching gap analysis ID.");
             console.error(err);
         }
       };
@@ -524,8 +512,9 @@ function GapAnalysis() {
   }, [companyName]);
 
   if (error) {
-    return <div className="error-message">{error}</div>;
+    return <div className="error-message">{error}</div>
   }
+
 
   return (
     <div>
