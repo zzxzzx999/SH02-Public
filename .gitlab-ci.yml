@@ -23,13 +23,13 @@ variables:
   # Define the feature branch pattern
   FEATURE_BRANCH_PATTERN: "^feature/issue-\\d+/.+"
 
-image: node:18
+image: node:22.11
 
 cache:
   key: shared-cache
   paths:
     - $FRONTEND_DIR/node_modules/
-    - $BACKEND_DIR/.venv/
+   # - $BACKEND_DIR/.venv/
   policy: pull-push
 
 lint-backend:
@@ -58,16 +58,18 @@ build-backend:
   stage: build
   image: python:3.12
   before_script:
-    - python -m venv $BACKEND_DIR/.venv 
-    - source $BACKEND_DIR/.venv/bin/activate
+    # - python -m venv $BACKEND_DIR/.venv 
+    # - source $BACKEND_DIR/.venv/bin/activate
     - cd $BACKEND_DIR
     - pip install -r requirements.txt
   script:
+    - python manage.py makemigrations
     - python manage.py migrate
     - python manage.py collectstatic --noinput
   artifacts:
     paths:
       - $BACKEND_DIR/staticfiles/
+     # - $BACKEND_DIR/.venv 
 
 build-frontend:
   stage: build
@@ -82,6 +84,7 @@ build-frontend:
   artifacts:
     paths:
       - $FRONTEND_DIR/build/
+      - $FRONTEND_DIR/node_modules/
 
 #test-backend:
 #  stage: test
