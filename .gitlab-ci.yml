@@ -64,8 +64,10 @@ build-backend:
     paths:
       - $BACKEND_DIR/staticfiles/
   cache:
+    key: backend-cache
     paths:
       - $BACKEND_DIR/.venv/
+    policy: pull-push
 
 build-frontend:
   stage: build
@@ -79,6 +81,11 @@ build-frontend:
   artifacts:
     paths:
       - $FRONTEND_DIR/build/
+  cache:
+    key: frontend-cache
+    paths:
+      - $FRONTEND_DIR/node_modules/
+    policy: pull-push
 
 test-backend:
   stage: test
@@ -149,11 +156,17 @@ pages:
   stage: deploy
   script:
     - rm -rf public
-    - cp build/index.html build/404.html
+    - cp $FRONTEND_DIR/build/index.html $FRONTEND_DIR/build/404.html
     - mv $FRONTEND_DIR/build/ public  # GitLab Pages requires output in "public" directory
+    - ls -la public
   artifacts:
     paths:
       - public
+  cache:
+    key: frontend-cache
+    paths:
+      - $FRONTEND_DIR/node_modules/
+    policy: pull
   only:
     - main  # Deploy only when pushing to the main branch
   pages: true
