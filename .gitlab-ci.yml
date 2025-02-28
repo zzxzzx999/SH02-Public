@@ -75,6 +75,7 @@ build-frontend:
     - npm install
   script:
     - npm run build || echo "Build issues found"
+    - ls -la $FRONTEND_DIR/build/
   artifacts:
     paths:
       - $FRONTEND_DIR/build/
