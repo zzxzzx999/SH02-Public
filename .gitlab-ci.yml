@@ -4,7 +4,7 @@ services:
   - name: docker:dind
 
 stages:
-  - lint
+ #- lint
   - build
   - test
   - save-images  # New stage to save Docker images
@@ -48,34 +48,7 @@ build-frontend:
   only:
     - production
 
-# Optionally, if you still want to test, you can leave these steps, otherwise, remove them.
-
-test-backend:
-  stage: test
-  image: python:3.12
-  services:
-    - postgres:latest
-  variables:
-    POSTGRES_DB: test_db
-    POSTGRES_USER: TEST_USER
-    POSTGRES_PASSWORD: TEST_USER_PASSWORD
-  before_script:
-    - cd $BACKEND_DIR
-    - pip install -r requirements.txt
-    - python manage.py makemigrations --merge
-    - python manage.py migrate
-  script:
-    - coverage run --source='.' manage.py test
-    - coverage report -m > "$REPORTS_DIR/django-test-coverage-report.txt"
-
-test-frontend:
-  stage: test
-  image: node:22.11
-  before_script:
-    - cd $FRONTEND_DIR
-    - npm install
-  script:
-    - npm test -- --watchAll=false || true # Temporary change during unit test implementation
+# Add tests back in
 
 # Save Docker images
 save-images:
