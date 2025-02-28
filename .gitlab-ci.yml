@@ -63,6 +63,9 @@ build-backend:
   artifacts:
     paths:
       - $BACKEND_DIR/staticfiles/
+  cache:
+    paths:
+      - $BACKEND_DIR/.venv/
 
 build-frontend:
   stage: build
@@ -144,7 +147,7 @@ test-frontend:
 deploy:
   stage: deploy
   script:
-    - mv build public  # GitLab Pages requires output in "public" directory
+    - mv $FRONTEND_DIR/build/ public  # GitLab Pages requires output in "public" directory
   artifacts:
     paths:
       - public
