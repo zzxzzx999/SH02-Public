@@ -1,7 +1,8 @@
-default:
-  image: ruby:3.2
+image: node:18
 
-
+cache:
+  paths:
+    - node_modules/
 
 stages:
   - lint
@@ -143,10 +144,10 @@ test-frontend:
 deploy:
   stage: deploy
   script:
-    - gem install bundler
-    - bundle install
-    - bundle exec jekyll build
-  pages: true # specifies that this is a Pages job
+    - mv build public  # GitLab Pages requires output in "public" directory
   artifacts:
     paths:
       - public
+  only:
+    - main  # Deploy only when pushing to the main branch
+  pages: true
