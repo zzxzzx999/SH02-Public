@@ -1,7 +1,13 @@
+image: docker:latest
+
+services:
+ - name: docker:dind
+
 stages:
   - lint
   - build
   - test
+  - push
   # - docker
   # - security
   - deploy
@@ -19,18 +25,11 @@ variables:
   # Define docker variables
   DOCKER_DRIVER: overlay2
   IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  RENDER_DEPLOY_HOOK_URL_FRONTEND:
+  RENDER_DEPLOY_HOOK_URL_BACKEND:
 
   # Define the feature branch pattern
   FEATURE_BRANCH_PATTERN: "^feature/issue-\\d+/.+"
-
-image: node:22.11
-
-cache:
-  key: shared-cache
-  paths:
-    - $FRONTEND_DIR/node_modules/
-   # - $BACKEND_DIR/.venv/
-  policy: pull-push
 
 lint-backend:
   stage: lint
@@ -58,18 +57,23 @@ build-backend:
   stage: build
   image: python:3.12
   before_script:
-    # - python -m venv $BACKEND_DIR/.venv 
-    # - source $BACKEND_DIR/.venv/bin/activate
     - cd $BACKEND_DIR
     - pip install -r requirements.txt
   script:
-    - python manage.py makemigrations
+    - docker-compose -f docker-compose.yml build
+    - docker save -o backend.tar ${DOCKER_USERNAME}/gordon-foley:backend
     - python manage.py migrate
     - python manage.py collectstatic --noinput
   artifacts:
     paths:
       - $BACKEND_DIR/staticfiles/
-     # - $BACKEND_DIR/.venv 
+      - backend.tar
+  # only works if using staging branch
+  # change to staging after production works
+  only:
+   - production
+  tags:
+   - deployment-docker
 
 build-frontend:
   stage: build
@@ -79,41 +83,46 @@ build-frontend:
     - npm install
   script:
     - npm run build || echo "Build issues found"
-    - ls -la $FRONTEND_DIR/node_modules/
-    - ls -la $FRONTEND_DIR/build/
+    - docker save -o frontend.tar ${DOCKER_USERNAME}/gordon-foley:frontend
   artifacts:
     paths:
       - $FRONTEND_DIR/build/
-      - $FRONTEND_DIR/node_modules/
+      - frontend.tar
+  # only works if using staging branch
+  only:
+   # change to staging later
+   - production
+  tags:
+   - deployment-docker
 
-#test-backend:
-#  stage: test
-#  image: python:3.12
-#  services:
-#    - postgres:latest
-#  variables:
-#    POSTGRES_DB: test_db
-#    POSTGRES_USER: TEST_USER
-#    POSTGRES_PASSWORD: TEST_USER_PASSWORD
-#  before_script:
-#    - cd $BACKEND_DIR
-#    - pip install -r requirements.txt
-#    - python manage.py makemigrations --merge
-#    - python manage.py migrate
-#  script:
-#    - coverage run --source='.' manage.py test
-#    - coverage report -m > "$REPORTS_DIR/django-test-coverage-report.txt"
+test-backend:
+  stage: test
+  image: python:3.12
+  services:
+    - postgres:latest
+  variables:
+    POSTGRES_DB: test_db
+    POSTGRES_USER: TEST_USER
+    POSTGRES_PASSWORD: TEST_USER_PASSWORD
+  before_script:
+    - cd $BACKEND_DIR
+    - pip install -r requirements.txt
+    - python manage.py makemigrations --merge
+    - python manage.py migrate
+  script:
+    - coverage run --source='.' manage.py test
+    - coverage report -m > "$REPORTS_DIR/django-test-coverage-report.txt"
   #rules:
   #  - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
 
-#test-frontend:
-#  stage: test
-#  image: node:22.11
-#  before_script:
-#    - cd $FRONTEND_DIR
-#    - npm install
-#  script:
-#    - npm test -- --watchAll=false || true # Temporary change during unit test implementation
+test-frontend:
+  stage: test
+  image: node:22.11
+  before_script:
+    - cd $FRONTEND_DIR
+    - npm install
+  script:
+    - npm test -- --watchAll=false || true # Temporary change during unit test implementation
   #rules:
   #  - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
 
@@ -151,16 +160,28 @@ build-frontend:
 #    - bandit -r .
 #    - safety check
 
-pages:
-  stage: deploy
+push:
+  stage: push
   script:
-    - rm -rf public
-    - cp $FRONTEND_DIR/build/index.html $FRONTEND_DIR/build/404.html
-    - mv $FRONTEND_DIR/build/ public  # GitLab Pages requires output in "public" directory
-    - ls -la $FRONTEND_DIR/node_modules/
-  artifacts:
-    paths:
-      - public
+   - docker load -i backend.tar
+   - docker load -i frontend.tar
+   - docker images
+   - docker push ${DOCKER_USERNAME}/gordon-foley:frontend
+   - docker push ${DOCKER_USERNAME}/gordon-foley:backend
   only:
-    - main  # Deploy only when pushing to the main branch
-  pages: true
+   - production
+  tags:
+   - deployment-docker
+
+deploy:
+  stage: deploy
+  environment: staging
+  before_script:
+   - apk add --no-cache curl
+  script:
+   - curl -X POST ${RENDER_DEPLOY_HOOK_URL_FRONTEND}
+   - curl -X POST ${RENDER_DEPLOY_HOOK_URL_BACKEND}
+  only:
+   - production
+  tags:
+   - deployment-docker
