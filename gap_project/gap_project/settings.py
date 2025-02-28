@@ -91,10 +91,15 @@ REST_FRAMEWORK = {
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# put this info to secrets
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
         "NAME": BASE_DIR / "db.sqlite3",
+        "USER": "gordonfoley",
+        "PASSWORD": "mA5AB0YUZX5aleqCs5FKtxAWlh3EnXdc",
+        "HOST": "dpg-cv10jbqj1k6c73arogc0-a",
+        "PORT": "5432",
     }
 }
 
