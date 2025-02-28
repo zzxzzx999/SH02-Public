@@ -31,7 +31,9 @@ build-backend:
     paths:
       - backend.tar  # Save Docker image as artifact
   only:
-    - production
+    - production # change to staging
+  tags:
+    - deployment-docker
 
 build-frontend:
   stage: build
@@ -47,6 +49,8 @@ build-frontend:
       - frontend.tar  # Save Docker image as artifact
   only:
     - production
+  tags:
+    - deployment-docker
 
 # Add tests back in
 
@@ -61,3 +65,5 @@ save-images:
       - frontend.tar
   only:
     - production
+  tags:
+    - deployment-docker
