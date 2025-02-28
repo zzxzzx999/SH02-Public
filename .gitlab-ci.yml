@@ -145,9 +145,11 @@ test-frontend:
 #    - bandit -r .
 #    - safety check
 
-deploy:
+pages:
   stage: deploy
   script:
+    - rm -rf public
+    - cp build/index.html build/404.html
     - mv $FRONTEND_DIR/build/ public  # GitLab Pages requires output in "public" directory
   artifacts:
     paths:
