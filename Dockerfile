@@ -22,7 +22,7 @@ RUN python -m venv /py && \
 # Install Python dependencies from requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt && apk del tpm
 
-RUN pip install psycopg2 gunicorn
+RUN pip install gunicorn
 
 COPY . .
 # Expose port 8000 for Django (instead of 80)
@@ -35,4 +35,4 @@ ENV DJANGO_SETTINGS_MODULE=gap_project.settings
 ENV PYTHONUNBUFFERED=1  
 
 # Run migrations and start Django server
-CMD ["sh", "-c", "python manage.py migrate && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && gunicorn --bind 0.0.0:8000 gap_project.wsgi:application"]

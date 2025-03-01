@@ -8,19 +8,20 @@ services:
     ports:
         - "8000:8000"
     enviroment:
-        - DB_NAME=${DB_NAME}
-        - DB_USER=${DB_USER}
-        - BD_PASSWORD=${DB_PASSWORD}
-        - DB_HOST = ${DB_HOST}
+        - DB_URL=postgresql://gordonfoley:mA5AB0YUZX5aleqCs5FKtxAWlh3EnXdc@dpg-cv10jbqj1k6c73arogc0-a.frankfurt-postgres.render.com/gordonfoleydb
+        - DB_NAME=gordon-foley-database
+        - DB_USER=gordonfoley
+        - BD_PASSWORD=mA5AB0YUZX5aleqCs5FKtxAWlh3EnXdc
+        - DB_HOST=dpg-cv10jbqj1k6c73arogc0-a
     depends_on:
-        -DB_HOST
+        - frontend
     command: [
         "sh",
         "-c",
         "python manage.py makemigrations 
-        && pyhton manage.py migrate
+        && python manage.py migrate
         && python populate.py
-        && gunicorn --bind 0.0.0:8000 name?"
+        && gunicorn --bind 0.0.0:8000 gap_project.wsgi:application"
     ]
 
 frontend:
@@ -36,23 +37,3 @@ frontend:
         - "3000:80"
     depends_on:
         - backend
-
-db:
-    image: postgres:15
-    restart: unless-stopped
-    container_name: backend_db
-    ports:
-        - 5432
-    
-    environment:
-        - POSTGRES_DB=${DB_NAME}
-        - POSTGRES_USER=${DB_USER}
-        - POSTGRES_PASSWORD=${DB_PASSWORD}
-    healthcheck:
-        - test: {"CMD", "pg_isready", "-q", "-d", "${DB_NAME}", "-U", "{DB_USER}"}
-        - interval : 5s
-        - timeout: 5s
-        - retries: 5
-
-    volumes:
-        - postgres_data:/var/lib/postgresql/postgres_data
