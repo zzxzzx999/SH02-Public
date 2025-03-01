@@ -2,7 +2,8 @@ image: docker:latest
 
 services:
   - name: docker:dind
-  
+    entrypoint: ["--host=tcp://0.0.0.0:2375", "--host=unix:///var/run/docker.sock"]  # expose Docker daemon
+
 stages:
   # - lint
   - build
