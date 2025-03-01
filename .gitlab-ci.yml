@@ -86,70 +86,36 @@ build-frontend:
       - $FRONTEND_DIR/build/
       - $FRONTEND_DIR/node_modules/
 
-#test-backend:
-#  stage: test
-#  image: python:3.12
-#  services:
-#    - postgres:latest
-#  variables:
-#    POSTGRES_DB: test_db
-#    POSTGRES_USER: TEST_USER
-#    POSTGRES_PASSWORD: TEST_USER_PASSWORD
-#  before_script:
-#    - cd $BACKEND_DIR
-#    - pip install -r requirements.txt
-#    - python manage.py makemigrations --merge
-#    - python manage.py migrate
-#  script:
-#    - coverage run --source='.' manage.py test
-#    - coverage report -m > "$REPORTS_DIR/django-test-coverage-report.txt"
+test-backend:
+  stage: test
+  image: python:3.12
+  services:
+    - postgres:latest
+  variables:
+    POSTGRES_DB: test_db
+    POSTGRES_USER: TEST_USER
+    POSTGRES_PASSWORD: TEST_USER_PASSWORD
+  before_script:
+    - cd $BACKEND_DIR
+    - pip install -r requirements.txt
+    - python manage.py makemigrations --merge
+    - python manage.py migrate
+  script:
+    - coverage run --source='.' manage.py test
+    - coverage report -m > "$REPORTS_DIR/django-test-coverage-report.txt"
   #rules:
   #  - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
 
-#test-frontend:
-#  stage: test
-#  image: node:22.11
-#  before_script:
-#    - cd $FRONTEND_DIR
-#    - npm install
-#  script:
-#    - npm test -- --watchAll=false || true # Temporary change during unit test implementation
+test-frontend:
+  stage: test
+  image: node:22.11
+  before_script:
+    - cd $FRONTEND_DIR
+    - npm install
+  script:
+    - npm test -- --watchAll=false || true # Temporary change during unit test implementation
   #rules:
   #  - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
-
-# # Build the Docker image
-# build_image:
-#   stage: docker
-#   image: docker:latest
-#   services:
-#     - name: docker:dind
-#       alias: docker
-#       command: ["--tls=false"]
-#   variables:
-#     DOCKER_HOST: tcp://docker:2375/
-#     DOCKER_TLS_CERTDIR: ""
-#   script:
-#     - docker build -t $IMAGE_TAG .
-#     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-#     - docker tag $IMAGE_TAG $CI_REGISTRY_IMAGE:latest
-
-# # Push the Docker image to GitLab Container Registry
-# push_image:
-#   stage: docker
-#   image: docker:latest
-#   services:
-#     - docker:dind
-#   script:
-#     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-#     - docker push $IMAGE_TAG
-#     - docker push $CI_REGISTRY_IMAGE:latest
-
-#security:
-#  stage: security
-#  script:
-#    - pip install bandit safety
-#    - bandit -r .
-#    - safety check
 
 pages:
   stage: deploy
