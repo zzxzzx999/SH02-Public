@@ -2,7 +2,7 @@ image: docker:latest
 
 services:
   - name: docker:dind
-    privileged: true  # Enable privileged mode for Docker-in-Docker
+  
 stages:
   # - lint
   - build
