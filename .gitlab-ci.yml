@@ -2,7 +2,6 @@ image: docker:latest
 
 services:
   - name: docker:dind
-    entrypoint: ["--host=tcp://0.0.0.0:2375", "--host=unix:///var/run/docker.sock"]  # expose Docker daemon
 
 stages:
   # - lint
@@ -33,8 +32,8 @@ build-backend:
       - backend.tar  # Save Docker image as an artifact
   only:
     - production  # Only run on production branch
-  #tags:
-   # - deployment-docker  # Tag for the specific runner
+  # tags:
+     # - deployment-docker  # Tag for the specific runner
 
 build-frontend:
   stage: build
