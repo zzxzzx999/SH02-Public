@@ -95,7 +95,7 @@ REST_FRAMEWORK = {
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": "gordonfoleydb",
         "USER": "gordonfoley",
         "PASSWORD": "mA5AB0YUZX5aleqCs5FKtxAWlh3EnXdc",
         "HOST": "dpg-cv10jbqj1k6c73arogc0-a",

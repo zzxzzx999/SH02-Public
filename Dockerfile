@@ -30,7 +30,7 @@ EXPOSE 8000
 
 # Set environment variables (if needed)
 # Adjust with your actual settings module
-ENV DJANGO_SETTINGS_MODULE=myproject.settings  
+ENV DJANGO_SETTINGS_MODULE=gap_project.settings  
 # Ensures logs are printed directly in Docker logs
 ENV PYTHONUNBUFFERED=1  
 
