@@ -1,6 +1,6 @@
 # Use an official Python runtime as a parent image
 
-FROM python:3.12-slim AS backend
+FROM python:3.12-alpine AS backend
 
 # Set the working directory inside the container
 WORKDIR /gap_project
@@ -9,9 +9,9 @@ WORKDIR /gap_project
 COPY . /gap_project/
 
 # Install system dependencies (for PostgreSQL support, uncomment if needed)
-RUN apt-get update && apt-get install -y gcc libpq-dev && apk add --no-cache gcc postgresql-dev
+RUN apk update && apk add --no-cache gcc postgresql-dev
 
-COPY requirements.txt
+COPY gap_project/requirements.txt .
 
 # run dependencies for postgresql db
 RUN python -m venv /py && \
@@ -36,6 +36,4 @@ ENV DJANGO_SETTINGS_MODULE=myproject.settings
 ENV PYTHONUNBUFFERED=1  
 
 # Run migrations and start Django server
-CMD ["sh", "-c", "python manage.py migrate && 
-    python manage.py migrate &&
-    python manage.py runserver 0.0.0.0:8000"]
+CMD ["sh", "-c", "python manage.py migrate && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]

@@ -26,7 +26,7 @@ build-backend:
     - pip install -r requirements.txt
   script:
     - docker-compose -f docker-compose.yml build
-    - docker save -o backend.tar ${DOCKER_USERNAME}/gordon-foley:backend  # Save image to file
+    - docker save -o backend.tar docker.io/gordon-foley:backend  # Save image to file
   artifacts:
     paths:
       - backend.tar  # Save Docker image as artifact
@@ -43,7 +43,7 @@ build-frontend:
     - npm install
   script:
     - npm run build || echo "Build issues found"
-    - docker save -o frontend.tar ${DOCKER_USERNAME}/gordon-foley:frontend  # Save image to file
+    - docker save -o frontend.tar $docker.io/gordon-foley:frontend  # Save image to file
   artifacts:
     paths:
       - frontend.tar  # Save Docker image as artifact

@@ -1,8 +1,8 @@
 services:
     backend:
-        image: ${DOCKER_USERNAME}/gordon-foley:backend
+        image: docker.io/gordon-foley:backend
     build:
-        context: 
+        context: ./gap_project
         dockerfile: DockerFile
     container_name: backend
     ports:
@@ -24,10 +24,10 @@ services:
     ]
 
 frontend:
-    image: ${DOCKER_USERNAME}/gordon-foley:frontend
+    image: $docker.io/gordon-foley:frontend
     container_name: frontend
     build:
-        context: ?
+        context: ./gap_project/frontend
         dockerfile: DockerFile
         args:
             REACT_APP_BACKEND_URL: ${BACKEND_URL}
