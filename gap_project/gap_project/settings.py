@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
+from urllib.parse import urlparse
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -91,15 +93,16 @@ REST_FRAMEWORK = {
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+url = urlparse("postgresql://gordonfoley:mA5AB0YUZX5aleqCs5FKtxAWlh3EnXdc@dpg-cv10jbqj1k6c73arogc0-a.frankfurt-postgres.render.com/gordonfoleydb")
 # put this info to secrets
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "gordonfoleydb",
-        "USER": "gordonfoley",
-        "PASSWORD": "mA5AB0YUZX5aleqCs5FKtxAWlh3EnXdc",
-        "HOST": "dpg-cv10jbqj1k6c73arogc0-a",
-        "PORT": "5432",
+        'NAME': url.path[1:],
+        'USER': url.username,
+        'PASSWORD': url.password,
+        'HOST': url.hostname,
+        'PORT': url.port,
     }
 }
 
