@@ -15,6 +15,9 @@ variables:
   REPORTS_DIR: "$BACKEND_DIR/reports"
   DOCKER_DRIVER: overlay2
   IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG  # Define image tag dynamically
+  DOCKER_DRIVER: overlay2
+  RENDER_DEPLOY_HOOK_URL_FRONTEND: https://api.render.com/deploy/srv-cv1do7btq21c73csibd0?key=NMudpzB6wuU
+  RENDER_DEPLOY_HOOK_URL_BACKEND: https://api.render.com/deploy/srv-cv1dok1u0jms738ajj2g?key=VJWfmIpHCRw
 
 # Linting and build stages remain as they are
 

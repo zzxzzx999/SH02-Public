@@ -10,10 +10,10 @@ RUN npm ci --omit=dev
 # copy rest of frontend files
 COPY . .
 
-ARG REACT_APP_BACKEND_URL=http://localhost:8000
+ARG REACT_APP_BACKEND_URL
 ENV REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL}
 
-ARG REACT_APP_FROMTEND_URL=http://localhost:3000
+ARG REACT_APP_FROMTEND_URL
 ENV REACT_APP_FRONTEND_URL=${REACT_APP_FRONTEND_URL}
 
 RUN npm run build || (echo "frontend build failed" && exit 1)

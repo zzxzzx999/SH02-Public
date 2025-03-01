@@ -1,12 +1,11 @@
 # Use an official Python runtime as a parent image
-
 FROM python:3.12-alpine AS backend
 
 # Set the working directory inside the container
 WORKDIR /gap_project
 
 # Copy the project files into the container
-COPY . /gap_project/
+COPY gap_project /gap_project/
 
 # Install system dependencies (for PostgreSQL support, uncomment if needed)
 RUN apk update && apk add --no-cache gcc postgresql-dev
@@ -23,7 +22,7 @@ RUN python -m venv /py && \
 # Install Python dependencies from requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt && apk del tpm
 
-RUN pip install gunicorn
+RUN pip install psycopg2 gunicorn
 
 COPY . .
 # Expose port 8000 for Django (instead of 80)
