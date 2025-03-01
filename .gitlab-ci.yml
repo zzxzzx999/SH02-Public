@@ -1,10 +1,10 @@
 image: docker:latest
 
 services:
-  - name: docker:dind 
+  - name: docker:dind  # Docker-in-Docker service
 
 stages:
- #- lint
+  # - lint
   - build
   - test
   - save-images  # New stage to save Docker images
@@ -14,7 +14,7 @@ variables:
   FRONTEND_DIR: "$BACKEND_DIR/frontend"
   REPORTS_DIR: "$BACKEND_DIR/reports"
   DOCKER_DRIVER: overlay2
-  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG  # Define image tag dynamically
 
 # Linting and build stages remain as they are
 
@@ -23,38 +23,36 @@ build-backend:
   image: python:3.12
   before_script:
     - cd $BACKEND_DIR
-    - pip install -r requirements.txt
+    - pip install -r requirements.txt  # Install backend dependencies
   script:
-    - docker-compose -f docker-compose.yml build
-    - docker save -o backend.tar docker.io/gordon-foley:backend  # Save image to file
+    - docker-compose -f docker-compose.yml build  # Build the backend image
+    - docker save -o backend.tar $CI_REGISTRY_IMAGE:backend  # Save the backend image to a tar file
   artifacts:
     paths:
-      - backend.tar  # Save Docker image as artifact
+      - backend.tar  # Save Docker image as an artifact
   only:
-    - production # change to staging
+    - production  # Only run on production branch
   tags:
-    - deployment-docker
+    - deployment-docker  # Tag for the specific runner
 
 build-frontend:
   stage: build
   image: node:22.11
   before_script:
     - cd "$FRONTEND_DIR"
-    - npm install
+    - npm install  # Install frontend dependencies
   script:
-    - npm run build || echo "Build issues found"
-    - docker save -o frontend.tar $docker.io/gordon-foley:frontend  # Save image to file
+    - npm run build || echo "Build issues found"  # Build the frontend
+    - docker save -o frontend.tar $CI_REGISTRY_IMAGE:frontend  # Save the frontend image to a tar file
   artifacts:
     paths:
-      - frontend.tar  # Save Docker image as artifact
+      - frontend.tar  # Save Docker image as an artifact
   only:
-    - production
+    - production  # Only run on production branch
   tags:
-    - deployment-docker
+    - deployment-docker  # Tag for the specific runner
 
-# Add tests back in
-
-# Save Docker images
+# Save Docker images (this step is mostly informational)
 save-images:
   stage: save-images
   script:
@@ -62,8 +60,8 @@ save-images:
   artifacts:
     paths:
       - backend.tar
-      - frontend.tar
+      - frontend.tar  # Save both Docker images
   only:
-    - production
+    - production  # Only run on production branch
   tags:
-    - deployment-docker
+    - deployment-docker  # Tag for the specific runner
