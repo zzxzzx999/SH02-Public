@@ -32,8 +32,8 @@ build-backend:
       - backend.tar  # Save Docker image as an artifact
   only:
     - production  # Only run on production branch
-  tags:
-    - deployment-docker  # Tag for the specific runner
+  #tags:
+   # - deployment-docker  # Tag for the specific runner
 
 build-frontend:
   stage: build
@@ -49,8 +49,8 @@ build-frontend:
       - frontend.tar  # Save Docker image as an artifact
   only:
     - production  # Only run on production branch
-  tags:
-    - deployment-docker  # Tag for the specific runner
+  #tags:
+    # - deployment-docker  # Tag for the specific runner
 
 # Save Docker images (this step is mostly informational)
 save-images:
@@ -63,5 +63,5 @@ save-images:
       - frontend.tar  # Save both Docker images
   only:
     - production  # Only run on production branch
-  tags:
-    - deployment-docker  # Tag for the specific runner
+  # tags:
+    # - deployment-docker  # Tag for the specific runner
