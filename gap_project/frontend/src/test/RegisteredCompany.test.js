@@ -64,18 +64,18 @@ describe('RegistedCompany Component', () => {
                 const companyName = urlObj.searchParams.get('name')
                 if (companyName === mockCompanyName) {
                     return Promise.resolve({
-                        json: () => Promise.resolve([{ notes: mockCompanyNotes }]), // 有数据
+                        json: () => Promise.resolve([{ notes: mockCompanyNotes }]), // exist data
                     });
                 }
                 
                 return Promise.resolve({
-                    json: () => Promise.resolve([{notes: 'No additional notes.'}]), // 没有数据
+                    json: () => Promise.resolve([{notes: 'No additional notes.'}]), // no data
                 });
             }
         
             if (url.includes('/api/past_analyses/')) {
                 return Promise.resolve({
-                    json: () => Promise.resolve({ past_analyses: mockAnalyses }), // 返回模拟的过去分析数据
+                    json: () => Promise.resolve({ past_analyses: mockAnalyses }), // return mock past analysis
                 });
             }
             if (url.includes('/api/analysis/')) {
