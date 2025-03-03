@@ -33,21 +33,25 @@ const PieChart = ({ chartData }) => {
       },
       series: [
         {
-          //name: 'Sales',
           type: 'pie',
           radius: '80%',
           center: ['50%', '50%'],
+          data: chartData
+            .filter(item => item.value > 0) 
+            .map(item => {
+              const itemName = item.name || ''; // make sure itemName is vaild
+              const formattedName = itemName === 'needsImprovement'
+                ? 'Needs Improvement' 
+                : itemName.charAt(0).toUpperCase() + itemName.slice(1); // capitalize
 
-
-          data: chartData.filter(item => item.value > 0).map(item => ({
-            value: item.value,
-            
-            name: item.name === 'needsImprovement'
-            ? 'Needs Improvement' //fixes piechart needs improvement
-            : item.name[0].toUpperCase() + item.name.slice(1), //capitilizes
-            itemStyle: {
-              color: COLOR_MAP[item.name] || '#9E9E9E',}
-          })),
+              return {
+                value: item.value,
+                name: formattedName,
+                itemStyle: {
+                  color: COLOR_MAP[item.name] || '#9E9E9E', 
+                },
+              };
+            }),
         },
       ],
     };
