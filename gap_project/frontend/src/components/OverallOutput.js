@@ -4,8 +4,8 @@ import { useLocation, useSearchParams } from "react-router-dom";
 import '../css/NavBar.css';
 import '../css/OverallOutput.css';
 import NavBar from "./NavBar.js";
-import LineChart from "./charts/LinePotential.js";
 import BarChart from "./charts/BarPotential.js";
+import LineChart from "./charts/LinePotential.js";
 
 function OverallOutput() {
     // store total score
@@ -115,7 +115,6 @@ useEffect(() => {
       <div key={location.pathname} class="main-content" className="gap-intro"> 
         <NavBar links={linksForPage3} logout={true} />
         <div className="output-container">
-          
           {/* Top Score Blocks */}
           <div className="score-blocks">
             <div className="score-block total-score">

@@ -32,30 +32,40 @@ describe('OverallOutput Component', () => {
         gap_date: ['2023-01-01', '2023-02-01', '2023-03-01'],
         total_score: [400, 450, 500],
     };
+    const original = console.error
+    
+    beforeAll(()=> {
+        jest.spyOn(console,"error").mockImplementation(()=> {});
+
+    });
 
     beforeEach(() => {
+        console.error = jest.fn()
         // Mock the overall scores API response
         axios.get.mockResolvedValueOnce({
             data: mockOverallScores,
         });
 
-        // Mock the bar chart data API response
-        global.fetch = jest.fn(() =>
+    // Mock the bar chart data API response
+    const originalFetch = global.fetch;
+    global.fetch = jest.fn()
+      .mockImplementationOnce(() =>
             Promise.resolve({
-                json: () => Promise.resolve(mockBarChartData), //Creates a Promise that resolves immediately with the passed argument
+                json: () => Promise.resolve(mockBarChartData),
             })
-        );
-
-        // Mock the line chart data API response
-        global.fetch = jest.fn(() =>
+        )
+      .mockImplementationOnce(() =>
             Promise.resolve({
                 json: () => Promise.resolve(mockLineChartData),
             })
-        );
-    });
+        )
+      .mockImplementation(() => originalFetch.apply(this, arguments));
+});
 
     afterEach(() => {
         jest.clearAllMocks();
+        console.error.mockClear();
+        console.error = original;
     });
 
     test('renders the component and fetches data', async () => {
@@ -87,19 +97,35 @@ describe('OverallOutput Component', () => {
         });
     });
 
-    test('handles API errors gracefully', async () => {
-        // Mock the overall scores API to return an error
-        axios.get.mockRejectedValueOnce(new Error('Failed to fetch data'));
-
+    test('logs an error when API request fails', async () => {
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {}); // Mock console.error
+        axios.get.mockRejectedValueOnce(new Error('Failed to fetch data')); 
         render(
             <MemoryRouter initialEntries={['/overall-output?company=TestCompany&gap_id=123']}>
                 <OverallOutput />
             </MemoryRouter>
         );
-        // Wait for the component to handle the error
         await waitFor(() => {
-            // Check if the error is logged
-            expect(console.error).toHaveBeenCalledWith('Error fetching categories:', expect.any(Error));
+            if (!consoleErrorSpy.mock.calls.length) {
+                console.log('console.error has not been called yet');
+            }
+            // make sure console.error was called
+            expect(consoleErrorSpy).toHaveBeenCalledWith(
+                'Error fetching categories:',
+                expect.any(Error)
+            );
+        });
+        consoleErrorSpy.mockRestore(); 
+    });
+
+    test('does not fetch data when gapId is missing', async () => {
+        render(
+            <MemoryRouter initialEntries={['/overall-output?company=TestCompany']}>
+                <OverallOutput />
+            </MemoryRouter>
+        );
+        await waitFor(() => {
+            expect(axios.get).not.toHaveBeenCalled(); // make sure API is not be called
         });
     });
 
