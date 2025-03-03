@@ -1,11 +1,9 @@
-// Login.test.js
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Login from '../components/Login.js';
 import axios from 'axios';
 import { BrowserRouter } from 'react-router-dom';
  
-// Mock axios
 jest.mock('axios');
  
 // Create a mock for useNavigate
@@ -17,12 +15,10 @@ jest.mock('react-router-dom', () => ({
  
 describe('Login component', () => {
   beforeEach(() => {
-    // Reset mocks and clear localStorage before each test
     jest.clearAllMocks();
     localStorage.clear();
   });
  
-  // Helper to render the component inside a Router
   const renderComponent = () =>
     render(
       <BrowserRouter>
@@ -40,12 +36,9 @@ describe('Login component', () => {
   test('toggles password visibility when icon is clicked', () => {
     renderComponent();
     const passwordInput = screen.getByPlaceholderText(/password/i);
-    // The icon should have an alt text that indicates its function.
     const toggleIcon = screen.getByAltText(/show password/i);
-    // Initially, the input should be of type "password"
     expect(passwordInput).toHaveAttribute('type', 'password');
  
-    // Click the icon to toggle visibility
     fireEvent.click(toggleIcon);
     expect(passwordInput).toHaveAttribute('type', 'text');
  
@@ -54,9 +47,7 @@ describe('Login component', () => {
     expect(passwordInput).toHaveAttribute('type', 'password');
   });
  
-  // Test failed
   test('successful login for admin user navigates to /list-of-companies', async () => {
-    // Setup axios to resolve with a fake admin response
     const fakeResponse = {
       data: {
         token: 'fakeToken',
@@ -77,7 +68,6 @@ describe('Login component', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: /log in/i }));
  
-    // Wait for the axios call to be made
     await waitFor(() =>
       expect(axios.post).toHaveBeenCalledWith('http://localhost:8000/api/login/', {
         username: 'GAPAdmin',
@@ -98,9 +88,7 @@ describe('Login component', () => {
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith('/list-of-companies'));
   });
  
-  // Test failed
   test('successful login for non-admin user navigates to /home', async () => {
-    // Setup axios to resolve with a fake non-admin response
     const fakeResponse = {
       data: {
         token: 'fakeToken',
