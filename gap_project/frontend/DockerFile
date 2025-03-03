@@ -16,6 +16,8 @@ ENV REACT_APP_BACKEND_URL=gordon-foley-backend.onrender.com/api
 ARG REACT_APP_FRONTEND_URL
 ENV REACT_APP_FRONTEND_URL=https://gordon-foley-frontend.onrender.com
 
+RUN npm install -g cross-env
+
 RUN npm run build || (echo "frontend build failed" && exit 1)
 
 # serve with NGINX
