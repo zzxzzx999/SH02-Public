@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import '../css/NavBar.css';
 import "../css/RegistedCompany.css";
-import NavBar from "./NavBar.js";
 import BarChart from "./charts/BarChart.js";
 import LineChart from "./charts/LineChart.js";
 import LineChartWithBackground from "./charts/LineChartWithBg.js";
+import NavBar from "./NavBar.js";
 import { pdfDownload } from "./PfPlan.js";
 
 function RegistedCompany() {
@@ -48,7 +48,8 @@ function RegistedCompany() {
     useEffect(() => {
         fetch(`http://localhost:8000/api/companies/?name=${encodeURIComponent(companyName)}`)
         .then(r => r.json())
-        .then(d => setCompanyNotes(d[0].notes));
+        .then(d => setCompanyNotes(d[0].notes))
+        .catch(error => console.error("Error fetching company notes:", error)); 
     }, [companyName]);
 
     // Fetch past analyses

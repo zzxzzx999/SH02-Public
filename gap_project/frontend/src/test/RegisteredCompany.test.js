@@ -46,6 +46,20 @@ describe('RegistedCompany Component', () => {
         categories: ['Category 1', 'Category 2'],
         values: [30, 40],
     };
+    const mockAnalysisData = {
+        "1": [3, 1, 4, 2, 4, 5, 2, 1, 2, 4],
+        "2": [3, 1, 1, 2, 4, 3, 1, 3, 5, 5],
+        "3": [1, 4, 3, 5, 3, 3, 4, 5, 1, 1],
+        "4": [4, 4, 5, 5, 1, 1, 2, 2, 2, 4],
+        "5": [4, 4, 1, 1, 4, 4, 3, 5, 4, 3],
+        "6": [1, 5, 1, 4, 5, 1, 1, 2, 1, 3],
+        "7": [2, 4, 2, 2, 4, 2, 2, 4, 1, 2],
+        "8": [2, 2, 2, 3, 5, 5, 2, 3, 3, 2],
+        "9": [4, 1, 2, 3, 5, 1, 1, 4, 5, 5],
+        "10": [3, 2, 1, 5, 3, 3, 1, 1, 5, 3],
+        "11": [5, 4, 2, 1, 1, 4, 4, 3, 4, 4],
+        "12": [1, 1, 3, 2, 2, 1, 3, 3, 5, 4]
+    };    
 
     beforeEach(() => {
         // Mock useLocation to return the expected search string
@@ -59,6 +73,12 @@ describe('RegistedCompany Component', () => {
 
         // Mock fetch for company notes
         global.fetch = jest.fn((url) => {
+            if (url.includes('/api/analysis/scores')) {
+                return Promise.resolve({
+                    json: () => Promise.resolve(mockAnalysisData),
+                });
+            }
+            
             if (url.includes('/api/companies/')) {
                 const urlObj = new URL(url, 'http://localhost');
                 const companyName = urlObj.searchParams.get('name')
@@ -155,11 +175,15 @@ describe('RegistedCompany Component', () => {
 
     test('handle fetch error', async () => {
         // Mock fetch to return an error
-        global.fetch = jest.fn(() => Promise.resolve().then(() => { throw new Error('Failed to fetch data'); }));
+        global.fetch = jest.fn(() => Promise.reject(new Error('Failed to fetch data')));
 
         // Spy on console.error
         const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-        render(<MemoryRouter><RegistedCompany /></MemoryRouter>);
+        render(
+            <MemoryRouter>
+                <RegistedCompany />
+            </MemoryRouter>
+        );
         await waitFor(() => {
             // Check if the error is logged
             expect(consoleErrorSpy).toHaveBeenCalledWith("Error fetching data:", expect.any(Error));
@@ -187,9 +211,10 @@ describe('RegistedCompany Component', () => {
             `/overall-output?company=${encodeURIComponent(mockCompanyName)}&gap_id=${encodeURIComponent(mockGapId)}`
         );
     });
-
+    
     test('call pdfDownload when download button click', async () => {
         const { pdfDownload } = require('../components/PfPlan.js');
+        console.log(pdfDownload);
         useLocation.mockReturnValue({
             search: `?company=${mockCompanyName}&gap_id=${mockGapId}`,
         });
@@ -200,10 +225,12 @@ describe('RegistedCompany Component', () => {
             </MemoryRouter>
         );
         await waitFor(() => {
-            // Click the download icon
-            fireEvent.click(screen.getByAltText('Download'));
+            expect(screen.getByAltText('Download')).toBeInTheDocument();
         });
+        fireEvent.click(screen.getByAltText('Download'));
         // Check if pdfDownload was called with the correct arguments
-        expect(pdfDownload).toHaveBeenCalledWith(mockGapId, `${mockCompanyName}-2023-01-01`);
+        await waitFor(() => {
+            expect(pdfDownload).toHaveBeenCalledWith(mockGapId, `${mockCompanyName}-2023-01-01`);
+        });
     });
 });
