@@ -37,8 +37,8 @@ describe('DetailScore Component', () => {
         jest.clearAllMocks();
         localStorage.clear();
     });
-
-    it('renders the component with correct company and element name', async () => {
+    //repeat code in some tests
+    const mockAxiosResponses = () => {
         axios.get.mockResolvedValueOnce({
             data: {
                 scores: {
@@ -53,13 +53,17 @@ describe('DetailScore Component', () => {
 
         axios.get.mockResolvedValueOnce({
             data: [
-                { label:'Exceptional Compliance', value:5},
-                { label:'Good Compliance', value:4},
-                { label:'Basic Compliance', value:3},
-                { label:'Needs Improvement', value:2},
-                { label:'Unsatisfactory', value:1},
+                { label: 'Exceptional Compliance', value: 5 },
+                { label: 'Good Compliance', value: 4 },
+                { label: 'Basic Compliance', value: 3 },
+                { label: 'Needs Improvement', value: 2 },
+                { label: 'Unsatisfactory', value: 1 },
             ],
         });
+    };
+
+    test('renders the component with correct company and element name', async () => {
+        mockAxiosResponses();
 
         render(
             <MemoryRouter>
@@ -73,7 +77,7 @@ describe('DetailScore Component', () => {
         });
     });
 
-    it('handles API errors', async () => {
+    test('handles API errors', async () => {
         // Mock the first axios.get call (fetching scores)
         axios.get.mockResolvedValueOnce({
             data: {
@@ -107,28 +111,8 @@ describe('DetailScore Component', () => {
         consoleErrorSpy.mockRestore();
     });
 
-    it('navigates to the next element on next button click', async () => {
-        axios.get.mockResolvedValueOnce({
-            data: {
-                scores: {
-                    exceptionalCompliance: 5,
-                    goodCompliance: 4,
-                    basicCompliance: 3,
-                    needsImprovement: 2,
-                    unsatisfactory: 1,
-                },
-            },
-        });
-
-        axios.get.mockResolvedValueOnce({
-            data: [
-                { label:'Exceptional Compliance', value:5},
-                { label:'Good Compliance', value:4},
-                { label:'Basic Compliance', value:3},
-                { label:'Needs Improvement', value:2},
-                { label:'Unsatisfactory', value:1},
-            ],
-        });
+    test('navigates to the next element on next button click', async () => {
+        mockAxiosResponses();
 
         render(
             <MemoryRouter>
@@ -143,28 +127,8 @@ describe('DetailScore Component', () => {
         });
     });
 
-    it('navigates to the previous element on previous button click', async () => {
-        axios.get.mockResolvedValueOnce({
-            data: {
-                scores: {
-                    exceptionalCompliance: 5,
-                    goodCompliance: 4,
-                    basicCompliance: 3,
-                    needsImprovement: 2,
-                    unsatisfactory: 1,
-                },
-            },
-        });
-
-    axios.get.mockResolvedValueOnce({
-        data: [
-            { label:'Exceptional Compliance', value:5},
-            { label:'Good Compliance', value:4},
-            { label:'Basic Compliance', value:3},
-            { label:'Needs Improvement', value:2},
-            { label:'Unsatisfactory', value:1},
-        ],
-    });
+    test('navigates to the previous element on previous button click', async () => {
+        mockAxiosResponses();
 
     // Render the component with the first element (Policy)
     render(
