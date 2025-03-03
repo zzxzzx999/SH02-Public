@@ -23,6 +23,15 @@ variables:
   # Define the feature branch pattern
   FEATURE_BRANCH_PATTERN: "^feature/issue-\\d+/.+"
 
+image: node:22.11
+
+cache:
+  key: shared-cache
+  paths:
+    - $FRONTEND_DIR/node_modules/
+   # - $BACKEND_DIR/.venv/
+  policy: pull-push
+
 lint-backend:
   stage: lint
   allow_failure: true
@@ -49,14 +58,18 @@ build-backend:
   stage: build
   image: python:3.12
   before_script:
+    # - python -m venv $BACKEND_DIR/.venv 
+    # - source $BACKEND_DIR/.venv/bin/activate
     - cd $BACKEND_DIR
     - pip install -r requirements.txt
   script:
+    - python manage.py makemigrations
     - python manage.py migrate
     - python manage.py collectstatic --noinput
   artifacts:
     paths:
       - $BACKEND_DIR/staticfiles/
+     # - $BACKEND_DIR/.venv 
 
 build-frontend:
   stage: build
@@ -66,9 +79,12 @@ build-frontend:
     - npm install
   script:
     - npm run build || echo "Build issues found"
+    - ls -la $FRONTEND_DIR/node_modules/
+    - ls -la $FRONTEND_DIR/build/
   artifacts:
     paths:
       - $FRONTEND_DIR/build/
+      - $FRONTEND_DIR/node_modules/
 
 test-backend:
   stage: test
@@ -101,41 +117,16 @@ test-frontend:
   #rules:
   #  - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
 
-# # Build the Docker image
-# build_image:
-#   stage: docker
-#   image: docker:latest
-#   services:
-#     - name: docker:dind
-#       alias: docker
-#       command: ["--tls=false"]
-#   variables:
-#     DOCKER_HOST: tcp://docker:2375/
-#     DOCKER_TLS_CERTDIR: ""
-#   script:
-#     - docker build -t $IMAGE_TAG .
-#     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-#     - docker tag $IMAGE_TAG $CI_REGISTRY_IMAGE:latest
-
-# # Push the Docker image to GitLab Container Registry
-# push_image:
-#   stage: docker
-#   image: docker:latest
-#   services:
-#     - docker:dind
-#   script:
-#     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-#     - docker push $IMAGE_TAG
-#     - docker push $CI_REGISTRY_IMAGE:latest
-
-#security:
-#  stage: security
-#  script:
-#    - pip install bandit safety
-#    - bandit -r .
-#    - safety check
-
-deploy:
+pages:
   stage: deploy
   script:
-    - echo "Deploy script here" # TODO: Add deployment script
+    - rm -rf public
+    - cp $FRONTEND_DIR/build/index.html $FRONTEND_DIR/build/404.html
+    - mv $FRONTEND_DIR/build/ public  # GitLab Pages requires output in "public" directory
+    - ls -la $FRONTEND_DIR/node_modules/
+  artifacts:
+    paths:
+      - public
+  only:
+    - main  # Deploy only when pushing to the main branch
+  pages: true
