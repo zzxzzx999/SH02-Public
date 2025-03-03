@@ -35,9 +35,8 @@ function ListofCompany(){
           .then((response) => {
             setCompanies(
                 response.data.map((company) => ({
-                    
                     name: company.name,
-                    score: 0,
+                    score: company.score || 0,
                     dateRegistered: company.dateRegistered,
                 }))
             );
@@ -53,8 +52,9 @@ function ListofCompany(){
             fetch(`http://localhost:8000/api/past_analyses/${encodeURIComponent(company.name)}`)
                 .then((response) => response.json())
                 .then((data) => {
-                    if (data.past_analyses.length > 0) {
-                        const latestAnalysis = data.past_analyses[0]; // Get the latest analysis
+                    const pastAnalyses = data?.past_analyses || []; //make sure data.past_analyses exist, otherwise be empty array
+                    if (pastAnalyses.length > 0) {
+                        const latestAnalysis = pastAnalyses[0]; // Get the latest analysis
                         setAnalyses((prevAnalyses) => ({
                             ...prevAnalyses,
                             [company.name]: latestAnalysis, // Store the latest analysis for this company
