@@ -36,7 +36,6 @@ describe('OverallOutput Component', () => {
     
     beforeAll(()=> {
         jest.spyOn(console,"error").mockImplementation(()=> {});
-
     });
 
     beforeEach(() => {
@@ -97,25 +96,22 @@ describe('OverallOutput Component', () => {
         });
     });
 
-    test('logs an error when API request fails', async () => {
-        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {}); // Mock console.error
-        axios.get.mockRejectedValueOnce(new Error('Failed to fetch data')); 
+    test('renders default values when API request fails', async () => {
+        axios.get.mockRejectedValueOnce(new Error('Failed to fetch data'));
+    
         render(
             <MemoryRouter initialEntries={['/overall-output?company=TestCompany&gap_id=123']}>
                 <OverallOutput />
             </MemoryRouter>
         );
+    
         await waitFor(() => {
-            if (!consoleErrorSpy.mock.calls.length) {
-                console.log('console.error has not been called yet');
-            }
-            // make sure console.error was called
-            expect(consoleErrorSpy).toHaveBeenCalledWith(
-                'Error fetching categories:',
-                expect.any(Error)
-            );
+            expect(screen.getByText(/Total Score:/i)).toBeInTheDocument();
+            expect(screen.getByText(/0\/600/i)).toBeInTheDocument();
+    
+            const percentageElements = screen.getAllByText(/0% of Total Score/i);
+            expect(percentageElements.length).toBe(3); // make sure 3 different parts all show 0%
         });
-        consoleErrorSpy.mockRestore(); 
     });
 
     test('does not fetch data when gapId is missing', async () => {

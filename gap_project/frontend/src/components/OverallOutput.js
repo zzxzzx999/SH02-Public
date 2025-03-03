@@ -83,7 +83,9 @@ useEffect(() => {
                   categories: data.categories,
                   values: data.values,
               });
-          })}
+          })
+          .catch(error => {console.error("Error fetching bar chart data:", error.message);});
+        }
       }, [searchParams]);
 
 // fetch data for line chart 
@@ -104,12 +106,17 @@ useEffect(() => {
   
 useEffect(() => {
   if(userRole === 'client'){
+    try{
     window.history.pushState(null, null, window.location.href);
     window.onpopstate = function () {
       window.history.go(1);
     };
+    } catch (error){
+    console.error("Error when trying to push state:", error);
+    }
   }
 }, [userRole]);
+
     return (
       // force refresh
       <div key={location.pathname} class="main-content" className="gap-intro"> 
