@@ -83,4 +83,12 @@ class ViewsAndUrlsTesting(TestCase):
         self.assertEqual(scores.get('basicCompliance'), 0)
         self.assertEqual(scores.get('needsImprovement'), 0)
         self.assertEqual(scores.get('unsatisfactory'), 0)
+
+    def testCompanyList(self):
+        url = '/api/companies/'
+        response = self.client.get(url, format ='json')
+        self.assertEqual(response.status_code, 200)
+        companies = response.data
+        self.assertTrue(any(company['name'] == 'Test500' for company in companies))
+        
         
