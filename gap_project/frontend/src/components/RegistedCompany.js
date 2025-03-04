@@ -46,14 +46,14 @@ function RegistedCompany() {
 
     // Fetch company notes
     useEffect(() => {
-        fetch(`http://localhost:8000/api/companies/?name=${encodeURIComponent(companyName)}`)
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/companies/?name=${encodeURIComponent(companyName)}`)
         .then(r => r.json())
         .then(d => setCompanyNotes(d[0].notes));
     }, [companyName]);
 
     // Fetch past analyses
     useEffect(() => {
-        fetch(`http://localhost:8000/api/past_analyses/${encodeURIComponent(companyName)}`)
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/past_analyses/${encodeURIComponent(companyName)}`)
             .then(response => response.json())
             .then(data => {
                 setAnalyses(data.past_analyses);
@@ -99,7 +99,7 @@ function RegistedCompany() {
         const currentGapId = searchParams.get("gap_id");
         if (currentGapId) {
             // Fetch bar chart data
-            fetch(`http://localhost:8000/api/analysis/${currentGapId}/bar-chart-data`)
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/analysis/${currentGapId}/bar-chart-data`)
                 .then(response => response.json())
                 .then(data => {
                     setBarData({
@@ -109,7 +109,7 @@ function RegistedCompany() {
                 })
                 .catch(error => console.error("Error fetching bar chart data:", error));
             // Fetch line chart data
-            fetch(`http://localhost:8000/api/analysis/${encodeURIComponent(companyName)}/total-score-over-time`)
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/analysis/${encodeURIComponent(companyName)}/total-score-over-time`)
                 .then(response => response.json())
                 .then(data => {
                     setLineData({
@@ -120,7 +120,7 @@ function RegistedCompany() {
                 .catch(error => console.error("Error fetching line chart data:", error));
 
             // Fetch line chart with background 
-            fetch(`http://localhost:8000/api/analysis/${currentGapId}/bar-chart-data`)
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/analysis/${currentGapId}/bar-chart-data`)
                 .then(response => response.json())
                 .then(data => {
                     setLineBgData({

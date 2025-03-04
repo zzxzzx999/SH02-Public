@@ -3,7 +3,7 @@ import React from "react";
 
 export async function pdfDownload(gapID, PDFTitle) {
     try {
-        const postResponse = await axios.post('http://localhost:8000/gap/pdfplan/', {
+        const postResponse = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/gap/pdfplan/`, {
             key1: 'BOOOOOOOOO',
             id: gapID,
         });
@@ -11,7 +11,7 @@ export async function pdfDownload(gapID, PDFTitle) {
         if (postResponse.status === 200) {
             console.log('POST request successful:', postResponse.data);
 
-            const pdfResponse = await axios.get('http://localhost:8000/gap/pdfplan/', {
+            const pdfResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/gap/pdfplan/`, {
                 responseType: 'blob',
             });
 

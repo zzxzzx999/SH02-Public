@@ -37,7 +37,7 @@ function OverallOutput() {
     useEffect(() => {
       if (!gapId) return;
 
-      axios.get(`http://localhost:8000/api/overall-scores/${gapId}/`)
+      axios.get(`${process.env.REACT_APP_BACKEND_URL}/overall-scores/${gapId}/`)
         .then((response) => {
           console.log( response.data);
           const { percentages, total_score } = response.data;
@@ -76,7 +76,7 @@ useEffect(() => {
   let currentGapId = searchParams.get("gap_id");
   if (currentGapId) {
       // Fetch bar chart data
-      fetch(`http://localhost:8000/api/analysis/${currentGapId}/bar-chart-data`)
+      fetch(`${process.env.REACT_APP_BACKEND_URL}/analysis/${currentGapId}/bar-chart-data`)
           .then(response => response.json())
           .then(data => {
               setBarData({
@@ -90,7 +90,7 @@ useEffect(() => {
 useEffect(() => {
   if (companyName) {
       // Fetch line chart data
-      fetch(`http://localhost:8000/api/analysis/${encodeURIComponent(companyName)}/total-score-over-time/`)
+      fetch(`${process.env.REACT_APP_BACKEND_URL}/analysis/${encodeURIComponent(companyName)}/total-score-over-time/`)
           .then(response => response.json())
           .then(data => {
               setLineData({

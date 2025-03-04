@@ -29,7 +29,7 @@ function ListofCompany(){
     const fetchCompanies = () => {
         const token = localStorage.getItem("authToken");
         axios
-          .get("http://localhost:8000/api/companies/", {
+          .get(`${process.env.REACT_APP_BACKEND_URL}/companies/`, {
             headers: { Authorization: `Token ${token}` },
           })
           .then((response) => {
@@ -50,7 +50,7 @@ function ListofCompany(){
      // Fetch the latest analysis for each company
      useEffect(() => {
         companies.forEach((company) => {
-            fetch(`http://localhost:8000/api/past_analyses/${encodeURIComponent(company.name)}`)
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/past_analyses/${encodeURIComponent(company.name)}`)
                 .then((response) => response.json())
                 .then((data) => {
                     if (data.past_analyses.length > 0) {
@@ -68,13 +68,13 @@ function ListofCompany(){
     // get the latest analysis score of each company
     useEffect(() => {
         // get company list
-        fetch("http://localhost:8000/api/companies")
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/companies`)
             .then((res) => res.json())
             .then((data) => {
                 setCompanies(data); 
                 // get total_score of latest analysis of each company 
                 data.forEach(company => {
-                    fetch(`http://localhost:8000/api/company-latest-total-score/${encodeURIComponent(company.name)}`)
+                    fetch(`${process.env.REACT_APP_BACKEND_URL}/company-latest-total-score/${encodeURIComponent(company.name)}`)
                         .then((res) => res.json())
                         .then((scoreData) => {
                             setScores(prevScores => ({
@@ -153,7 +153,7 @@ function ListofCompany(){
     const confirmDelete = () => {
             const token = localStorage.getItem("authToken"); 
             axios
-                .delete(`http://localhost:8000/api/companies/${deleteTarget.name}/delete/`, {
+                .delete(`${process.env.REACT_APP_BACKEND_URL}/companies/${deleteTarget.name}/delete/`, {
                     headers: { Authorization: `Token ${token}` },
                 })
                 .then(() => {

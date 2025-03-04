@@ -29,7 +29,7 @@ function NewCompany() {
       };
 
       try { 
-          await axios.post("http://localhost:8000/api/companies/", payload, {
+          await axios.post(`${process.env.REACT_APP_BACKEND_URL}/companies/`, payload, {
               headers: { 
                   Authorization: `Token ${token}`,
               },
