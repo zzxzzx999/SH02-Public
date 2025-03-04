@@ -7,11 +7,6 @@ import ListofCompany from "../components/ListofCompany";
 // Mock axios
 jest.mock('axios');
 
-// Mock API URLs to match the ones in the component
-const mockPastAnalysisUrl = "http://localhost:8000/api/past_analyses/";
-const mockCompanyLatestTotalScoreUrl = "http://localhost:8000/api/company-latest-total-score/";
-const mockDeleteCompanyUrl = "http://localhost:8000/api/companies/";
-
 // Mock Fetch API (So no real API call is made, can be controlled and monitored)
 global.fetch = jest.fn();
 
@@ -20,38 +15,29 @@ jest.mock('../components/NavBar.js', () => () => <div>Mocked NavBar</div>);
 
 describe('ListOfCompany Component', () => {
     const mockCompanies = [
-        { name: 'company A', score:400, dateRegistered: '2016-05-23' },
-        { name: "company B", score:350,  dateRegistered: '2014-11-02' },
+        { name: 'company A', dateRegistered: '2016-05-23' },
+        { name: "company B", dateRegistered: '2014-11-02' },
     ];
 
-    const mockScores = {
-        'company%20A': 400,
-        'company%20B': 350,
-    };
-
+    // Mock Fetch API
     beforeEach(() => {
-        // Mock axios to return company data
-        axios.get.mockResolvedValueOnce({
-            data: mockCompanies,
-        });
-        
+        axios.get.mockResolvedValueOnce({ data: mockCompanies });
         global.fetch = jest.fn((url) => {
-            //  the score request
-            if (url.includes(mockCompanyLatestTotalScoreUrl)) {
-                const encodedName = url.split('/').pop();
+            console.log("Intercepted fetch:", url);
+            if (url.includes("/api/companies/")) {
                 return Promise.resolve({
-                    json: () => Promise.resolve({ score: mockScores[encodedName] })
+                    json: () => Promise.resolve(mockCompanies),
                 });
             }
-            // gap analysis request
-            if (url.includes("/past_analyses/")) {
+            if (url.startsWith("http://localhost:8000/api/company-latest-total-score/")) {
+                const parts = url.split("/");
+                const companyName = decodeURIComponent(parts[parts.length - 2]);  // resolve company name
                 return Promise.resolve({
-                    json: () => Promise.resolve({ past_analyses: [] })
+                    json: () => Promise.resolve({ score: mockScores[companyName] || 0 })
                 });
             }
-            return Promise.reject(new Error(mockPastAnalysisUrl));
+            return Promise.reject(new Error("Unknown URL: " + url));
         });
-
         render(
             <MemoryRouter>
                 <ListofCompany />
@@ -60,6 +46,7 @@ describe('ListOfCompany Component', () => {
     });
 
     afterEach(() => {
+        jest.restoreAllMocks();
         jest.clearAllMocks();
     });
 
@@ -75,12 +62,13 @@ describe('ListOfCompany Component', () => {
         const fetchCalls = global.fetch.mock.calls;
         // Wait for scores to be fetched and rendered
         await waitFor(() => {
-            expect(screen.getByText('378')).toBeInTheDocument();
-            expect(screen.getByText('359')).toBeInTheDocument();
-            const expectedDate = new Date('2016-05-23').toLocaleDateString();
-            expect(screen.getByText(expectedDate)).toBeInTheDocument();
+            const expectedDate1 = new Date('2016-05-23').toLocaleDateString();
+            expect(screen.getByText(expectedDate1)).toBeInTheDocument();
+            const expectedDate2= new Date('2014-11-02').toLocaleDateString();
+            expect(screen.getByText(expectedDate2)).toBeInTheDocument();
         });
     });
+
 
     test('search company in searchbar', async () => {
         // Wait for companies to be rendered

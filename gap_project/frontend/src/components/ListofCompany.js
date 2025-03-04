@@ -24,7 +24,6 @@ function ListofCompany(){
     const [, setGapId] = useState(null);
     const [analyses, setAnalyses] = useState([])
     
-    
     //backendlink
     const fetchCompanies = () => {
         const token = localStorage.getItem("authToken");
@@ -45,25 +44,6 @@ function ListofCompany(){
       };
     
     useEffect(fetchCompanies, []);
-
-     // Fetch the latest analysis for each company
-     useEffect(() => {
-        companies.forEach((company) => {
-            fetch(`http://localhost:8000/api/past_analyses/${encodeURIComponent(company.name)}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    const pastAnalyses = data?.past_analyses || []; //make sure data.past_analyses exist, otherwise be empty array
-                    if (pastAnalyses.length > 0) {
-                        const latestAnalysis = pastAnalyses[0]; // Get the latest analysis
-                        setAnalyses((prevAnalyses) => ({
-                            ...prevAnalyses,
-                            [company.name]: latestAnalysis, // Store the latest analysis for this company
-                        }));
-                    }
-                })
-                .catch((error) => console.error("Error fetching analysis:", error));
-        });
-    }, [companies]);
     
     // get the latest analysis score of each company
     useEffect(() => {
@@ -73,21 +53,27 @@ function ListofCompany(){
             .then((data) => {
                 setCompanies(data); 
                 // get total_score of latest analysis of each company 
-                data.forEach(company => {
-                    fetch(`http://localhost:8000/api/company-latest-total-score/${encodeURIComponent(company.name)}`)
-                        .then((res) => res.json())
-                        .then((scoreData) => {
-                            setScores(prevScores => ({
-                                ...prevScores,
-                                [company.name]: scoreData.score || 0
-                            }));
-                        })
-                        .catch(error => console.error("Error fetching score:", error));
-                });
+                return Promise.all(
+                    data.map(company => 
+                        fetch(`http://localhost:8000/api/company-latest-total-score/${encodeURIComponent(company.name)}`)
+                            .then(res => res.json())
+                            .then(scoreData => ({
+                                name: company.name,
+                                score: scoreData.score || 0
+                            }))
+                    )
+                );
             })
-            .catch(error => console.error("Error fetching companies:", error));
+            .then(scoresArray => {
+                const updatedScores = {};
+                scoresArray.forEach(({ name, score }) => {
+                    updatedScores[name] = score;
+                });
+                setScores(updatedScores);
+            })
+            .catch(error => console.error("Error fetching companies or scores:", error));
     }, []);
-    
+
     //filter bar
     const filteredCompanies = companies.map((company) => ({
         ...company,
@@ -126,7 +112,6 @@ function ListofCompany(){
             }))
         );
     }, [scores]);
-
 
     useEffect(() => {
         const currentGapId = searchParams.get("gap_id");
@@ -167,7 +152,6 @@ function ListofCompany(){
                     alert("Failed to delete the company. Please try again.");
             });} 
             
-    
     const cancelDelete = () => {
         setShowPopup(false);  
         setDeleteTarget(null);
@@ -282,8 +266,6 @@ function ListofCompany(){
                         )}
             </div>
             </div>
-     
-    
     );
 }
 
