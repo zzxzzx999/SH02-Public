@@ -146,9 +146,14 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
+    'https://gordon-foley-frontend.onrender.com',
 )
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ORIGINS = [
+    "https://gordon-foley-frontend.onrender.com",
+    "http://localhost:3000"
+
+]
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES':[ 'rest_framework.permissions.AllowAny']
