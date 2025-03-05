@@ -191,7 +191,13 @@ function RegistedCompany() {
                     <img
                         src="/download.png" 
                         alt="Download"
-                        onClick={() => pdfDownload(gapId, PDFTitle)}
+                        onClick={() => {
+                            if (gapId && PDFTitle) {
+                                pdfDownload(gapId, PDFTitle);
+                            } else {
+                                console.error("Cannot download PDF: Missing gapId or PDFTitle");
+                            }
+                        }}
                         className="download-icon"
                     />
                 </div>
