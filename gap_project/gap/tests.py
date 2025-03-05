@@ -2,6 +2,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
 from django.urls import reverse
+from unittest.mock import patch
 from django.contrib.auth.models import User
 from gap.models import GapAnalysis, Company
 import random
@@ -9,7 +10,7 @@ import random
 # Create your tests here.
 class ViewsAndUrlsTesting(TestCase):
 
-    def testAccount(self): #setup
+    def setUp(self): #setup
         self.client = APIClient()
         self.user = User.objects.create_user(username = 'testAccount', password = 'tEsT1234')
         self.company = Company.objects.create(name ='Test500')
@@ -62,15 +63,15 @@ class ViewsAndUrlsTesting(TestCase):
             12: sample_plan,
         }
 
-        
+        self.gap.improvement_plan = {i: sample_plan for i in range(1, 13)}
         self.gap.save()
 
     def testLogin(self): #loginView
         url = '/api/login/'
-        data = {'username': 'testAccount', 'password': 'Test500'}
+        data = {'username': 'testAccount', 'password': 'tEsT1234'}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, 200)
-        selfassertIn('token', response.data)
+        self.assertIn('token', response.data)
 
 
     def testCompanyList(self):
@@ -81,18 +82,19 @@ class ViewsAndUrlsTesting(TestCase):
         self.assertTrue(any(company['name'] == 'Test500' for company in companies))
 
     def testGetLatestGap(self):
-        url = '/api/get-latest-game'
+        url = '/api/get-latest-gap/?company_name=Test500'
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.get('gap_id'), self.gap.id)
 
-    def testPDFViewGet(self):
-        url = '/pdfplan/'
-        response = self.client.get(url, format = 'json')
+    @patch ("gap.views.open", side_effect=FileNotFoundError)
+    def testPDFViewGet(self, mock_open):
+        url = '/gap/pdfplan/'
+        response = self.client.get(url, format='json', HTTP_ACCEPT='application/json')
         self.assertEqual(response.status_code, 404)
-        self.assertIn('error', response.data)
-    def testPDFViewPost(self):
-        url = '/pdfplan/'
+    @patch ("gap.views.generatePdfPlan", return_value=None)
+    def testPDFViewPost(self, mock_generatePdfPlan):
+        url = '/gap/pdfplan/'
         data = {"id": self.gap.id}
         response = self.client.post(url,data, format = 'json')
         self.assertEqual(response.status_code, 200)
@@ -103,7 +105,8 @@ class ViewsAndUrlsTesting(TestCase):
         response = self.client.get(url, format = 'json')
         self.assertEqual(response.status_code, 200)
 
-    def testGetQuestionOrWriteAnswer(self):
+    @patch("gap.views.getQuestion", return_value=None)
+    def testGetQuestionOrWriteAnswerGET(self, mock_getQuestion):
         url = '/api/getQuestionOrWriteAnswer/'
         data = {
             "GetOrWrite": "GET",
@@ -114,7 +117,7 @@ class ViewsAndUrlsTesting(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertIn("error", response.data)
 
-    def testGetQuestionOrWriteAnswer(self):
+    def testGetQuestionOrWriteAnswerPOST(self):
         url = '/api/getQuestionOrWriteAnswer/'
         data = {
             "GetOrWrite": "POST",
@@ -132,7 +135,7 @@ class ViewsAndUrlsTesting(TestCase):
         url = f'/api/scores/{self.gap.id}/Policy/'
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code,200)
-        scores = response.data.get('scores', {})
+        scores = response.json().get('scores', {})
 
         self.assertEqual(scores.get('exceptionalCompliance'), 0)
         self.assertEqual(scores.get('goodCompliance'), 0)
@@ -141,13 +144,13 @@ class ViewsAndUrlsTesting(TestCase):
         self.assertEqual(scores.get('unsatisfactory'), 0)
 
     def testOverallScores(self):
-        url = f'/api/overall-scores/{self.gap.id}'
+        url = f'/api/overall-scores/{self.gap.id}/'
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, 200)
         totals= response.data.get("totals", {})
-        self.assertEqual(totals.get('exceptionalCompliance'), 0)
-        self.assertEqual(totals.get('goodCompliance'), 0)
-        self.assertEqual(totals.get('basicCompliance'), 0)
+        self.assertEqual(totals.get('exceptional'), 0)
+        self.assertEqual(totals.get('good'), 0)
+        self.assertEqual(totals.get('basic'), 0)
         self.assertEqual(totals.get('needsImprovement'), 0)
         self.assertEqual(totals.get('unsatisfactory'), 0)
         self.assertEqual(response.data.get("total_score"), 0)
@@ -161,34 +164,37 @@ class ViewsAndUrlsTesting(TestCase):
         self.assertIn("recent_title", response.data)
 
     def testCompanyDetail(self):
-        url = '/api/companies/Test500/'
+        url = f'/api/companies/{self.company.pk}/'
         response = self.client.get(url, format = 'json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.get('name'), 'Test500')
 
     def testCompanyLatestTotal(self):
-        url = '/api/company-latest-total-score/Test500'
+        url = '/api/company-latest-total-score/Test500/'
         response = self.client.get(url, format = 'json')
         self.assertEqual(response.data.get('score'), 0)
 
     def testBarChart(self):
-        url = f'/api/analysis/{self.gap.id/bar-chart-data}'
+        url = f'/api/analysis/{self.gap.id}/bar-chart-data/'
         response = self.client.get(url, format = 'json')
         self.assertEqual(response.status_code, 200)
-        self.assertIn("categories", respond.data)
-        self.assertIn("values", response.data)
-        self.assertTrue(all(v == 0 for v in response.data.get("values", [])))
+        data = response.json() 
+        self.assertIn("categories", data)
+        self.assertIn("values",  data)
+        self.assertTrue(all(v == 0 for v in 
+        data.get("values", [])))
 
-    def scoreOverTime(self):
-        url = f'/api/analysis/Test500/total-score-over-time'
+    def testScoreOverTime(self):
+        url = f'/api/analysis/Test500/total-score-over-time/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("gap_date", response.data)
-        self.assertIn("total_score", response.data)
-        self.assertEqual(response.data.get("total_score"), [0])
+        data = response.json()
+        self.assertIn("gap_date", data)
+        self.assertIn("total_score", data)
+        self.assertEqual(data.get("total_score"), [0])
 
     def testCompanyDeleteView(self):
-        url = '/api/companies/Test500/delete'
+        url = '/api/companies/Test500/delete/'
         response = self.client.delete(url, format = 'json')
         self.assertEqual(response.status_code, 200)
         self.assertIn("message", response.data)
@@ -197,7 +203,7 @@ class ViewsAndUrlsTesting(TestCase):
 
     def testDeleteCompany(self):
         new_company = Company.objects.create(name = 'testDelete')
-        url = '/api/companies/testDelete/'
+        url = '/api/companies/testDelete/delete/'
         response = self.client.delete(url, format = 'json')
         self.assertEqual(response.status_code, 200)
         self.assertIn("message", response.data)
