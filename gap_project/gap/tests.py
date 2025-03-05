@@ -90,5 +90,27 @@ class ViewsAndUrlsTesting(TestCase):
         self.assertEqual(response.status_code, 200)
         companies = response.data
         self.assertTrue(any(company['name'] == 'Test500' for company in companies))
-        
+
+    def testGetLatestGap(self):
+        url = '/api/get-latest-game'
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data.get('gap_id'), self.gap.id)
+
+    def testPDFViewGet(self):
+        url = '/pdfplan/'
+        response = self.client.get(url, format = 'json')
+        self.assertEqual(response.status_code, 404)
+        self.assertIn('error', response.data)
+    def testPDFViewPost(self):
+        url = '/pdfplan/'
+        data = {"id": self.gap.id}
+        response = self.client.post(url,data, format = 'json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data.get('pdf'), 'TestingGap.pdf')
+
+    
+
+    
+
         
