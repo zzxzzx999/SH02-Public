@@ -72,17 +72,6 @@ class ViewsAndUrlsTesting(TestCase):
         self.assertEqual(response.status_code, 200)
         selfassertIn('token', response.data)
 
-    def testScores(self):
-        url = f'/api/scores/{self.gap.id}/Policy/'
-        response = self.client.get(url, format='json')
-        self.assertEqual(response.status_code,200)
-        scores = response.data.get('scores', {})
-
-        self.assertEqual(scores.get('exceptionalCompliance'), 0)
-        self.assertEqual(scores.get('goodCompliance'), 0)
-        self.assertEqual(scores.get('basicCompliance'), 0)
-        self.assertEqual(scores.get('needsImprovement'), 0)
-        self.assertEqual(scores.get('unsatisfactory'), 0)
 
     def testCompanyList(self):
         url = '/api/companies/'
@@ -109,8 +98,46 @@ class ViewsAndUrlsTesting(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.get('pdf'), 'TestingGap.pdf')
 
-    
+    def testGetIncompleteAnswers(self):
+        url = f'/api/get_incomplete_answers/?gap_id={self.gap.id}'
+        response = self.client.get(url, format = 'json')
+        self.assertEqual(response.status_code, 200)
 
+    def testGetQuestionOrWriteAnswer(self):
+        url = '/api/getQuestionOrWriteAnswer/'
+        data = {
+            "GetOrWrite": "GET",
+            "Set":1,
+            "Number":1
+        }
+        response = self.client.post( url, data, format = 'json')
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("error", response.data)
+
+    
+    def testScores(self):
+        url = f'/api/scores/{self.gap.id}/Policy/'
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code,200)
+        scores = response.data.get('scores', {})
+
+        self.assertEqual(scores.get('exceptionalCompliance'), 0)
+        self.assertEqual(scores.get('goodCompliance'), 0)
+        self.assertEqual(scores.get('basicCompliance'), 0)
+        self.assertEqual(scores.get('needsImprovement'), 0)
+        self.assertEqual(scores.get('unsatisfactory'), 0)
+
+    def testOverallScores(self):
+        url = f'/api/overall-scores/{self.gap.id}'
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, 200)
+        totals= response.data.get("totals", {})
+        self.assertEqual(totals.get('exceptionalCompliance'), 0)
+        self.assertEqual(totals.get('goodCompliance'), 0)
+        self.assertEqual(totals.get('basicCompliance'), 0)
+        self.assertEqual(totals.get('needsImprovement'), 0)
+        self.assertEqual(totals.get('unsatisfactory'), 0)
+        self.assertEqual(response.data.get("total_score"), 0)
     
 
         
