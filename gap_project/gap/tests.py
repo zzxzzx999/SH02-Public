@@ -114,6 +114,19 @@ class ViewsAndUrlsTesting(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertIn("error", response.data)
 
+    def testGetQuestionOrWriteAnswer(self):
+        url = '/api/getQuestionOrWriteAnswer/'
+        data = {
+            "GetOrWrite": "POST",
+            "finished": True,
+            "company_name": "Test500",
+            "id": self.gap.id,
+            "answers": {"1": [1, 2, 3]},
+            "improvementPlan": {"1": ["answer"]}
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, 201)
+
     
     def testScores(self):
         url = f'/api/scores/{self.gap.id}/Policy/'
@@ -139,5 +152,56 @@ class ViewsAndUrlsTesting(TestCase):
         self.assertEqual(totals.get('unsatisfactory'), 0)
         self.assertEqual(response.data.get("total_score"), 0)
     
+    def testGetPastAnalyses(self):
+        url = '/api/past_analyses/Test500/'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data.get("company_name"), "Test500")
+        self.assertIn("past_analyses", response.data)
+        self.assertIn("recent_title", response.data)
+
+    def testCompanyDetail(self):
+        url = '/api/companies/Test500/'
+        response = self.client.get(url, format = 'json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data.get('name'), 'Test500')
+
+    def testCompanyLatestTotal(self):
+        url = '/api/company-latest-total-score/Test500'
+        response = self.client.get(url, format = 'json')
+        self.assertEqual(response.data.get('score'), 0)
+
+    def testBarChart(self):
+        url = f'/api/analysis/{self.gap.id/bar-chart-data}'
+        response = self.client.get(url, format = 'json')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("categories", respond.data)
+        self.assertIn("values", response.data)
+        self.assertTrue(all(v == 0 for v in response.data.get("values", [])))
+
+    def scoreOverTime(self):
+        url = f'/api/analysis/Test500/total-score-over-time'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("gap_date", response.data)
+        self.assertIn("total_score", response.data)
+        self.assertEqual(response.data.get("total_score"), [0])
+
+    def testCompanyDeleteView(self):
+        url = '/api/companies/Test500/delete'
+        response = self.client.delete(url, format = 'json')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("message", response.data)
+        with self.assertRaises(Company.DoesNotExist):
+            Company.objects.get(name='TestDelete')
+
+    def testDeleteCompany(self):
+        new_company = Company.objects.create(name = 'testDelete')
+        url = '/api/companies/testDelete/'
+        response = self.client.delete(url, format = 'json')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("message", response.data)
+        with self.assertRaises(Company.DoesNotExist):
+            Company.objects.get(name='testDelete')
 
         
