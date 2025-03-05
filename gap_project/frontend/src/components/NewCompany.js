@@ -21,12 +21,12 @@ function NewCompany() {
 
   const handleSubmit = async (event) => { 
     event.preventDefault();
-      const token = localStorage.getItem("authToken");
+        const token = localStorage.getItem("authToken");
 
-      const payload = {
+        const payload = {
             name: companyName,
             notes: additionalNotes || "",
-      };
+        };
 
     try { 
         await axios.post("http://localhost:8000/api/companies/", payload, {
