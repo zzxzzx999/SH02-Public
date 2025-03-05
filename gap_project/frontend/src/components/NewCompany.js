@@ -24,28 +24,26 @@ function NewCompany() {
       const token = localStorage.getItem("authToken");
 
       const payload = {
-          name: companyName,
-          notes: additionalNotes || "",
+            name: companyName,
+            notes: additionalNotes || "",
       };
 
-      try { 
-          await axios.post("http://localhost:8000/api/companies/", payload, {
-              headers: { 
-                  Authorization: `Token ${token}`,
-              },
-          });
-          setCompanyName("");
-          setAdditionalNotes("");
-          if(userRole === "admin"){
+    try { 
+        await axios.post("http://localhost:8000/api/companies/", payload, {
+            headers: { 
+                Authorization: `Token ${token}`,
+            },
+        });
+        setCompanyName("");
+        setAdditionalNotes("");
+        if(userRole === "admin"){
             navigate("/list-of-companies");
-            
-          }else{
+        }else{
             navigate(`/new-gap-confirm?company=${encodeURIComponent(companyName)}`);
-            
-          }
-      } catch (error) {
-          console.error("Error : ", error.response || error.message);
-      }
+        }
+    } catch (error) {
+        console.error("Error : ", error.response || error.message);
+    }
   };
   return (
     <div className="create-new-company">
@@ -53,8 +51,6 @@ function NewCompany() {
         <div className="bubble-container" style = {{width:'500px', padding:'30px'}}>
         <h2 style={{fontSize:'24px'}}> CREATE NEW COMPANY </h2>
             <form className="form" onSubmit={handleSubmit}>
-                {/* company name */}
-
                 <label htmlFor="company-name"></label>
                     <input
                         type="text"
@@ -64,21 +60,17 @@ function NewCompany() {
                         placeholder = "Company Name"
                         required
                     />
-
-
-                {/* Additional comments */}
-            <label> 
-                <textarea
-                    id="add_comments"
-                    style={{width:'350px'}}
-                    type="text" 
-                    value={additionalNotes}
-                    onChange={(e) => setAdditionalNotes(e.target.value)}
-                    placeholder = "Additional Notes"
-                />
-            </label>
+                <label> 
+                    <textarea
+                        id="add_comments"
+                        style={{width:'350px'}}
+                        type="text" 
+                        value={additionalNotes}
+                        onChange={(e) => setAdditionalNotes(e.target.value)}
+                        placeholder = "Additional Notes"
+                    />
+                </label>
             <input className = "submitButton" type="submit" value= {userRole === "admin" ? "Create New Company" : "Create New GAP"}/>
-
         </form>
         </div>
     </div>
