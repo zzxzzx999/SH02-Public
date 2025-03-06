@@ -41,5 +41,8 @@ def getElementHeading(element):
 def getAllAnswersSingleGap(element, question, gapAnalysis):
     return gapAnalysis.gap_data
 
-def pdfFormatElement(gap, element):
-    return gap.improvement_plan[str(element)]
+def getEvidence(gap, element):
+    return gap.improvement_plan['evidence'][str(element)]
+
+def getImprovement(gap, element):
+    return gap.improvement_plan['improvement'][str(element)]

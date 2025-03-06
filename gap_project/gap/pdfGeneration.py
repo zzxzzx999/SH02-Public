@@ -17,10 +17,12 @@ class BinaryFileRenderer(BaseRenderer):
         return data
 
 
-def createElementTable(issues, improvements, element, scores):
+def createElementTable(gap, element, scores):
+    evidence = getEvidence(gap, element)
+    improvements = getImprovement(gap, element)
     # Generate table data with numbering
-    table_data = [["#", "Issue", "Improvement", "Score"]]  # Table headers
-    for i, (issue, improvement, score) in enumerate(zip(issues, improvements, scores), start=1):
+    table_data = [["#", "Evidence", "Improvement", "Score"]]  # Table headers
+    for i, (issue, improvement, score) in enumerate(zip(evidence, improvements, scores), start=1):
         # use Paragraph() to allow wrapping of text
         issue_paragraph = Paragraph(issue)
         improvement_paragraph = Paragraph(improvement)
@@ -43,7 +45,7 @@ def generatePdfPlan(gap):
     elements = []
     
     score_colors = {
-        0: "FF0000",
+        0: "#FF0000",
         1: "#FF0B0B",
         2: "#FFC546",  
         3: "#7CCC8B",  
@@ -73,7 +75,7 @@ def generatePdfPlan(gap):
 
     for i in range(1, 13):
         scores = getElementAnswers(i, gap)
-        table, title = createElementTable(gap.improvement_plan[str(i)], pdfFormatElement(gap, i), i, scores)
+        table, title = createElementTable(gap, i, scores)
 
         # Style the table
         style = TableStyle([
@@ -89,7 +91,9 @@ def generatePdfPlan(gap):
 
         # Add color styling for the "Score" column
         for row_num, score in enumerate(scores, start=1):
-            hex_color = score_colors.get(score, "#FFFFFF")  # Default to white if no color found
+            print(score)
+            hex_color = score_colors.get(score, "#FFFFFF")
+            print(hex_color) # Default to white if no color found
             style.add('BACKGROUND', (3, row_num), (3, row_num), HexColor(hex_color))
 
         table.setStyle(style)

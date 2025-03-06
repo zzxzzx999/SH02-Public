@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import '../css/NavBar.css';
 import "../css/RegistedCompany.css";
-import NavBar from "./NavBar.js";
 import BarChart from "./charts/BarChart.js";
 import LineChart from "./charts/LineChart.js";
 import LineChartWithBackground from "./charts/LineChartWithBg.js";
+import NavBar from "./NavBar.js";
 import { pdfDownload } from "./PfPlan.js";
 
 function RegistedCompany() {
@@ -48,7 +48,8 @@ function RegistedCompany() {
     useEffect(() => {
         fetch(`${process.env.REACT_APP_BACKEND_URL}/companies/?name=${encodeURIComponent(companyName)}`)
         .then(r => r.json())
-        .then(d => setCompanyNotes(d[0].notes));
+        .then(d => setCompanyNotes(d[0].notes))
+        .catch(error => console.error("Error fetching company notes:", error)); 
     }, [companyName]);
 
     // Fetch past analyses
@@ -190,7 +191,13 @@ function RegistedCompany() {
                     <img
                         src="/download.png" 
                         alt="Download"
-                        onClick={() => pdfDownload(gapId, PDFTitle)}
+                        onClick={() => {
+                            if (gapId && PDFTitle) {
+                                pdfDownload(gapId, PDFTitle);
+                            } else {
+                                console.error("Cannot download PDF: Missing gapId or PDFTitle");
+                            }
+                        }}
                         className="download-icon"
                     />
                 </div>
