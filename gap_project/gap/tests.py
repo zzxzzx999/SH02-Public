@@ -184,6 +184,16 @@ class ViewsAndUrlsTesting(TestCase):
         self.assertTrue(all(v == 0 for v in 
         data.get("values", [])))
 
+    def testPieChart(self):
+        url = f'/api/element-scores/{self.gap.id}/Policy/'
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, 200)
+
+        for item in response.data:
+            self.assertIn("name", item)
+            self.assertIn("value", item)
+            self.assertEqual(item["value"], 0)
+
     def testScoreOverTime(self):
         url = f'/api/analysis/Test500/total-score-over-time/'
         response = self.client.get(url)
