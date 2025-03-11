@@ -151,9 +151,12 @@ function ListofCompany(){
         };}
 
     const confirmDelete = () => {
+            const companyDelete = encodeURIComponent(deleteTarget.name)
+            console.log(companyDelete);
+            console.log(deleteTarget);
             const token = localStorage.getItem("authToken"); 
             axios
-                .delete(`${process.env.REACT_APP_BACKEND_URL}/companies/${deleteTarget.name}/delete/`, {
+                .delete(`${process.env.REACT_APP_BACKEND_URL}/companies/${encodeURIComponent(deleteTarget.name)}/delete/`, {
                     headers: { Authorization: `Token ${token}` },
                 })
                 .then(() => {
