@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
 import * as echarts from 'echarts';
+import React, { useEffect, useRef } from 'react';
 
 // For Potential Score Comparison in "Registered Company" Page
 

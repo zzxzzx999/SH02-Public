@@ -8,114 +8,113 @@ import BarChart from "./charts/BarPotential.js";
 import LineChart from "./charts/LinePotential.js";
 
 function OverallOutput() {
-    // store total score
-    const [totalScore, setTotalScore] = useState(0);
-    const [percentages, setPercentages] = useState({
-      basic: 0,
-      needsImprovement: 0,
-      unsatisfactory: 0,
-    });
-    const location = useLocation();
-    const params = new URLSearchParams(location.search);
-    const companyName = params.get('company');
-    const gapId = params.get('gap_id')
-    const [searchParams] = useSearchParams();
-    const userRole = localStorage.getItem("userRole");
+  // store total score
+  const [totalScore, setTotalScore] = useState(0);
+  const [percentages, setPercentages] = useState({
+    basic: 0,
+    needsImprovement: 0,
+    unsatisfactory: 0,
+  });
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const companyName = params.get('company');
+  const gapId = params.get('gap_id')
+  const [searchParams] = useSearchParams();
+  const userRole = localStorage.getItem("userRole");
 
-    const [lineData, setLineData] = useState({
-      categories: [],
-      values: [],
+  const [lineData, setLineData] = useState({
+    categories: [],
+    values: [],
   });
 
   const [barData, setBarData] = useState({
     categories: [],
     values: [],
-});
-  
+  });
 
-    // cal total score
-    useEffect(() => {
-      if (!gapId) return;
+  // cal total score
+  useEffect(() => {
+    if (!gapId) return;
 
-      axios.get(`http://localhost:8000/api/overall-scores/${gapId}/`)
-        .then((response) => {
-          console.log( response.data);
-          const { percentages, total_score } = response.data;
-          setTotalScore(total_score)
-          setPercentages(percentages)
-        })
+    axios.get(`http://localhost:8000/api/overall-scores/${gapId}/`)
+      .then((response) => {
+        console.log( response.data);
+        const { percentages, total_score } = response.data;
+        setTotalScore(total_score)
+        setPercentages(percentages)
+      })
     
-        .catch((error) => {
-          console.error("Error fetching categories:", error);
-        });
+      .catch((error) => {
+        console.error("Error fetching categories:", error);
+      });
 }, [companyName,gapId]);
 
-const commonLinks = [
-  { name: 'Policy', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Policy')}` },
-  { name: 'Management', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Management')}` },
-  { name: 'Documented System', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Documented System')}` },
-  { name: 'Meetings', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Meetings')}` },
-  { name: 'Performance Measurement', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Performance Measurement')}` },
-  { name: 'Committee & Representatives', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Committee & Representatives')}` },
-  { name: 'Investigation Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Investigation Process')}` },
-  { name: 'Incident Reporting', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Incident Reporting')}` },
-  { name: 'Training Plan', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Training Plan')}` },
-  { name: 'Risk Management Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Risk Management Process')}` },
-  { name: 'Audit & Inspection Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Audit & Inspection Process')}` },
-  { name: 'Improvement Planning', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Improvement Planning')}` },
-];
-const linksForPage3 = [
-  userRole === 'admin'
-    ? { name: 'Registered Company', path: `/registed-company?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}`, image: '/back-button.png' }
-    : { name: 'Home Page', path: `/home`, image: '/back-button.png' },
-  ...commonLinks
-];
+  const commonLinks = [
+    { name: 'Policy', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Policy')}` },
+    { name: 'Management', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Management')}` },
+    { name: 'Documented System', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Documented System')}` },
+    { name: 'Meetings', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Meetings')}` },
+    { name: 'Performance Measurement', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Performance Measurement')}` },
+    { name: 'Committee & Representatives', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Committee & Representatives')}` },
+    { name: 'Investigation Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Investigation Process')}` },
+    { name: 'Incident Reporting', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Incident Reporting')}` },
+    { name: 'Training Plan', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Training Plan')}` },
+    { name: 'Risk Management Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Risk Management Process')}` },
+    { name: 'Audit & Inspection Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Audit & Inspection Process')}` },
+    { name: 'Improvement Planning', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Improvement Planning')}` },
+  ];
+  const linksForPage3 = [
+    userRole === 'admin'
+      ? { name: 'Registered Company', path: `/registed-company?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}`, image: '/back-button.png' }
+      : { name: 'Home Page', path: `/home`, image: '/back-button.png' },
+    ...commonLinks
+  ];
 
-// fetch data for bar chart 
-useEffect(() => {
-  let currentGapId = searchParams.get("gap_id");
-  if (currentGapId) {
-      // Fetch bar chart data
-      fetch(`http://localhost:8000/api/analysis/${currentGapId}/bar-chart-data`)
-          .then(response => response.json())
-          .then(data => {
-              setBarData({
-                  categories: data.categories,
-                  values: data.values,
-              });
-          })
-          .catch(error => {console.error("Error fetching bar chart data:", error.message);});
-        }
-      }, [searchParams]);
+  // fetch data for bar chart 
+  useEffect(() => {
+    let currentGapId = searchParams.get("gap_id");
+    if (currentGapId) {
+        // Fetch bar chart data
+        fetch(`http://localhost:8000/api/analysis/${currentGapId}/bar-chart-data`)
+            .then(response => response.json())
+            .then(data => {
+                setBarData({
+                    categories: data.categories,
+                    values: data.values,
+                });
+            })
+            .catch(error => {console.error("Error fetching bar chart data:", error.message);});
+          }
+        }, [searchParams]);
 
-// fetch data for line chart 
-useEffect(() => {
-  if (companyName) {
-      // Fetch line chart data
-      fetch(`http://localhost:8000/api/analysis/${encodeURIComponent(companyName)}/total-score-over-time/`)
-          .then(response => response.json())
-          .then(data => {
-              setLineData({
-                  categories: data.gap_date,
-                  values: data.total_score, 
-              });
-          })
-          .catch(error => console.error("Error fetching line chart data:", error));
-  }
-}, [companyName]);
-  
-useEffect(() => {
-  if(userRole === 'client'){
-    try{
-    window.history.pushState(null, null, window.location.href);
-    window.onpopstate = function () {
-      window.history.go(1);
-    };
-    } catch (error){
-    console.error("Error when trying to push state:", error);
+  // fetch data for line chart 
+  useEffect(() => {
+    if (companyName) {
+        // Fetch line chart data
+        fetch(`http://localhost:8000/api/analysis/${encodeURIComponent(companyName)}/total-score-over-time/`)
+            .then(response => response.json())
+            .then(data => {
+                setLineData({
+                    categories: data.gap_date,
+                    values: data.total_score, 
+                });
+            })
+            .catch(error => console.error("Error fetching line chart data:", error));
     }
-  }
-}, [userRole]);
+  }, [companyName]);
+    
+  useEffect(() => {
+    if(userRole === 'client'){
+      try{
+      window.history.pushState(null, null, window.location.href);
+      window.onpopstate = function () {
+        window.history.go(1);
+      };
+      } catch (error){
+      console.error("Error when trying to push state:", error);
+      }
+    }
+  }, [userRole]);
 
     return (
       // force refresh

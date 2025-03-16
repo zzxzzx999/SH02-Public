@@ -2,7 +2,6 @@ body {
     font-family: 'Poppins', sans-serif;
   }
   
-
 .template-container{
     position: relative;
     width: 100%;
@@ -18,6 +17,7 @@ body {
     height: 100%; 
     overflow: hidden;
   }
+  
   .video-container video {
     /* Make video to at least 100% wide and tall */
     min-width: 100%; 

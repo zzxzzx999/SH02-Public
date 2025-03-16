@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState , forwardRef } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import React, { forwardRef, useEffect, useRef, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../css/NavBar.css';
 import { useSubmit } from './SubmitContext.js';
 
@@ -73,7 +73,7 @@ function NavBar({links, logout, isComplete}) {
       <ul>
         {links.map((link) => (
           <div key={link.name}>
- <li key={link.name}>
+          <li key={link.name}>
             {collapsed ? (
               link.image && (
                 <Link to={link.path}>

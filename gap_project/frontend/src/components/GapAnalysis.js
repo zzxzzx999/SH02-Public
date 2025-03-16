@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import NavBar from './NavBar.js';
-import Accordion from './Accordion.js'
-import { SubmitProvider } from './SubmitContext.js';
-import '../css/GapAnalysis.css';
-import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { useLocation } from 'react-router-dom';
+import '../css/GapAnalysis.css';
+import Accordion from './Accordion.js';
+import NavBar from './NavBar.js';
+import { SubmitProvider } from './SubmitContext.js';
 
 let gapID = null;
 
@@ -55,7 +55,6 @@ function Elements() {
       setAnswers(getDefaultAnswers());
     }
   }, [answers]);
-  
 
   useEffect(() => {
     if (answers && typeof answers === "object") {
@@ -142,7 +141,6 @@ function Elements() {
     }
     localStorage.removeItem("gapID");
   };
-  
   
   // Effect to fetch questions from the API 
   useEffect(() => {
@@ -261,9 +259,6 @@ function Elements() {
               <h1 className="section-title" style={{ marginLeft: '16px' }}>
                 {questions[currentQuestionIndex]?.Section_Name}
               </h1>
-            {/*questions.map((question, index) => (
-              <p key={index}>{question.Questions.Question_Name}</p>
-            ))*/}
             <Accordion data={questions} answers={answers} improvement={improvementPlan.improvement} evidence={improvementPlan.evidence}/>
           </div>
             ) : (
@@ -496,7 +491,6 @@ function GapAnalysis() {
               { name: 'Improvement Planning', path: `/gap-analysis/improvement-planning?company=${encodeURIComponent(companyName)}&element=11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
             ];
           
-          
             setLinks(newLinks);
         } catch (err) {
             setError("Error fetching gap analysis ID.");
@@ -506,7 +500,6 @@ function GapAnalysis() {
       getGapID();
 
   }, [companyName]);
-
 
   return (
     <div>
@@ -540,7 +533,6 @@ function GapAnalysis() {
               </li>
               <img src='/benchmarking.png' className="output-img" alt="Benchmarking" style={{width:"30%", height: "50%"}}/>
             </div>
-
             <div className="output">
               <li className="output-text">
                   A phased improvement plan to promote improvement.

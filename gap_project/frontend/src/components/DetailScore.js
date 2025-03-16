@@ -7,7 +7,6 @@ import NavBar from "./NavBar.js";
 import PieChart from "./charts/PieChart.js";
 import ChartTable from "./charts/Tally.js";
 
-
 function DetailScore() {
   const location = useLocation(); // require para
   const navigate = useNavigate();

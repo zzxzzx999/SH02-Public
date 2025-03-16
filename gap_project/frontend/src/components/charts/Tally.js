@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 const ChartTable = ({ data }) => {
   const formatCategory = (name) => {
     if (!name) return ''; // deal with undefined or null

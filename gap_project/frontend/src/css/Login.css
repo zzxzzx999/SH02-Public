@@ -76,14 +76,11 @@
     }
 }
 
-
-
 /*for new company title*/
 .bubble-container h2 {
     font-size: clamp(19px, 2.5vw, 26px);
     margin: 2%;
   }
-
 
 textarea{
     font-size: 14px;
@@ -102,7 +99,6 @@ textarea{
 .submitButton:hover {
     background-color: #85AFC1; /* Lighter background color on hover */
   }
-
 
 .show-hide-icons {
     position: absolute;

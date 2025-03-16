@@ -1,8 +1,6 @@
 // Filename - src/App.js
-
-import React from 'react';
 import axios from 'axios';
-
+import React from 'react';
 class App extends React.Component {
 
     state = {
@@ -10,7 +8,6 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-
         let data ;
 
         axios.get('http://localhost:8000/gap/test/')
@@ -26,19 +23,19 @@ class App extends React.Component {
   render() {
     return(
       <div>
-            {this.state.companies.map((company, id) =>  (
+        {this.state.companies.map((company, id) =>  (
             <div key={id}>
-            <div >
-                  <div >
+                <div>
+                    <div>
                         <h1>{company.name} </h1>
                         <footer >--- had
-                        {company.numAnalysis}
+                            {company.numAnalysis}
                         </footer>
                         <footer >--- registered on
-                        {company.date}
+                            {company.date}
                         </footer>
-                  </div>
-            </div>
+                    </div>
+                </div>
             </div>
             )
         )}

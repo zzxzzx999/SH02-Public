@@ -45,6 +45,7 @@ function NewCompany() {
         console.error("Error : ", error.response || error.message);
     }
   };
+  
   return (
     <div className="create-new-company">
         <NavBar links = {linksForPage2} logout={true}/>

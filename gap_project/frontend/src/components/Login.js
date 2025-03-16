@@ -39,10 +39,6 @@ function Login(){
             localStorage.removeItem('authToken');
             localStorage.removeItem('username');
         }
-
-
-
-
     };
 
     const togglePassword = () => {

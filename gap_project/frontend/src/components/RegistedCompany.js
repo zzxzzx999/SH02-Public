@@ -72,6 +72,7 @@ function RegistedCompany() {
             .catch(error => console.error("Error fetching data:", error));
     }, [companyName, searchParams, setSearchParams]);
 
+    //combine the Overview title and the latest analysis (date&gap_id) 
     useEffect(() => {
         const currentGapId = searchParams.get("gap_id");
         if (currentGapId) {
@@ -178,8 +179,7 @@ function RegistedCompany() {
                             ))}                          
                         </ul>
                     </div>
-                </div>
-                
+                </div>    
             </aside>
 
             <main className="right-part">

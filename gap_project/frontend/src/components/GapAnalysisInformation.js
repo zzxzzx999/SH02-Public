@@ -1,8 +1,7 @@
-import React, {useState, useEffect} from 'react';
-import NavBar from './NavBar.js';  // Import the Navbar component
-import { Link, useLocation } from 'react-router-dom';
-import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import NavBar from './NavBar.js'; // Import the Navbar component
 
 function GapAnalysisConfirm() {
   const links = [];
@@ -71,7 +70,6 @@ function GapInformation(){
       console.error("Error submitting gap information:", error.response?.data || error.message);
     }
   };
-
 
   return (
   <div className="gap-info">
@@ -154,4 +152,5 @@ function GapInformation(){
   )
 }
 
-export {GapInformation};
+export { GapInformation };
+
