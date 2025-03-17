@@ -103,6 +103,7 @@ function OverallOutput() {
     }
   }, [companyName]);
     
+  //prevent back to previous page when is not admin
   useEffect(() => {
     if(userRole === 'client'){
       try{
@@ -159,6 +160,5 @@ function OverallOutput() {
       </div>
     );
   }
-  
 
 export default OverallOutput;

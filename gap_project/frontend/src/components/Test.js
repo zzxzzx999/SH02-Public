@@ -1,15 +1,14 @@
 // Filename - src/App.js
 import axios from 'axios';
 import React from 'react';
-class App extends React.Component {
 
+class App extends React.Component {
     state = {
         companies : [],
     }
 
     componentDidMount() {
         let data ;
-
         axios.get('http://localhost:8000/gap/test/')
         .then(res => {
             data = res.data;

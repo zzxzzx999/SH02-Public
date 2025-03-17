@@ -30,27 +30,17 @@ function GapAnalysisConfirm() {
     </div>
     );
 }
-
 export default GapAnalysisConfirm;
 
 function GapInformation(){
   const links = [];
-
   const location = useLocation();
   const [companyName, setCompanyName] = useState('');
-
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const company = queryParams.get('company');
-    setCompanyName(company);
-  }, [location]);
-
   const [consultant, setConsultant] = useState("");
   const [companyRep, setCompanyRep] = useState("");
   const [companyEmail, setCompanyEmail] = useState("");
   const [url, setUrl] = useState("");
   const [additionalNotes, setAdditionalNotes] = useState("");
-
   const navigate = useNavigate(); 
 
   const handleSubmit = async (event) => {
@@ -71,6 +61,12 @@ function GapInformation(){
     }
   };
 
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const company = queryParams.get('company');
+    setCompanyName(company);
+  }, [location]);
+  
   return (
   <div className="gap-info">
   <NavBar links={links} logout={true}/>

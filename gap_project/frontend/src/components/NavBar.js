@@ -5,12 +5,10 @@ import { useSubmit } from './SubmitContext.js';
 
 function NavBar({links, logout, isComplete}) {
   const submitAnswersToAPI = useSubmit();
-
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const navigate = useNavigate();
   const pageRef = useRef(null);
   const popUpRef = useRef(null);
-
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const companyName = params.get('company');
@@ -18,22 +16,14 @@ function NavBar({links, logout, isComplete}) {
   const gapID = params.get("gap_id");
 
   const handleOutsideClick = (e) => {
-    if (
-      pageRef.current &&
-      !pageRef.current.contains(e.target) &&
-      pageRef.current &&
-      !pageRef.current.contains(e.target)
-    ) {
+    if (pageRef.current &&!pageRef.current.contains(e.target)) {
       setIsPopupOpen(false);
     }
   };
 
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
-
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
+    return () => {document.removeEventListener("mousedown", handleOutsideClick);};
   }, []);
 
   const handleButtonClick = () => {
@@ -45,10 +35,7 @@ function NavBar({links, logout, isComplete}) {
   };
 
   const [collapsed, setCollapsed] = useState(true);
-
-  const toggleSidebar = () => {
-    setCollapsed(!collapsed);
-  };
+  const toggleSidebar = () => { setCollapsed(!collapsed); };
 
   return (
     <div ref={pageRef}>

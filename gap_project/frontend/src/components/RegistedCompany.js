@@ -19,7 +19,6 @@ function RegistedCompany() {
     const [title, setTitle] = useState("Overview");
     const [gapId, setGapId] = useState(null);
     const [searchParams, setSearchParams] = useSearchParams();
-
     const navigate = useNavigate(); 
     const [companyNotes, setCompanyNotes]=useState('')
     const [url, setUrl]=useState('')
@@ -110,6 +109,7 @@ function RegistedCompany() {
                     });
                 })
                 .catch(error => console.error("Error fetching bar chart data:", error));
+
             // Fetch line chart data
             fetch(`http://localhost:8000/api/analysis/${encodeURIComponent(companyName)}/total-score-over-time`)
                 .then(response => response.json())
@@ -144,31 +144,31 @@ function RegistedCompany() {
                 <h2>{companyName}</h2>
                 <div className="company-info">  
                     <p>
-                    {companyNotes|| "No additional notes."}
+                        {companyNotes|| "No additional notes."}
                     </p>
                 </div>
                 <div className="url-section"> 
-                <h2>Evidence URL</h2> 
-                {url === "no url given" ? (
-                    <p className="no-url">No URL provided</p>
-                ) : (
-                    <a href={url} className="url-link" target="_blank" rel="noopener noreferrer">
-                    {url}
-                    </a>
-                )}
+                    <h2>Evidence URL</h2> 
+                    {url === "no url given" ? (
+                        <p className="no-url">No URL provided</p>
+                    ) : (
+                        <a href={url} className="url-link" target="_blank" rel="noopener noreferrer">
+                        {url}
+                        </a>
+                    )}
                 </div>
                 <div className="past-gap">
-                <h2>Past GAP Analysis</h2>
+                    <h2>Past GAP Analysis</h2>
                     <div className="analysis-list">
                         <ul>
-                        {analyses.length > 0 && (
-                            <li>
-                                <Link to={`/registed-company?company=${encodeURIComponent(companyName)}&gap_id=${analyses[0].gap_id}`}
-                                   >
-                                    Overview ({analyses[0].date})  
-                                </Link>
-                            </li>
-                        )}
+                            {analyses.length > 0 && (
+                                <li>
+                                    <Link to={`/registed-company?company=${encodeURIComponent(companyName)}&gap_id=${analyses[0].gap_id}`}
+                                    >
+                                        Overview ({analyses[0].date})  
+                                    </Link>
+                                </li>
+                            )}
                             {analyses.slice(1).map(analysis => (
                                 <li key={analysis.gap_id}>
                                     <Link to={`/registed-company?company=${encodeURIComponent(companyName)}&gap_id=${analysis.gap_id}`}

@@ -22,7 +22,35 @@ function ListofCompany(){
     const [searchParams] = useSearchParams();
     const [, setGapId] = useState(null);
     const [analyses, setAnalyses] = useState([])
+
+    //filter bar
+    const filteredCompanies = companies.map((company) => ({
+        ...company,
+        score: scores[company.name] ?? 0, // make sure score is assigned value correctly
+    })).filter((company) => {
+        const matchesFilter =
+            (filter === "No GAP Analysis" && company.score <= 0) ||
+            (filter === "Already Analysis" && company.score > 0) ||
+            filter === ""; 
+        const matchesSearch = company.name.toLowerCase().includes(searchKeyword.toLowerCase());
+        return matchesFilter && matchesSearch;
+    });
     
+    //sort bar
+    const sortedCompanies = [...filteredCompanies].sort((a, b) => {
+        const scoreA = scores[a.name] ?? -1;
+        const scoreB = scores[b.name] ?? -1;
+        if (sort === "Score High to Low") return scoreB - scoreA;
+        if (sort === "Score Low to High") return scoreA - scoreB;
+        if (sort === "Earliest Registered") {
+            return new Date(a.dateRegistered) - new Date(b.dateRegistered);
+        }
+        if (sort === "Latest Registered") {
+            return new Date(b.dateRegistered) - new Date(a.dateRegistered);
+        }
+        return 0;
+    });
+
     //backendlink
     const fetchCompanies = () => {
         const token = localStorage.getItem("authToken");
@@ -41,7 +69,7 @@ function ListofCompany(){
         })
           .catch((error) => console.error("Error:", error));
       };
-    
+
     useEffect(fetchCompanies, []);
     
     // get the latest analysis score of each company
@@ -72,36 +100,6 @@ function ListofCompany(){
             })
             .catch(error => console.error("Error fetching companies or scores:", error));
     }, []);
-
-    //filter bar
-    const filteredCompanies = companies.map((company) => ({
-        ...company,
-        score: scores[company.name] ?? 0, // make sure score is assigned value correctly
-    })).filter((company) => {
-        const matchesFilter =
-            (filter === "No GAP Analysis" && company.score <= 0) ||
-            (filter === "Already Analysis" && company.score > 0) ||
-            filter === ""; 
-        const matchesSearch = company.name.toLowerCase().includes(searchKeyword.toLowerCase());
-        return matchesFilter && matchesSearch;
-    });
-    
-    //sort bar
-    const sortedCompanies = [...filteredCompanies].sort((a, b) => {
-        const scoreA = scores[a.name] ?? -1;
-        const scoreB = scores[b.name] ?? -1;
-    
-        if (sort === "Score High to Low") return scoreB - scoreA;
-        if (sort === "Score Low to High") return scoreA - scoreB;
-        
-        if (sort === "Earliest Registered") {
-            return new Date(a.dateRegistered) - new Date(b.dateRegistered);
-        }
-        if (sort === "Latest Registered") {
-            return new Date(b.dateRegistered) - new Date(a.dateRegistered);
-        }
-        return 0;
-    });
 
     useEffect(() => {
         setCompanies((prevCompanies) =>
@@ -158,7 +156,7 @@ function ListofCompany(){
 
     return(
         <div className="main-content">
-             <NavBar links={linksForPage2} logout={true} />
+            <NavBar links={linksForPage2} logout={true} />
             <div className="bubble-container-list">
                 <h1 className='title'>List of Companies</h1>
                
@@ -243,7 +241,8 @@ function ListofCompany(){
                         </div>
                     ))}    
                 </div>
-
+                
+                {/*pop up delete comfirmation*/}
                 {showPopup && (
                             <div className="popup-overlay">
                             <div className="popup-content">
@@ -259,7 +258,7 @@ function ListofCompany(){
                                 </div>
                             </div>
                             </div>
-                        )}
+                            )}
             </div>
         </div>
     );
