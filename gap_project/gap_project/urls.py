@@ -17,13 +17,13 @@ urlpatterns = [
     # when you visit the localhost:8000/api
     # you should be routed to the django Rest framework
     path('gap/', include('gap.urls')), # Maps any URLs starting with gap/ to be handled by gap.
-    path('gap/GapAnalysis', views.getQuestionOrWriteAnswer, name="GapAnalysis"),
+    path('gap/GapAnalysis', views.get_question_or_write_answer, name="GapAnalysis"),
     path("api/login/", login_user, name="login"),
     path("api/", include(router.urls)),
     path('api/companies/', views.CompanyListView.as_view(), name='company_list'),
     path('api/scores/<int:gap_id>/<str:element_name>/', views.get_scores, name='get_scores'),
     path('api/overall-scores/<int:gap_id>/', views.overall_scores, name='overall_scores'),
-    path('api/getQuestionOrWriteAnswer/', views.getQuestionOrWriteAnswer, name='getQuestionOrWriteAnswer'),
+    path('api/getQuestionOrWriteAnswer/', views.get_question_or_write_answer, name='getQuestionOrWriteAnswer'),
     path('api/get_incomplete_answers/', views.get_incomplete_answers, name='get_incomplete_answers'),
     path('api/companies/<str:company_name>/delete/', views.CompanyDeleteView.as_view(), name='delete_company'),
     path('api/companies/<str:company_name>/', views.company_detail, name='company_detail'),
