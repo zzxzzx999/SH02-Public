@@ -3,10 +3,8 @@ import { BrowserRouter } from "react-router-dom";
 import NewCompany from "../components/NewCompany.js";
 import axios from "axios";
 
-// Mock axios
 jest.mock("axios");
 
-// Mock useNavigate
 const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
@@ -14,15 +12,10 @@ jest.mock("react-router-dom", () => ({
 }));
 
 describe("NewCompany component", () => {
-//   beforeEach(() => {
-//     jest.clearAllMocks();
-//     localStorage.setItem("authToken", "testToken"); // Mock auth token
-//   });
-
     beforeEach(() => {
         global.console = {
         ...global.console,
-        error: jest.fn(), // Mock console.error
+        error: jest.fn(),
         };
     });
     
