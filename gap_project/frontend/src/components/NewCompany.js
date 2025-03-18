@@ -28,15 +28,15 @@ function NewCompany() {
             notes: additionalNotes || "",
         };
 
-    try { 
-        await axios.post("http://localhost:8000/api/companies/", payload, {
-            headers: { 
-                Authorization: `Token ${token}`,
-            },
-        });
-        setCompanyName("");
-        setAdditionalNotes("");
-        if(userRole === "admin"){
+      try { 
+          await axios.post(`${process.env.REACT_APP_BACKEND_URL}/companies/`, payload, {
+              headers: { 
+                  Authorization: `Token ${token}`,
+              },
+          });
+          setCompanyName("");
+          setAdditionalNotes("");
+          if(userRole === "admin"){
             navigate("/list-of-companies");
         }else{
             navigate(`/new-gap-confirm?company=${encodeURIComponent(companyName)}`);

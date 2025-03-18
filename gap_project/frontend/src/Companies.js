@@ -21,7 +21,7 @@ function Company() {
   // this is the workflow of how to connect to database from react / how to connect to react from database
   useEffect(() => {
     axios
-      .get("http://localhost:8000/gap/companies/")
+      .get('${process.env.REACT_APP_BACKEND_URL}/gap/companies/')
       .then((response) => {
         setCompanies(response.data); // Set the data received from the API
       })
