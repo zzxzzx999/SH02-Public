@@ -13,7 +13,7 @@ class App extends React.Component {
 
         let data ;
 
-        axios.get('http://localhost:8000/gap/test/')
+        axios.get(`${process.env.REACT_APP_BACKEND_URL}/gap/test/`)
         .then(res => {
             data = res.data;
             this.setState({
