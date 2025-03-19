@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
-from urllib.parse import urlparse
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +26,7 @@ SECRET_KEY = "django-insecure-a+&w_tt6jw$@xx$((ri1(&2+p$)=kg^21nsul9ec%(^*orrgjt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["gordon-foley-backend.onrender.com", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -93,16 +91,10 @@ REST_FRAMEWORK = {
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-url = urlparse("postgresql://gordonfoley:mA5AB0YUZX5aleqCs5FKtxAWlh3EnXdc@dpg-cv10jbqj1k6c73arogc0-a.frankfurt-postgres.render.com/gordonfoleydb")
-# put this info to secrets
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        'NAME': url.path[1:],
-        'USER': url.username,
-        'PASSWORD': url.password,
-        'HOST': url.hostname,
-        'PORT': url.port,
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
@@ -146,14 +138,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
-    'https://gordon-foley-frontend.onrender.com',
 )
 
-CORS_ALLOW_ORIGINS = [
-    "https://gordon-foley-frontend.onrender.com",
-    "http://localhost:3000"
-
-]
+CORS_ALLOW_ALL_ORIGINS = True
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES':[ 'rest_framework.permissions.AllowAny']

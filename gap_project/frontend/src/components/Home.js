@@ -2,7 +2,9 @@ import NavBar from './NavBar.js';
 import React, {useState} from "react";
 import '../css/NavBar.css';
 import '../css/Home.css';
-import {Link} from "react-router-dom";
+import {Link } from "react-router-dom";
+
+const url = 'http://127.0.0.1:8000/api'
 
 function AboutUs() {
   const linksForPage1 = [
@@ -19,8 +21,7 @@ function AboutUs() {
       return;
     }
     
-    const encodedSearchText = encodeURIComponent(searchText);
-    const endpoint = `${process.env.REACT_APP_BACKEND_URL}/companies/?name=${encodedSearchText}`
+    const endpoint = `${url}/companies/?name=${searchText}`
 
     try {
       const response = await fetch (endpoint, {
@@ -69,11 +70,11 @@ function AboutUs() {
             <div className="search-results">
               <p key={company.name}>{company.name}</p>
               {company.current_gap ? (
-                <Link to={`/gap-analysis?company=${encodeURIComponent(company.name)}`} className="start-gap-link">
+                <Link to={`/gap-analysis?company=${company.name}`} className="start-gap-link">
                   Resume GAP Analysis
                 </Link>
               ) : (
-                <Link to={`/new-gap-confirm?company=${encodeURIComponent(company.name)}`} className="start-gap-link">
+                <Link to={`/new-gap-confirm?company=${company.name}`} className="start-gap-link">
                 Start GAP Analysis
                 </Link> //if company does not have an ongoing gap
               )}

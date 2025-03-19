@@ -1,7 +1,0 @@
-.git
-.venv
-node_modules
-__pycache__
-*.log
-.DS_Store
-gapenv/
