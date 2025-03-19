@@ -58,7 +58,7 @@ function GapInformation(){
     event.preventDefault();
     try {
       //change url here when making API
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/create-gap/`,{
+      await axios.post("http://127.0.0.1:8000/api/create-gap/",{
         company_name: companyName,
         consultant: consultant,
         company_rep: companyRep,

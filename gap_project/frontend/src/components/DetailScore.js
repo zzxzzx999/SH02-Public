@@ -7,6 +7,7 @@ import NavBar from "./NavBar.js";
 import PieChart from "./charts/PieChart.js";
 import ChartTable from "./charts/Tally.js";
 
+
 function DetailScore() {
   const location = useLocation(); // require para
   const navigate = useNavigate();
@@ -27,8 +28,8 @@ function DetailScore() {
 
   // Calculate total score
   useEffect(() => {
-    console.log(`Requesting: ${process.env.REACT_APP_BACKEND_URL}/scores/${gapId}/${elementName}/`);
-    axios.get(`${process.env.REACT_APP_BACKEND_URL}/scores/${gapId}/${elementName}/`)
+    console.log(`Requesting: http://localhost:8000/api/scores/${gapId}/${elementName}/`);
+    axios.get(`http://localhost:8000/api/scores/${gapId}/${elementName}/`)
      .then((response) => {
         console.log( response.data);
         const { scores } = response.data;
@@ -70,7 +71,7 @@ function DetailScore() {
 
   //fetch data of pie chart
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_BACKEND_URL}/element-scores/${gapId}/${elementName}/`)
+    axios.get(`http://localhost:8000/api/element-scores/${gapId}/${elementName}/`)
       .then(response => {
         setPieData(response.data);
       })

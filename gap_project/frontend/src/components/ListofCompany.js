@@ -28,7 +28,7 @@ function ListofCompany(){
     const fetchCompanies = () => {
         const token = localStorage.getItem("authToken");
         axios
-          .get(`${process.env.REACT_APP_BACKEND_URL}/companies/`, {
+          .get("http://localhost:8000/api/companies/", {
             headers: { Authorization: `Token ${token}` },
           })
           .then((response) => {
@@ -44,36 +44,18 @@ function ListofCompany(){
       };
     
     useEffect(fetchCompanies, []);
-
-     // Fetch the latest analysis for each company
-     useEffect(() => {
-        companies.forEach((company) => {
-            fetch(`${process.env.REACT_APP_BACKEND_URL}/past_analyses/${encodeURIComponent(company.name)}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.past_analyses.length > 0) {
-                        const latestAnalysis = data.past_analyses[0]; // Get the latest analysis
-                        setAnalyses((prevAnalyses) => ({
-                            ...prevAnalyses,
-                            [company.name]: latestAnalysis, // Store the latest analysis for this company
-                        }));
-                    }
-                })
-                .catch((error) => console.error("Error fetching analysis:", error));
-        });
-    }, [companies]);
     
     // get the latest analysis score of each company
     useEffect(() => {
         // get company list
-        fetch(`${process.env.REACT_APP_BACKEND_URL}/companies`)
+        fetch("http://localhost:8000/api/companies")
             .then((res) => res.json())
             .then((data) => {
                 setCompanies(data); 
                 // get total_score of latest analysis of each company 
                 return Promise.all(
                     data.map(company => 
-                        fetch(`${process.env.REACT_APP_BACKEND_URL}/company-latest-total-score/${encodeURIComponent(company.name)}`)
+                        fetch(`http://localhost:8000/api/company-latest-total-score/${encodeURIComponent(company.name)}`)
                             .then(res => res.json())
                             .then(scoreData => ({
                                 name: company.name,
@@ -154,12 +136,9 @@ function ListofCompany(){
         };}
 
     const confirmDelete = () => {
-            const companyDelete = encodeURIComponent(deleteTarget.name)
-            console.log(companyDelete);
-            console.log(deleteTarget);
             const token = localStorage.getItem("authToken"); 
             axios
-                .delete(`${process.env.REACT_APP_BACKEND_URL}/companies/${encodeURIComponent(deleteTarget.name)}/delete/`, {
+                .delete(`http://localhost:8000/api/companies/${deleteTarget.name}/delete/`, {
                     headers: { Authorization: `Token ${token}` },
                 })
                 .then(() => {

@@ -10,15 +10,13 @@ function Login(){
 
     const [visible, setVisible] = useState(false);
 
-    const navigate = useNavigate();
-    
-    console.log(process.env.REACT_APP_BACKEND_URL);
+    const navigate = useNavigate(); 
 
     const handleSubmit = async(event) => {
         event.preventDefault();
 
         try { 
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/login/`, {
+            const response = await axios.post('http://localhost:8000/api/login/', {
                 username,
                 password,
             });

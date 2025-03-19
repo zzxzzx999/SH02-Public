@@ -129,7 +129,7 @@ function Elements() {
       answers[key] = answers[key].filter(value => value !== '').map(value => Number(value));
     }
     try {
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/getQuestionOrWriteAnswer/`, {
+      await axios.post("http://127.0.0.1:8000/api/getQuestionOrWriteAnswer/", {
         GetOrWrite: "WRITE",
         id: localStorage.getItem("gapID"),
         answers: answers,
@@ -148,7 +148,7 @@ function Elements() {
   useEffect(() => {
     const fetchQuestion = async (set, number) => {
       try {
-        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/getQuestionOrWriteAnswer/`, {
+        const response = await axios.post("http://127.0.0.1:8000/api/getQuestionOrWriteAnswer/", {
           GetOrWrite: "GET",
           Set: set,
           Number: number
@@ -186,7 +186,7 @@ function Elements() {
     useEffect(() => {
       const getAnswers = async () => {
         try {
-          const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/get_incomplete_answers/`, {
+          const response = await axios.get("http://127.0.0.1:8000/api/get_incomplete_answers/", {
             params: { gap_id: gapID },
           });
           setAnswers(response.data["gap_data"]);
@@ -471,18 +471,14 @@ function GapAnalysis() {
   const params = new URLSearchParams(location.search);
   const companyName = params.get('company');
 
-  const [error, setError] = useState('');
+  const [, setError] = useState('');
   const [links, setLinks] = useState([])
 
   useEffect(() => {
     const getGapID = async () => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/get-latest-gap/?company_name=${companyName}`);
+            const response = await axios.get(`http://127.0.0.1:8000/api/get-latest-gap/?company_name=${companyName}`);
             gapID = response.data.gap_id;
-
-            if (!gapID) {
-              setError("Unable to retrieve gapID.")
-            }
             localStorage.setItem("gapID", gapID);
 
             const newLinks = [
@@ -510,10 +506,6 @@ function GapAnalysis() {
       getGapID();
 
   }, [companyName]);
-
-  if (error) {
-    return <div className="error-message">{error}</div>
-  }
 
 
   return (
