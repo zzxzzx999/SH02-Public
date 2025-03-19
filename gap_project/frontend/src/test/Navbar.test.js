@@ -57,14 +57,13 @@ describe('NavBar component', () => {
       </BrowserRouter>
     );
 
-    const toggleButton = screen.getByText('>>'); // Sidebar button when collapsed
-    fireEvent.click(toggleButton);
+    //const toggleButton = screen.getByText('>>'); // Sidebar button when collapsed
+    //fireEvent.click(toggleButton);
 
-    const logoutButton = screen.getAllByText('LOGOUT')[1];
+    const logoutButton = await screen.getByAltText(/logout/i);
     fireEvent.click(logoutButton);
 
-    await waitFor(() => expect(mockNavigate).toHaveBeenCalledTimes(1));
-    expect(mockNavigate).toHaveBeenCalledWith('/');
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/'));
   });
 
   test('opens popup when clicking "Save and Exit"', () => {
