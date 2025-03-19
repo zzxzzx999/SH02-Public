@@ -52,7 +52,7 @@
     
   }
   .search-input {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 1.1vw;
     border: none;
     outline: none;
@@ -86,7 +86,7 @@
   }
 
   .filter-button, .sort-button {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-weight:500;
     font-size: 1.3vw;
     border: none;
@@ -111,7 +111,7 @@
   }
 
 .dropdown button {
-    font-family: "Poppins", sans-serif;
+    font-family: "Montserrat", sans-serif;
     font-size: 1.1vw;
     font-weight: 400;
     background: none;

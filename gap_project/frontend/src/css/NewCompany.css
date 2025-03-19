@@ -50,7 +50,7 @@
 }
 
 .form-group input, .form-group textarea{
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     border: none;
     padding: 10px;
     background-color: #D9D9D9;
@@ -67,7 +67,7 @@
 }
 
 .submit-button{
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 18px;
     padding: auto; 
     background-color: #369DCE;
