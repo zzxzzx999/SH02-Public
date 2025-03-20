@@ -1,9 +1,10 @@
 ## GAP Analysis Project
 Perform, store and view GAP analysis data for a company or individual. It assesses the effort done to follow Health and Safety regulations through a questionnaire with 12 categories and 10 questions per category. At the end of the questions the website will display the data as graphs and metrics achieved. On the company's page it will show a brief description of the company as well as their latest scores through line and bar charts. The download icon, when pressed, will create the PDF plan of all the data recorded from the GAP analysis. Additionally, the user can click on the various dates below the companies description to view past results. When the user goes on detailed results, they will be greeted by their scores in each section with a piechart, tally and points. The user can login from two different types of accounts, a consultant account and an admin account. The consultant account does not have access to the list of companies page and will have to search for companies through the search bar. Users can add new companies and fill out details related to the individuals being contacted at the company and which consultant is conducting the GAP Analysis. In the list of companies, the user can sort order by score and view the latest GAP score of companies as well as delete companies.
 
-## Important information on branches
-# The main branch is for local hosting
-# The production branch is for updating images on dockerhub and deploying
+# Important information on branches
+1. The main branch is for local hosting
+2. The production branch is for updating images on dockerhub and deploying
+
 
 # Quickstart - Local Hosting
 
