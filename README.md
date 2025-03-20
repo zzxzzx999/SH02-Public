@@ -12,19 +12,20 @@ Install dockerhub and postresql and Node.js
 You will need to install python, open 2 command lines then do the following commands:
 git clone https://stgit.dcs.gla.ac.uk/team-project-h/2024/sh02/sh02-main.git
 
-cd SH02-main
-cd gap_project
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py runserver
+1. cd SH02-main
+2. cd gap_project
+3. pip install -r requirements.txt
+4. python manage.py migrate
+5. python manage.py runserver
+
 
 On the 2nd command line:
 
-cd SH02-main
-cd gap_project
-cd frontend
-npm install
-npm start
+1. cd SH02-main
+2. cd gap_project
+3. cd frontend
+4. npm install
+5. npm start
 
 
 You can now use the project. Use it through http://localhost:3000
@@ -38,7 +39,7 @@ To login create an account run the command:
 
 python manage.py createsuper
 
-And fill in the with a
+And fill in the details.
 
 Running tests 
 
