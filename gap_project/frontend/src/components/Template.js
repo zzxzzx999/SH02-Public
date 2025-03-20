@@ -14,12 +14,11 @@ function Template({children}){
         {children}
       </div>
     );
-
 }
 
 export default Template;
 
-/*Example page:
+/*used in App.js:
 import Template from './Template';
 return(
     <Template>

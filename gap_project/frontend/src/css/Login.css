@@ -1,5 +1,5 @@
 .login-page, .create-new-company, .gap-confirm, .main-content, .gap, .gap-info, .about-us-box, .div * {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Montserrat', sans-serif;
 }
   
 .login-page, .create-new-company, .gap-confirm, .gap-info, .about-us.box body {
@@ -76,14 +76,11 @@
     }
 }
 
-
-
 /*for new company title*/
 .bubble-container h2 {
     font-size: clamp(19px, 2.5vw, 26px);
     margin: 2%;
   }
-
 
 textarea{
     font-size: 14px;
@@ -102,7 +99,6 @@ textarea{
 .submitButton:hover {
     background-color: #85AFC1; /* Lighter background color on hover */
   }
-
 
 .show-hide-icons {
     position: absolute;

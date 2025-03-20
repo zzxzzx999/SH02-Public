@@ -20,10 +20,9 @@
 }
 
 .side-navbar * {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size:15px;
 }
-
  
 .side-navbar.collapsed + .main-content {
   margin-left: var(--collapsed-sidebar-width);

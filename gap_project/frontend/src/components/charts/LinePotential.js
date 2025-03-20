@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
 import * as echarts from 'echarts';
+import React, { useEffect, useRef } from 'react';
 
 // For Benchmark Improvement in "Registered Company" Page
 // For Score Over Time in "Output" Page
