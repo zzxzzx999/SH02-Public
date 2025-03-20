@@ -8,7 +8,6 @@ import NavBar from './NavBar.js';
 function ListofCompany(){
     const linksForPage2 = [
         { name: 'Add New Company', path: '/new-company' , image:'/add-new-company.png'},
-        
       ];
 
     const[filterVisible, setFilterVisible]= useState(false);
@@ -23,7 +22,35 @@ function ListofCompany(){
     const [searchParams] = useSearchParams();
     const [, setGapId] = useState(null);
     const [analyses, setAnalyses] = useState([])
+
+    //filter bar
+    const filteredCompanies = companies.map((company) => ({
+        ...company,
+        score: scores[company.name] ?? 0, // make sure score is assigned value correctly
+    })).filter((company) => {
+        const matchesFilter =
+            (filter === "No GAP Analysis" && company.score <= 0) ||
+            (filter === "Already Analysis" && company.score > 0) ||
+            filter === ""; 
+        const matchesSearch = company.name.toLowerCase().includes(searchKeyword.toLowerCase());
+        return matchesFilter && matchesSearch;
+    });
     
+    //sort bar
+    const sortedCompanies = [...filteredCompanies].sort((a, b) => {
+        const scoreA = scores[a.name] ?? -1;
+        const scoreB = scores[b.name] ?? -1;
+        if (sort === "Score High to Low") return scoreB - scoreA;
+        if (sort === "Score Low to High") return scoreA - scoreB;
+        if (sort === "Earliest Registered") {
+            return new Date(a.dateRegistered) - new Date(b.dateRegistered);
+        }
+        if (sort === "Latest Registered") {
+            return new Date(b.dateRegistered) - new Date(a.dateRegistered);
+        }
+        return 0;
+    });
+
     //backendlink
     const fetchCompanies = () => {
         const token = localStorage.getItem("authToken");
@@ -42,7 +69,7 @@ function ListofCompany(){
         })
           .catch((error) => console.error("Error:", error));
       };
-    
+
     useEffect(fetchCompanies, []);
     
     // get the latest analysis score of each company
@@ -73,36 +100,6 @@ function ListofCompany(){
             })
             .catch(error => console.error("Error fetching companies or scores:", error));
     }, []);
-
-    //filter bar
-    const filteredCompanies = companies.map((company) => ({
-        ...company,
-        score: scores[company.name] ?? 0, // make sure score is assigned value correctly
-    })).filter((company) => {
-        const matchesFilter =
-            (filter === "No GAP Analysis" && company.score <= 0) ||
-            (filter === "Already Analysis" && company.score > 0) ||
-            filter === ""; 
-        const matchesSearch = company.name.toLowerCase().includes(searchKeyword.toLowerCase());
-        return matchesFilter && matchesSearch;
-    });
-    
-    //sort bar
-    const sortedCompanies = [...filteredCompanies].sort((a, b) => {
-        const scoreA = scores[a.name] ?? -1;
-        const scoreB = scores[b.name] ?? -1;
-    
-        if (sort === "Score High to Low") return scoreB - scoreA;
-        if (sort === "Score Low to High") return scoreA - scoreB;
-        
-        if (sort === "Earliest Registered") {
-            return new Date(a.dateRegistered) - new Date(b.dateRegistered);
-        }
-        if (sort === "Latest Registered") {
-            return new Date(b.dateRegistered) - new Date(a.dateRegistered);
-        }
-        return 0;
-    });
 
     useEffect(() => {
         setCompanies((prevCompanies) =>
@@ -158,67 +155,65 @@ function ListofCompany(){
       };
 
     return(
-        <div class="main-content">
-             <NavBar links={linksForPage2} logout={true} />
+        <div className="main-content">
+            <NavBar links={linksForPage2} logout={true} />
             <div className="bubble-container-list">
                 <h1 className='title'>List of Companies</h1>
                
                 <div className="search-part">
-                {/* serach-part */}
-                <div className="search-wrapper">
-                    <div className="search-icon">
-                        <img src="/search-icon.svg" alt="Search Icon" />
+                    {/* serach-part */}
+                    <div className="search-wrapper">
+                        <div className="search-icon">
+                            <img src="/search-icon.svg" alt="Search Icon" />
+                        </div>
+                        <input type="text" className="search-input" placeholder="Search Company List" value={searchKeyword}
+                                onChange={(e) => setSearchKeyword(e.target.value)} />  
                     </div>
-                    <input type="text" className="search-input" placeholder="Search Company List" value={searchKeyword}
-                            onChange={(e) => setSearchKeyword(e.target.value)} />  
-                </div>
-                
-
-                {/* filter-part */}
-                <div className="filter-wrapper">
-                    <button className="filter-button" onClick={() => setFilterVisible(!filterVisible)}>Filter</button>
-                    {filterVisible && (
-                        <div className="dropdown">
-                            <button 
-                                onClick={() => setFilter((prev) => prev === "No GAP Analysis" ? "" : "No GAP Analysis")}>
-                                {filter === "No GAP Analysis" ? "Clear Filter" : "No GAP Analysis"}
-                            </button>
-                            <button 
-                                onClick={() => setFilter((prev) => prev === "Already Analysis" ? "" : "Already Analysis")}>
-                                {filter === "Already Analysis" ? "Clear Filter" : "Already Analysis"}
-                            </button>
-                        </div>
-                    )}
-                        <div className="filter-icon"> 
-                            <img src="/filter-icon.svg" alt="Filter Icon" />
-                        </div>
-                </div>
-                
-
-                {/* sort-part */}
-                <div className="sort-wrapper">
-                    <button className="sort-button" onClick={() => setSortVisible(!sortVisible)}>Sort</button>
-                    {sortVisible && (
-                        <div className="dropdown">
-                            <button onClick={() => setSort("Score High to Low")}>
-                                Score High to Low
-                            </button>
-                            <button onClick={() => setSort("Score Low to High")}>
-                                Score Low to High
-                            </button>
-                            <button onClick={() => setSort("Earliest Registered")}>
-                                Earliest Registered
-                            </button>
-                            <button onClick={() => setSort("Latest Registered")}>
-                                Latest Registered
-                            </button>
-                        </div>
+                    
+                    {/* filter-part */}
+                    <div className="filter-wrapper">
+                        <button className="filter-button" onClick={() => setFilterVisible(!filterVisible)}>Filter</button>
+                        {filterVisible && (
+                            <div className="dropdown">
+                                <button 
+                                    onClick={() => setFilter((prev) => prev === "No GAP Analysis" ? "" : "No GAP Analysis")}>
+                                    {filter === "No GAP Analysis" ? "Clear Filter" : "No GAP Analysis"}
+                                </button>
+                                <button 
+                                    onClick={() => setFilter((prev) => prev === "Already Analysis" ? "" : "Already Analysis")}>
+                                    {filter === "Already Analysis" ? "Clear Filter" : "Already Analysis"}
+                                </button>
+                            </div>
                         )}
-                    <div className="sort-icon">
-                        <img src="/sort-icon.svg" alt="Sort Icon" />
+                            <div className="filter-icon"> 
+                                <img src="/filter-icon.svg" alt="Filter Icon" />
+                            </div>
                     </div>
-                </div>     
-            </div>
+
+                    {/* sort-part */}
+                    <div className="sort-wrapper">
+                        <button className="sort-button" onClick={() => setSortVisible(!sortVisible)}>Sort</button>
+                        {sortVisible && (
+                            <div className="dropdown">
+                                <button onClick={() => setSort("Score High to Low")}>
+                                    Score High to Low
+                                </button>
+                                <button onClick={() => setSort("Score Low to High")}>
+                                    Score Low to High
+                                </button>
+                                <button onClick={() => setSort("Earliest Registered")}>
+                                    Earliest Registered
+                                </button>
+                                <button onClick={() => setSort("Latest Registered")}>
+                                    Latest Registered
+                                </button>
+                            </div>
+                            )}
+                        <div className="sort-icon">
+                            <img src="/sort-icon.svg" alt="Sort Icon" />
+                        </div>
+                    </div>     
+                </div>
 
                 {/* Main table part */}
                 <div className='table'>
@@ -228,15 +223,14 @@ function ListofCompany(){
                     <span>Date Registered</span>
                     </div>
 
-                      {/*company list*/}
+                    {/*company list*/}
                     {/*React usually use map to iterator the company datas*/}
                     {sortedCompanies.map((company) => (
                         <div key={company.name} className="table-row">
                         <span className="company-name">
                         <Link to={`/registed-company?company=${encodeURIComponent(company.name)}&gap_id=${analyses[company.name]?.gap_id || ""}`}
                                 >{company.name}</Link>
-                        </span>
-                            
+                        </span>      
                         <span className="score-column">{scores[company.name]|| ''}</span>
                         <span className="date-column">{new Date(company.dateRegistered).toLocaleDateString()}</span>
                         <span className="delete-column">
@@ -245,9 +239,10 @@ function ListofCompany(){
                             </button>
                         </span>
                         </div>
-                    ))}
-                    
+                    ))}    
                 </div>
+                
+                {/*pop up delete comfirmation*/}
                 {showPopup && (
                             <div className="popup-overlay">
                             <div className="popup-content">
@@ -263,9 +258,9 @@ function ListofCompany(){
                                 </div>
                             </div>
                             </div>
-                        )}
+                            )}
             </div>
-            </div>
+        </div>
     );
 }
 

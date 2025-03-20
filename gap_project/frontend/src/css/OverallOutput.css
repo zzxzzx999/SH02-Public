@@ -1,165 +1,138 @@
 .output-container {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    padding: 2%;
-    background-color: transparent;
-    border-radius: 15px;
-    z-index:3;
-    text-align: center;
-  }
-
-  /* Top score blocks */
-  .score-blocks {
-    display: flex;
-    justify-content: space-between;
-    gap: 5px;
-    margin-bottom: 18px;
-  }
-  
-  .score-block {
-    background-color: white;
-    padding: 1%;
-    border-radius: 15px;
-    width: 20%;
-    text-align: center;
-    padding-left: 1%;
-    padding-right: 1%;
-    overflow: hidden;
-    height: 20vh;
-
-  }
-  .score-block.total-score {
-    flex: 1.5; /* Proportion */
-    font-size: 1.1vw; 
-  }
-
-    .score-block.unsatisfactory,
-    .score-block.needs-improvement,
-    .score-block.basic-compliance {
-    flex: 1; 
-  }
-
-  .score-block span {
-    display: block;
-    font-size: 1.2vw;
-  }
-  
-.total-score span, .total-score h2{
-    font-size: 1.8vw;
-    font-weight: 600;
-    margin-bottom: 1%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  padding: 2%;
+  background-color: transparent;
+  border-radius: 15px;
+  z-index:3;
+  text-align: center;
 }
 
-  .score-block.unsatisfactory h2,
-  .score-block.needs-improvement h2,
-  .score-block.basic-compliance h2 {
-      display: flex; 
-      align-items: center; /* vertically in centre */
-      justify-content: center; /* horizontal in centre */
-      width: 100%;
-      height: 40%;
-      border-radius: 10px;
-      color: white;
-      font-size: 1.3vw;
-      margin: 0; 
-      margin-bottom: 10%;
-  }
+/* Top score blocks */
+.score-blocks {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  margin-bottom: 18px;
+}
   
-  .score-block.unsatisfactory h2 {
-      background-color: #BF0000;
-  }
-  
-  .score-block.needs-improvement h2 {
-      background-color: #E7BD04;
-      border-color: #D4AD00;
-  }
-  
-  .score-block.basic-compliance h2 {
-      background-color: #7CCC8B;
-      border-color: #71B97E;
-  }
+.score-block {
+  background-color: white;
+  padding: 1%;
+  border-radius: 15px;
+  width: 20%;
+  text-align: center;
+  padding-left: 1%;
+  padding-right: 1%;
+  overflow: hidden;
+  height: 20vh;
 
-  /* Chart Section */
-  .charts {
-    display: flex;
-    gap: 10px;
-    align-items: flex;
-  }
-  
-  .chart {
-    text-align: center;
-    display: flex;
-    flex-direction: column; 
-    justify-content: space-between; /* Evenly distribute content to ensure high consistency */
-    
-  }
+}
 
-  .chart-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 15px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+.score-block.total-score {
+  flex: 1.5; /* Proportion */
+  font-size: 1.1vw; 
+}
 
- 
-  }
+.score-block.unsatisfactory,
+.score-block.needs-improvement,
+.score-block.basic-compliance {
+  flex: 1; 
+}
 
-  .overall-large-chart {
-    flex: 1.7; 
-    /*height: auto; /* avoid fixed height */
-  }
+.score-block span {
+  display: block;
+  font-size: 1.2vw;
+}
   
-  .small-chart {
-    flex: 1; 
-    /*height: auto; /* avoid fixed height*/
-    
-  }
+.total-score span, .total-score h2{
+  font-size: 1.8vw;
+  font-weight: 600;
+  margin-bottom: 1%;
+}
 
-  .overall-large-chart h2, .small-chart h2{
-    margin-top: 1%;
-    margin-bottom: 1%;
-    font-size: 1.5vw;
-  }
+.score-block.unsatisfactory h2,
+.score-block.needs-improvement h2,
+.score-block.basic-compliance h2 {
+  display: flex; 
+  align-items: center; /* vertically in centre */
+  justify-content: center; /* horizontal in centre */
+  width: 100%;
+  height: 40%;
+  border-radius: 10px;
+  color: white;
+  font-size: 1.3vw;
+  margin: 0; 
+  margin-bottom: 10%;
+}
+  
+.score-block.unsatisfactory h2 {
+    background-color: #BF0000;
+}
+  
+.score-block.needs-improvement h2 {
+    background-color: #E7BD04;
+    border-color: #D4AD00;
+}
+  
+.score-block.basic-compliance h2 {
+    background-color: #7CCC8B;
+    border-color: #71B97E;
+}
 
-  .overall-output-chart-placeholder {
-    flex-grow: 1;/* self adaptive */
-    height: 300px;/* fix height, replace flex-grow */
-    background-color: #e9e9e9;
-    border-radius: 5px;
-    text-align: center;
-    display: flex;
-    line-height:normal;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2vw;
-    padding-top: 0px;
-    padding-bottom: 0px;
-  }
+/* Chart Section */
+.charts {
+  display: flex;
+  gap: 10px;
+  align-items: flex;
+}
+  
+.chart {
+  text-align: center;
+  display: flex;
+  flex-direction: column; 
+  justify-content: space-between; /* Evenly distribute content to ensure high consistency */
+}
 
+.chart-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.overall-large-chart {
+  flex: 1.7; 
+}
   
-  /* Responsive Design  */
- /* @media (max-width: 768px) {
-    .score-blocks {
-      flex-direction: column;
-      gap: 10px;
-    }
-  
-    .score-block {
-      width: 100%;
-    }
-  
-    .charts {
-      flex-direction: column;
-      gap: 20px;
-    }
-  
-    .large-chart,
-    .small-chart {
-      width: 100%;
-    } 
-  }*/
+.small-chart {
+  flex: 1;    
+}
+
+.overall-large-chart h2, .small-chart h2{
+  margin-top: 1%;
+  margin-bottom: 1%;
+  font-size: 1.5vw;
+}
+
+.overall-output-chart-placeholder {
+  flex-grow: 1;/* self adaptive */
+  height: 300px;/* fix height, replace flex-grow */
+  background-color: #e9e9e9;
+  border-radius: 5px;
+  text-align: center;
+  display: flex;
+  line-height:normal;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2vw;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
   

@@ -1,24 +1,15 @@
-import React, { useState, useEffect } from "react";
-import NavBar from './NavBar.js';
-import Accordion from './Accordion.js'
-import { SubmitProvider } from './SubmitContext.js';
-import '../css/GapAnalysis.css';
-import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { useLocation } from 'react-router-dom';
+import '../css/GapAnalysis.css';
+import Accordion from './Accordion.js';
+import NavBar from './NavBar.js';
+import { SubmitProvider } from './SubmitContext.js';
 
 let gapID = null;
 
-function Elements() {
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const set = parseInt(params.get('element'));
-  const companyName = params.get('company');
-  const [questions, setQuestions] = useState([]);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [isComplete, setIsComplete] = useState(false);
-
-  // set up improvement plan
-  const getDefaultImprovementPlan = () => {
+ // set up improvement plan
+  const getDefaultImprovementPlan = () => { 
     return {
       evidence: Object.fromEntries(
         Array.from({ length: 12 }, (_, i) => [i + 1, Array(10).fill("")]) 
@@ -28,17 +19,6 @@ function Elements() {
       ),
     };
   }
-
-  // try to set improvement plan with default
-  const [improvementPlan, setImprovementPlan] = useState(getDefaultImprovementPlan());
-  
-  // if answers is not populated yet, fill it with empty entries
-  useEffect(() => {
-    if (!improvementPlan.improvement) {
-      setImprovementPlan(getDefaultImprovementPlan());
-    }
-  }, [improvementPlan]);
-
   // set up answers
   const getDefaultAnswers = () => {
     return Object.fromEntries(
@@ -46,8 +26,23 @@ function Elements() {
     );
   };
 
-  // try to set answers to default when initialising it
-  const [answers, setAnswers] = useState(getDefaultAnswers()); 
+function Elements() {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const set = parseInt(params.get('element'));
+  const companyName = params.get('company');
+  const [questions, setQuestions] = useState([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [isComplete, setIsComplete] = useState(false);
+  const [improvementPlan, setImprovementPlan] = useState(getDefaultImprovementPlan());// try to set improvement plan with default
+  const [answers, setAnswers] = useState(getDefaultAnswers()); // try to set answers to default when initialising it
+ 
+  // if answers is not populated yet, fill it with empty entries
+  useEffect(() => {
+    if (!improvementPlan.improvement) {
+      setImprovementPlan(getDefaultImprovementPlan());
+    }
+  }, [improvementPlan]);
 
   // if answers is not populated yet, fill it with empty entries (0s)
   useEffect(() => {
@@ -55,7 +50,6 @@ function Elements() {
       setAnswers(getDefaultAnswers());
     }
   }, [answers]);
-  
 
   useEffect(() => {
     if (answers && typeof answers === "object") {
@@ -143,7 +137,6 @@ function Elements() {
     localStorage.removeItem("gapID");
   };
   
-  
   // Effect to fetch questions from the API 
   useEffect(() => {
     const fetchQuestion = async (set, number) => {
@@ -196,7 +189,6 @@ function Elements() {
           console.error("Error fetching incomplete answers:", error.response?.data || error.message);
         }
       };
-  
       if (gapID) {
         getAnswers();
       }
@@ -214,7 +206,6 @@ function Elements() {
       localStorage.setItem("gapID", gapID);
     }
   }, [answers, improvementPlan]);
-
 
   const handleAnswerChange = (type, key, value, index) => {
     const updatedAnswers = { ...answers };
@@ -261,9 +252,6 @@ function Elements() {
               <h1 className="section-title" style={{ marginLeft: '16px' }}>
                 {questions[currentQuestionIndex]?.Section_Name}
               </h1>
-            {/*questions.map((question, index) => (
-              <p key={index}>{question.Questions.Question_Name}</p>
-            ))*/}
             <Accordion data={questions} answers={answers} improvement={improvementPlan.improvement} evidence={improvementPlan.evidence}/>
           </div>
             ) : (
@@ -358,7 +346,6 @@ function Compliance({ question, handleAnswerChange, savedAnswer, savedImprovemen
       [question.Question_Number]: savedEvidence
     }));
   }, [savedAnswer, savedImprovement, savedEvidence, question.Question_Number]);
-  
 
   const handleRadioChange = (questionNumber, value) => {
     setSelectedRatings((prevState) => ({
@@ -466,7 +453,6 @@ function Compliance({ question, handleAnswerChange, savedAnswer, savedImprovemen
 export { Compliance };
 
 function GapAnalysis() {
-
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const companyName = params.get('company');
@@ -496,7 +482,6 @@ function GapAnalysis() {
               { name: 'Improvement Planning', path: `/gap-analysis/improvement-planning?company=${encodeURIComponent(companyName)}&element=11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
             ];
           
-          
             setLinks(newLinks);
         } catch (err) {
             setError("Error fetching gap analysis ID.");
@@ -504,9 +489,7 @@ function GapAnalysis() {
         }
       };
       getGapID();
-
   }, [companyName]);
-
 
   return (
     <div>
@@ -540,7 +523,6 @@ function GapAnalysis() {
               </li>
               <img src='/benchmarking.png' className="output-img" alt="Benchmarking" style={{width:"30%", height: "50%"}}/>
             </div>
-
             <div className="output">
               <li className="output-text">
                   A phased improvement plan to promote improvement.

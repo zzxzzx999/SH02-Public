@@ -7,7 +7,6 @@ import NavBar from "./NavBar.js";
 import PieChart from "./charts/PieChart.js";
 import ChartTable from "./charts/Tally.js";
 
-
 function DetailScore() {
   const location = useLocation(); // require para
   const navigate = useNavigate();
@@ -23,14 +22,34 @@ function DetailScore() {
 
   const [scores, setScores] = useState({}); // store score
   const [totalScore, setTotalScore] = useState(0);
-
   const [pieData, setPieData] = useState([]);
+
+  // Handle last and next button click
+  const handlePrevious = () => {
+    const currentIndex = linksForPage3.findIndex(link => link.name === elementName);
+    if (currentIndex > 1 ) {
+      const previousElement = linksForPage3[currentIndex - 1];
+      if (previousElement && previousElement.path) {
+        navigate(previousElement.path);
+      }
+    }
+  };
+    
+  const handleNext = () => {
+    const currentIndex = linksForPage3.findIndex(link => link.name === elementName);
+    if (currentIndex >= 0 && currentIndex < linksForPage3.length - 1) {
+      const nextElement = linksForPage3[currentIndex + 1];
+      if (nextElement && nextElement.path) {
+        navigate(nextElement.path); // Navigate to the next path
+      }
+    }
+  };
 
   // Calculate total score
   useEffect(() => {
     console.log(`Requesting: http://localhost:8000/api/scores/${gapId}/${elementName}/`);
     axios.get(`http://localhost:8000/api/scores/${gapId}/${elementName}/`)
-     .then((response) => {
+    .then((response) => {
         console.log( response.data);
         const { scores } = response.data;
         setScores(scores);
@@ -41,33 +60,12 @@ function DetailScore() {
           scores.basicCompliance +
           scores.needsImprovement +
           scores.unsatisfactory;
-        setTotalScore(newTotalScore);
-      })
-     .catch((error) => {
+         setTotalScore(newTotalScore);
+    })
+    .catch((error) => {
         console.error("Error fetching scores:", error);
-      });
+    });
   }, [gapId, elementName]);
-
-    // Handle last and next button click
-    const handlePrevious = () => {
-      const currentIndex = linksForPage3.findIndex(link => link.name === elementName);
-      if (currentIndex > 1 ) {
-        const previousElement = linksForPage3[currentIndex - 1];
-        if (previousElement && previousElement.path) {
-          navigate(previousElement.path);
-        }
-      }
-    };
-    
-    const handleNext = () => {
-      const currentIndex = linksForPage3.findIndex(link => link.name === elementName);
-      if (currentIndex >= 0 && currentIndex < linksForPage3.length - 1) {
-        const nextElement = linksForPage3[currentIndex + 1];
-        if (nextElement && nextElement.path) {
-          navigate(nextElement.path); // Navigate to the next path
-        }
-      }
-    };
 
   //fetch data of pie chart
   useEffect(() => {
@@ -80,6 +78,15 @@ function DetailScore() {
       });
   }, [gapId, elementName]);
   
+  useEffect(() => {
+    if(userRole === 'client'){
+      window.history.pushState(null, null, window.location.href);
+      window.onpopstate = function () {
+        window.history.go(1);
+      };
+    }
+  }, [userRole]);
+
   //Navbar
   const linksForPage3 = [
     { name: 'Overall Results', path: `/overall-output?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}`, image: '/back-button.png' },
@@ -96,14 +103,6 @@ function DetailScore() {
     { name: 'Audit & Inspection Process', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Audit & Inspection Process')}` },
     { name: 'Improvement Planning', path: `/detail-score?company=${encodeURIComponent(companyName)}&gap_id=${encodeURIComponent(gapId)}&title=${encodeURIComponent('Improvement Planning')}` },
 ];
-useEffect(() => {
-  if(userRole === 'client'){
-    window.history.pushState(null, null, window.location.href);
-    window.onpopstate = function () {
-      window.history.go(1);
-    };
-  }
-}, [userRole]);
 
   return (
     <div class="main-content" className="gap-intro">

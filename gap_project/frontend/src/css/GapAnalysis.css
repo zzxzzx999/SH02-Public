@@ -288,7 +288,7 @@ padding: 3px;
 border: 1px solid black;
 table-layout: fixed;
 text-align: left;
-font-family: 'Poppins';
+font-family: 'Montserrat';
 border-bottom: 1px solid #ddd;
 }
 
@@ -299,6 +299,6 @@ background-color: coral;
 .summary-data {
 padding: 3px;
 border: 1px solid black;
-font-family: 'Poppins';
+font-family: 'Montserrat';
 /*border-bottom: 1px solid #ddd;*/
 }
