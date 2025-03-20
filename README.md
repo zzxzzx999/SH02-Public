@@ -30,7 +30,7 @@ npm start
 You can now use the project. Use it through http://localhost:3000
 
 # Example Usage 
-# Authentication and logging in:
+Authentication and logging in:
 
 There are two types of logins on the website, an admin view and a consultant view.
 The consultant view blocks the company list. To create an account with the admin view just call the username GAPAdmin.
@@ -40,7 +40,7 @@ python manage.py createsuper
 
 And fill in the with a
 
-# Running tests 
+Running tests 
 
 To run tests for:
      the backend run:
@@ -48,7 +48,7 @@ To run tests for:
      the frontend run:
           npm run test
 
-# Updating models
+Updating models
 
 If changes are made to the models, run:
 
