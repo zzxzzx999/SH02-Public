@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import Accordion from "../components/Accordion";
+import Accordion from "../components/Accordion.js";
 
 describe("Accordion component", () => {
   const mockData = [
@@ -36,7 +36,6 @@ describe("Accordion component", () => {
     render(<Accordion data={mockData} answers={mockAnswers} evidence={mockEvidence} improvement={mockImprovement} />);
 
     const firstItem = screen.getByText("1. What is the policy?");
-    //expect(screen.queryByText("Policy document")).not.toBeInTheDocument();
 
     fireEvent.click(firstItem);
     expect(screen.getByText("Policy document")).toBeInTheDocument();
