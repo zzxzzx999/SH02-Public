@@ -44,10 +44,16 @@ And fill in the details.
 Running tests 
 
 To run tests for:
-     the backend run:
-          python manage.py tests
-     the frontend run:
-          npm run test
+
+
+the backend run:
+
+python manage.py tests
+
+
+the frontend run:
+
+npm run test
 
 Updating models
 
