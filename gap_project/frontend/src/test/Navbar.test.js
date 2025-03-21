@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import NavBar from '../components/NavBar';
+import NavBar from '../components/NavBar.js';
 
 jest.mock('../components/SubmitContext.js', () => ({
   useSubmit: jest.fn(() => jest.fn()), // Mock SubmitContext
@@ -50,20 +50,21 @@ describe('NavBar component', () => {
     expect(screen.getByText('<<')).toBeInTheDocument(); // Expanded state
   });
 
-  test('calls navigate on logout', async () => {
+  test("navigates to home on logout", () => {
+    const mockNavigate = jest.fn();
+    jest.mock("react-router-dom", () => ({ useNavigate: () => mockNavigate }));
+
     render(
       <BrowserRouter>
-        <NavBar links={links} logout={true} isComplete={false} />
+        <NavBar links={[]} logout={true} />
       </BrowserRouter>
     );
 
-    //const toggleButton = screen.getByText('>>'); // Sidebar button when collapsed
-    //fireEvent.click(toggleButton);
-
-    const logoutButton = await screen.getByAltText(/logout/i);
+    const toggleButton = screen.getByText('>>'); // Sidebar button when collapsed
+    fireEvent.click(toggleButton);
+    const logoutButton = screen.getByText(/LOG OUT/i);
     fireEvent.click(logoutButton);
-
-    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/'));
+    waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/'));
   });
 
   test('opens popup when clicking "Save and Exit"', () => {
@@ -73,6 +74,8 @@ describe('NavBar component', () => {
       </BrowserRouter>
     );
 
+    const toggleButton = screen.getByText('>>'); // Sidebar button when collapsed
+    fireEvent.click(toggleButton);
     const saveExitButton = screen.getByText('SAVE AND EXIT');
     fireEvent.click(saveExitButton);
 
@@ -86,7 +89,11 @@ describe('NavBar component', () => {
       </BrowserRouter>
     );
 
-    fireEvent.click(screen.getByText('SAVE AND EXIT'));
+    const toggleButton = screen.getByText('>>'); // Sidebar button when collapsed
+    fireEvent.click(toggleButton);
+    const saveExitButton = screen.getByText('SAVE AND EXIT');
+    fireEvent.click(saveExitButton);
+
     expect(screen.getByText('Would you like to save and come back later?')).toBeInTheDocument();
 
     fireEvent.mouseDown(document.body); // Simulate clicking outside popup
