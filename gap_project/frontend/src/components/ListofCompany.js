@@ -43,10 +43,10 @@ function ListofCompany(){
         if (sort === "Score High to Low") return scoreB - scoreA;
         if (sort === "Score Low to High") return scoreA - scoreB;
         if (sort === "Earliest Registered") {
-            return new Date(a.dateRegistered) - new Date(b.dateRegistered);
+            return new Date(a.date_registered) - new Date(b.date_registered);
         }
         if (sort === "Latest Registered") {
-            return new Date(b.dateRegistered) - new Date(a.dateRegistered);
+            return new Date(b.date_registered) - new Date(a.date_registered);
         }
         return 0;
     });
@@ -63,7 +63,7 @@ function ListofCompany(){
                 response.data.map((company) => ({
                     name: company.name,
                     score: company.score || 0,
-                    dateRegistered: company.dateRegistered,
+                    date_registered: company.date_registered,
                 }))
             );
         })
@@ -232,7 +232,7 @@ function ListofCompany(){
                                 >{company.name}</Link>
                         </span>      
                         <span className="score-column">{scores[company.name]|| ''}</span>
-                        <span className="date-column">{new Date(company.dateRegistered).toLocaleDateString()}</span>
+                        <span className="date-column">{new Date(company.date_registered).toLocaleDateString()}</span>
                         <span className="delete-column">
                             <button className="delete-button" onClick={() => handleDeleteClick(company)}>
                                 Delete

@@ -40,7 +40,8 @@ function GapInformation(){
   const [companyRep, setCompanyRep] = useState("");
   const [companyEmail, setCompanyEmail] = useState("");
   const [url, setUrl] = useState("");
-  const [additionalNotes, setAdditionalNotes] = useState("");
+  const [additional_notes, setAdditionalNotes] = useState("");
+
   const navigate = useNavigate(); 
 
   const handleSubmit = async (event) => {
@@ -52,7 +53,7 @@ function GapInformation(){
         consultant: consultant,
         company_rep: companyRep,
         company_email: companyEmail,
-        additional_notes: additionalNotes,
+        additional_notes: additional_notes,
         url: url,
       });
       navigate(`/gap-analysis?company=${companyName}`);
@@ -132,7 +133,7 @@ function GapInformation(){
       <label> 
       <textarea
           type="text" 
-          value={additionalNotes}
+          value={additional_notes}
           onChange={(e) => setAdditionalNotes(e.target.value)}
           placeholder = "Additional Notes"
           style ={{

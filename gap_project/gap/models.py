@@ -4,8 +4,8 @@ from django.contrib.auth.models import User
 
 class Company(models.Model):
     name = models.CharField(max_length=128, unique=True)
-    numOfAnalysis = models.IntegerField(default=0)
-    dateRegistered = models.DateField(auto_now_add=True)
+    num_of_analysis = models.IntegerField(default=0)
+    date_registered = models.DateField(auto_now_add=True)
     notes = models.TextField(blank=True, null=True)
     current_gap=models.BooleanField(default=False)
     class Meta:
@@ -21,9 +21,9 @@ class GapAnalysis(models.Model):
     consultant = models.CharField(max_length=128, unique=False, blank=False, null=False)
     gap_data = models.JSONField(default=dict)
     improvement_plan = models.JSONField(default=dict)
-    companyRep= models.CharField(max_length=128, unique=False, blank=False, null=False)
-    companyEmail = models.EmailField(max_length=128, blank=False, null=False, default='example@company.com')
-    additionalNotes = models.TextField(blank=True)
+    company_rep= models.CharField(max_length=128, unique=False, blank=False, null=False)
+    company_email = models.EmailField(max_length=128, blank=False, null=False, default='example@company.com')
+    additional_notes = models.TextField(blank=True)
     url = models.URLField(max_length=200, default="no url given")
     
     class Meta:
