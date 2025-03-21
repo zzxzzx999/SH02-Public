@@ -4,8 +4,12 @@ from rest_framework.test import APITestCase
 from django.urls import reverse
 from unittest.mock import patch
 from django.contrib.auth.models import User
-from gap.models import GapAnalysis, Company
+from gap.models import GapAnalysis, Company, UserProfile, Section, Question, Input
+from gap.serializers import CompanyListSerializer, CompanySerializer, GapAnalysisSerializer, QuestionsSerializer, AnswersSerializer
+from django.core.exceptions import ValidationError
+from gap.views import generate_pdf_plan
 import random
+from django.utils import timezone
 
 # Create your tests here.
 class ViewsAndUrlsTesting(TestCase):
@@ -92,7 +96,7 @@ class ViewsAndUrlsTesting(TestCase):
         url = '/gap/pdfplan/'
         response = self.client.get(url, format='json', HTTP_ACCEPT='application/json')
         self.assertEqual(response.status_code, 404)
-    @patch ("gap.views.generatePdfPlan", return_value=None)
+    @patch ("gap.views.generate_pdf_plan", return_value=None)
     def testPDFViewPost(self, mock_generatePdfPlan):
         url = '/gap/pdfplan/'
         data = {"id": self.gap.id}
@@ -105,7 +109,7 @@ class ViewsAndUrlsTesting(TestCase):
         response = self.client.get(url, format = 'json')
         self.assertEqual(response.status_code, 200)
 
-    @patch("gap.views.getQuestion", return_value=None)
+    @patch("gap.views.get_question", return_value=None)
     def testGetQuestionOrWriteAnswerGET(self, mock_getQuestion):
         url = '/api/getQuestionOrWriteAnswer/'
         data = {
@@ -337,7 +341,7 @@ class InputModelTest(TestCase):
         self.company = Company.objects.create(name="Test Company")
         self.gap_analysis = GapAnalysis.objects.create(
             company=self.company,
-            date=timezone.now().date(),
+            date=timezone.now(),
             consultant="John Doe",
             company_rep="Jane Smith"
         )
@@ -445,10 +449,10 @@ class GapAnalysisSerializerTest(TestCase):
 class QuestionsSerializerTest(TestCase):
     def test_questions_serializer(self):
         """Test QuestionsSerializer with valid input."""
-        data = {'GetOrWrite': 'GET'}
+        data = {'get_or_write': 'GET'}
         serializer = QuestionsSerializer(data=data)
         self.assertTrue(serializer.is_valid())
-        self.assertEqual(serializer.validated_data['GetOrWrite'], 'GET')
+        self.assertEqual(serializer.validated_data['get_or_write'], 'GET')
 
     def test_questions_serializer_missing_field(self):
         """Test QuestionsSerializer with missing optional field."""
@@ -468,7 +472,7 @@ class AnswersSerializerTest(TestCase):
             company_email="jane@company.com",
             gap_data={"question1": "answer1"},
             improvement_plan={"task1": "improve process"},
-            date=timezone.now().date()
+            date=timezone.now()
         )
 
     def test_answers_serializer(self):
