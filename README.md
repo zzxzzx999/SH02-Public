@@ -40,8 +40,10 @@ If you need to view the api, use it through http://localhost:8000
 No need to install everything again, however you need PostGreSQL V17 for the database:
  - https://www.postgresql.org/download/ 
 
-You can access the frontend link using: https://gordon-foley-frontend.onrender.com/
-Access the backend API: -	https://gordon-foley-backend.onrender.com/
+You can access the frontend link using: 
+ - https://gordon-foley-frontend.onrender.com/
+Access the backend API:
+ - https://gordon-foley-backend.onrender.com/
 
 **NOTE**: These links will not work apst the 30th of March due to the database service running out of its free service. If you wish to access this after this date, use it locally.
 
