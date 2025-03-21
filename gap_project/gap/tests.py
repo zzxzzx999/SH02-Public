@@ -1,14 +1,11 @@
+from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
 from django.urls import reverse
 from unittest.mock import patch
 from django.contrib.auth.models import User
-from gap.models import Company, GapAnalysis, UserProfile, Section, Question, Input
+from gap.models import GapAnalysis, Company
 import random
-from django.test import TestCase
-from django.utils import timezone
-from django.core.exceptions import ValidationError
-from gap.serializers import CompanyListSerializer, CompanySerializer, GapAnalysisSerializer, QuestionsSerializer, AnswersSerializer
 
 # Create your tests here.
 class ViewsAndUrlsTesting(TestCase):
@@ -21,9 +18,9 @@ class ViewsAndUrlsTesting(TestCase):
         self.gap = GapAnalysis.objects.create(
             company = self.company,
             consultant = 'ConsultantTest',
-            companyRep ='RepcompanyTest',
-            companyEmail='test@test.com',
-            additionalNotes='Some notes',
+            company_rep ='RepcompanyTest',
+            company_email='test@test.com',
+            additional_notes='Some notes',
             url = 'test.come',
             title = 'TestingGap')
         self.gap.gap_data = {
@@ -222,8 +219,7 @@ class ViewsAndUrlsTesting(TestCase):
         self.assertIn("message", response.data)
         with self.assertRaises(Company.DoesNotExist):
             Company.objects.get(name='testDelete')
-
-        
+      
 """ MODEL TESTS"""
 class GapAnalysisModelTest(TestCase):
     def setUp(self):
@@ -233,9 +229,9 @@ class GapAnalysisModelTest(TestCase):
             consultant="Test Consultant", 
             gap_data={"test": "data"}, 
             improvement_plan={"test": "plan"}, 
-            companyRep="Test Rep", 
-            companyEmail="Test@Rep.com",
-            additionalNotes="Test Notes",
+            company_rep="Test Rep", 
+            company_email="Test@Rep.com",
+            additional_notes="Test Notes",
             url="www.test.com"
             )
         self.assertEqual(str(gap_analysis), gap_analysis.date.strftime("%d/%m/%Y"))
@@ -244,12 +240,12 @@ class GapAnalysisModelTest(TestCase):
         gap_analysis = GapAnalysis.objects.create(
             company=self.company,
             consultant="Test Consultant",
-            companyRep="Test Rep"
+            company_rep="Test Rep"
         )
         """checks the default values of the GapAnalysis model."""
         self.assertEqual(gap_analysis.gap_data, {})
         self.assertEqual(gap_analysis.improvement_plan, {})
-        self.assertEqual(gap_analysis.companyEmail, "example@company.com")
+        self.assertEqual(gap_analysis.company_email, "example@company.com")
         self.assertEqual(gap_analysis.url, "no url given")
 
     def test_title_max_length(self):
@@ -258,7 +254,7 @@ class GapAnalysisModelTest(TestCase):
             company=self.company,
             title="A" * 51,  # this exceeds the max length of 50
             consultant="John Doe",
-            companyRep="Jane Smith"
+            company_rep="Jane Smith"
         )
         with self.assertRaises(ValidationError):
             gap_analysis.full_clean()  # check that the title is not too long
@@ -267,7 +263,7 @@ class GapAnalysisModelTest(TestCase):
         """Test that consultant field cannot be blank."""
         gap_analysis = GapAnalysis(
             company=self.company,
-            companyRep="Jane Smith"
+            company_rep="Jane Smith"
         )
         with self.assertRaises(ValidationError):
             gap_analysis.full_clean()
@@ -279,18 +275,18 @@ class CompanyModelTest(TestCase):
         """Test creating a Company instance."""
         company = Company.objects.create(
             name="Test Company",
-            numOfAnalysis=5,
+            num_of_analysis=5,
             notes="This is a test company.",
             current_gap=True
         )
         self.assertEqual(str(company), "Test Company")
-        self.assertEqual(company.numOfAnalysis, 5)
+        self.assertEqual(company.num_of_analysis, 5)
         self.assertTrue(company.current_gap)
 
     def test_company_defaults(self):
         """Test default values of Company fields."""
         company = Company.objects.create(name="Default Test Company")
-        self.assertEqual(company.numOfAnalysis, 0)
+        self.assertEqual(company.num_of_analysis, 0)
         self.assertFalse(company.current_gap)
 
 
@@ -343,7 +339,7 @@ class InputModelTest(TestCase):
             company=self.company,
             date=timezone.now().date(),
             consultant="John Doe",
-            companyRep="Jane Smith"
+            company_rep="Jane Smith"
         )
         self.section = Section.objects.create(name="General")
         self.question = Question.objects.create(
@@ -386,7 +382,7 @@ class CompanySerializerTest(TestCase):
         """Create a sample company instance for testing."""
         self.company = Company.objects.create(
             name="Test Company",
-            numOfAnalysis=5,
+            num_of_analysis=5,
             notes="This is a test company."
         )
 
@@ -395,8 +391,8 @@ class CompanySerializerTest(TestCase):
         serializer = CompanyListSerializer(instance=self.company)
         expected_data = {
             'name': "Test Company",
-            'numOfAnalysis': 5,
-            'dateRegistered': self.company.dateRegistered.isoformat(),
+            'num_of_analysis': 5,
+            'date_registered': self.company.date_registered.isoformat(),
             'notes': "This is a test company."
         }
         self.assertEqual(serializer.data, expected_data)
@@ -406,7 +402,7 @@ class CompanySerializerTest(TestCase):
         serializer = CompanySerializer(instance=self.company)
         expected_data = {
             'name': "Test Company",
-            'dateRegistered': self.company.dateRegistered.isoformat(),
+            'date_registered': self.company.date_registered.isoformat(),
             'notes': "This is a test company.",
             'current_gap': False  # Default value
         }
@@ -421,9 +417,9 @@ class GapAnalysisSerializerTest(TestCase):
             'title': "Gap Analysis Test",
             'company': self.company.id,
             'consultant': "John Doe",
-            'companyRep': "Jane Smith",
-            'companyEmail': "jane@company.com",
-            'additionalNotes': "Some notes",
+            'company_rep': "Jane Smith",
+            'company_email': "jane@company.com",
+            'additional_notes': "Some notes",
             'url': "http://example.com",
             'gap_data': {"question1": "answer1"},
             'improvement_plan': {"task1": "improve process"}
@@ -440,10 +436,10 @@ class GapAnalysisSerializerTest(TestCase):
 
     def test_gap_analysis_serializer_invalid_email(self):
         """Test GapAnalysisSerializer validation for an invalid email."""
-        self.gap_analysis_data['companyEmail'] = "invalid-email"
+        self.gap_analysis_data['company_email'] = "invalid-email"
         serializer = GapAnalysisSerializer(data=self.gap_analysis_data)
         self.assertFalse(serializer.is_valid())
-        self.assertIn('companyEmail', serializer.errors)
+        self.assertIn('company_email', serializer.errors)
 
 
 class QuestionsSerializerTest(TestCase):
@@ -468,8 +464,8 @@ class AnswersSerializerTest(TestCase):
         self.gap_analysis = GapAnalysis.objects.create(
             company=self.company,
             consultant="John Doe",
-            companyRep="Jane Smith",
-            companyEmail="jane@company.com",
+            company_rep="Jane Smith",
+            company_email="jane@company.com",
             gap_data={"question1": "answer1"},
             improvement_plan={"task1": "improve process"},
             date=timezone.now().date()
