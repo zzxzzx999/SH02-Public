@@ -1,11 +1,10 @@
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
-from .jsonReadWrite import *
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.colors import HexColor
-import os
 from rest_framework.renderers import BaseRenderer
+from .jsonReadWrite import *
 
 class BinaryFileRenderer(BaseRenderer):
     media_type = 'application/octet-stream'
@@ -17,10 +16,12 @@ class BinaryFileRenderer(BaseRenderer):
         return data
 
 
-def createElementTable(issues, improvements, element, scores):
+def create_element_table(gap, element, scores):
+    evidence = get_evidence(gap, element)
+    improvements = get_improvement(gap, element)
     # Generate table data with numbering
-    table_data = [["#", "Issue", "Improvement", "Score"]]  # Table headers
-    for i, (issue, improvement, score) in enumerate(zip(issues, improvements, scores), start=1):
+    table_data = [["#", "Evidence", "Improvement", "Score"]]  # Table headers
+    for i, (issue, improvement, score) in enumerate(zip(evidence, improvements, scores), start=1):
         # use Paragraph() to allow wrapping of text
         issue_paragraph = Paragraph(issue)
         improvement_paragraph = Paragraph(improvement)
@@ -29,13 +30,13 @@ def createElementTable(issues, improvements, element, scores):
 
     # Add table title
     styles = getSampleStyleSheet()
-    title = Paragraph(getElementHeading(element), styles["Title"])
+    title = Paragraph(get_element_heading(element), styles["Title"])
 
     # Create table
     return Table(table_data, colWidths=[30, 250, 250, 50]), title
 
 
-def generatePdfPlan(gap):
+def generate_pdf_plan(gap):
     # Create PDF
     const_filename = "gap/src/improvementPlan.pdf"
     title = f"{gap.company.name}: {gap.date}"
@@ -43,7 +44,7 @@ def generatePdfPlan(gap):
     elements = []
     
     score_colors = {
-        0: "FF0000",
+        0: "#FF0000",
         1: "#FF0B0B",
         2: "#FFC546",  
         3: "#7CCC8B",  
@@ -72,8 +73,8 @@ def generatePdfPlan(gap):
 
 
     for i in range(1, 13):
-        scores = getElementAnswers(i, gap)
-        table, title = createElementTable(gap.improvement_plan[str(i)], pdfFormatElement(gap, i), i, scores)
+        scores = get_element_answers(i, gap)
+        table, title = create_element_table(gap, i, scores)
 
         # Style the table
         style = TableStyle([
@@ -89,7 +90,7 @@ def generatePdfPlan(gap):
 
         # Add color styling for the "Score" column
         for row_num, score in enumerate(scores, start=1):
-            hex_color = score_colors.get(score, "#FFFFFF")  # Default to white if no color found
+            hex_color = score_colors.get(score, "#FFFFFF")
             style.add('BACKGROUND', (3, row_num), (3, row_num), HexColor(hex_color))
 
         table.setStyle(style)

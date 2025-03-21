@@ -43,17 +43,17 @@ function Company() {
               {companies.map((company) => (
                 <div key={company.name}>
                   <h1>{company.name}</h1>
-                  <p>Number of analysis = {company.numOfAnalysis}</p>
-                  <p>Date created = {company.dateRegistered}</p>
+                  <p>Number of analysis = {company.num_of_analysis}</p>
+                  <p>Date created = {company.date_registered}</p>
 
-                  {/* Link : Link to the specific company, passing numOfAnalysis, dateRegistered, and name to SpecificCompany component. */}
+                  {/* Link : Link to the specific company, passing num_of_analysis, date_registered, and name to SpecificCompany component. */}
                   {/*        used for navigation between routes in your React app. It’s like an HTML <a> tag but optimized for React Router */}
                   {/*        navigates without reloading the page */}
                   <Link
                     to={`/company/${company.name}`}
                     state={{
-                      numOfAnalysis: company.numOfAnalysis,
-                      dateRegistered: company.dateRegistered,
+                      num_of_analysis: company.num_of_analysis,
+                      date_registered: company.date_registered,
                       name: company.name,
                     }}
                   >

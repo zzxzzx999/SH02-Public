@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import '../css/NavBar.css';
 import "../css/RegistedCompany.css";
-import NavBar from "./NavBar.js";
 import BarChart from "./charts/BarChart.js";
 import LineChart from "./charts/LineChart.js";
 import LineChartWithBackground from "./charts/LineChartWithBg.js";
+import NavBar from "./NavBar.js";
 import { pdfDownload } from "./PfPlan.js";
 
 function RegistedCompany() {
@@ -19,7 +19,6 @@ function RegistedCompany() {
     const [title, setTitle] = useState("Overview");
     const [gapId, setGapId] = useState(null);
     const [searchParams, setSearchParams] = useSearchParams();
-
     const navigate = useNavigate(); 
     const [companyNotes, setCompanyNotes]=useState('')
     const [url, setUrl]=useState('')
@@ -48,7 +47,8 @@ function RegistedCompany() {
     useEffect(() => {
         fetch(`http://localhost:8000/api/companies/?name=${encodeURIComponent(companyName)}`)
         .then(r => r.json())
-        .then(d => setCompanyNotes(d[0].notes));
+        .then(d => setCompanyNotes(d[0].notes))
+        .catch(error => console.error("Error fetching company notes:", error)); 
     }, [companyName]);
 
     // Fetch past analyses
@@ -71,6 +71,7 @@ function RegistedCompany() {
             .catch(error => console.error("Error fetching data:", error));
     }, [companyName, searchParams, setSearchParams]);
 
+    //combine the Overview title and the latest analysis (date&gap_id) 
     useEffect(() => {
         const currentGapId = searchParams.get("gap_id");
         if (currentGapId) {
@@ -108,6 +109,7 @@ function RegistedCompany() {
                     });
                 })
                 .catch(error => console.error("Error fetching bar chart data:", error));
+
             // Fetch line chart data
             fetch(`http://localhost:8000/api/analysis/${encodeURIComponent(companyName)}/total-score-over-time`)
                 .then(response => response.json())
@@ -142,31 +144,31 @@ function RegistedCompany() {
                 <h2>{companyName}</h2>
                 <div className="company-info">  
                     <p>
-                    {companyNotes|| "No additional notes."}
+                        {companyNotes|| "No additional notes."}
                     </p>
                 </div>
                 <div className="url-section"> 
-                <h2>Evidence URL</h2> 
-                {url === "no url given" ? (
-                    <p className="no-url">No URL provided</p>
-                ) : (
-                    <a href={url} className="url-link" target="_blank" rel="noopener noreferrer">
-                    {url}
-                    </a>
-                )}
+                    <h2>Evidence URL</h2> 
+                    {url === "no url given" ? (
+                        <p className="no-url">No URL provided</p>
+                    ) : (
+                        <a href={url} className="url-link" target="_blank" rel="noopener noreferrer">
+                        {url}
+                        </a>
+                    )}
                 </div>
                 <div className="past-gap">
-                <h2>Past GAP Analysis</h2>
+                    <h2>Past GAP Analysis</h2>
                     <div className="analysis-list">
                         <ul>
-                        {analyses.length > 0 && (
-                            <li>
-                                <Link to={`/registed-company?company=${encodeURIComponent(companyName)}&gap_id=${analyses[0].gap_id}`}
-                                   >
-                                    Overview ({analyses[0].date})  
-                                </Link>
-                            </li>
-                        )}
+                            {analyses.length > 0 && (
+                                <li>
+                                    <Link to={`/registed-company?company=${encodeURIComponent(companyName)}&gap_id=${analyses[0].gap_id}`}
+                                    >
+                                        Overview ({analyses[0].date})  
+                                    </Link>
+                                </li>
+                            )}
                             {analyses.slice(1).map(analysis => (
                                 <li key={analysis.gap_id}>
                                     <Link to={`/registed-company?company=${encodeURIComponent(companyName)}&gap_id=${analysis.gap_id}`}
@@ -177,8 +179,7 @@ function RegistedCompany() {
                             ))}                          
                         </ul>
                     </div>
-                </div>
-                
+                </div>    
             </aside>
 
             <main className="right-part">
@@ -190,7 +191,13 @@ function RegistedCompany() {
                     <img
                         src="/download.png" 
                         alt="Download"
-                        onClick={() => pdfDownload(gapId, PDFTitle)}
+                        onClick={() => {
+                            if (gapId && PDFTitle) {
+                                pdfDownload(gapId, PDFTitle);
+                            } else {
+                                console.error("Cannot download PDF: Missing gapId or PDFTitle");
+                            }
+                        }}
                         className="download-icon"
                     />
                 </div>

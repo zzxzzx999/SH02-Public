@@ -1,8 +1,4 @@
-# import serializers from the REST framework
 from rest_framework import serializers
-from .models import Company
-
-# import the todo data model
 from .models import *
 
 class CompanyListSerializer(serializers.ModelSerializer):
@@ -10,18 +6,18 @@ class CompanyListSerializer(serializers.ModelSerializer):
     # create a meta class
     class Meta:
         model = Company
-        fields = ('name','numOfAnalysis','dateRegistered', 'notes')
+        fields = ('name','num_of_analysis','date_registered', 'notes')
 
 class CompanySerializer(serializers.ModelSerializer):
 
     class Meta:
             model = Company
-            fields = ('name','dateRegistered', 'notes', 'current_gap')
+            fields = ('name','date_registered', 'notes', 'current_gap')
         
 class GapAnalysisSerializer(serializers.ModelSerializer):
     class Meta:
         model = GapAnalysis
-        fields = ('title', 'company', 'consultant', 'companyRep', 'companyEmail', 'additionalNotes', 'url', 'gap_data', 'improvement_plan')
+        fields = ('title', 'company', 'consultant', 'company_rep', 'company_email', 'additional_notes', 'url', 'gap_data', 'improvement_plan')
 
     def create(self, validated_data):
         """ Handle JSON fields properly """
@@ -34,7 +30,7 @@ class GapAnalysisSerializer(serializers.ModelSerializer):
 
 
 class QuestionsSerializer(serializers.Serializer):
-    GetOrWrite = serializers.CharField(max_length=10, required=False)
+    get_or_write = serializers.CharField(max_length=10, required=False)
 
 class AnswersSerializer(serializers.ModelSerializer):
     gap_data = serializers.JSONField()

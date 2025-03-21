@@ -1,29 +1,17 @@
-from rest_framework.decorators import api_view
-from django.shortcuts import render
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from .models import Company
-from rest_framework.authtoken.models import Token
-from rest_framework import generics
 from rest_framework import viewsets, status
+from rest_framework.decorators import api_view, action, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate
-from rest_framework.decorators import permission_classes
-from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from django.http import JsonResponse, FileResponse
+from django.core.exceptions import ObjectDoesNotExist
+from .pdfGeneration import *
+from .jsonReadWrite import get_element_answers, get_question
 from .serializers import *
 from .models import Company, GapAnalysis
-from .pdfGeneration import *
-from .jsonReadWrite import *
-import os
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.decorators import action
-from django.http import FileResponse
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -72,9 +60,9 @@ def create_gap(request):
         gap = GapAnalysis.objects.create(
             company=company_instance, 
             consultant=consultant, 
-            companyRep=company_rep,
-            companyEmail=company_email, 
-            additionalNotes=additional_notes,
+            company_rep=company_rep,
+            company_email=company_email, 
+            additional_notes=additional_notes,
             url=url
         )
         company_instance.current_gap = True
@@ -125,9 +113,9 @@ class PdfView(APIView):
             return Response({'error': 'File not found'}, status=404)        
     def post(self, request):
         #return download(request)
-        gapId = request.data.get('id')
-        gap = GapAnalysis.objects.get(id=gapId) #This will be the actual line, but need specific test data that works
-        generatePdfPlan(gap)
+        gap_id = request.data.get('id')
+        gap = GapAnalysis.objects.get(id=gap_id) #This will be the actual line, but need specific test data that works
+        generate_pdf_plan(gap)
         pdf_filename = f"{gap.title}.pdf"
         return Response({'pdf' : pdf_filename}, status=200)
         
@@ -147,7 +135,7 @@ def get_incomplete_answers(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-def getQuestionOrWriteAnswer(request):
+def get_question_or_write_answer(request):
     serializer = QuestionsSerializer(data=request.data)
     data = request.data
 
@@ -155,7 +143,7 @@ def getQuestionOrWriteAnswer(request):
         return Response(serializer.errors, status=400)
 
     if (data.get("GetOrWrite") == "GET"):
-        question_info = getQuestion(data.get("Set"), data.get("Number"))
+        question_info = get_question(data.get("Set"), data.get("Number"))
         if question_info:
             return Response(question_info, status=200)
         else:
@@ -205,8 +193,8 @@ class CompanyViewSet(viewsets.ModelViewSet):
 @permission_classes([AllowAny])
 def getElementOverview(self, request):
     data = request.data
-    gapAnalysis = GapAnalysis.objects.get(id = data.get("id"))
-    element_data = getElementAnswers(data.get("set"), gapAnalysis)
+    gap_analysis = GapAnalysis.objects.get(id = data.get("id"))
+    element_data = get_element_answers(data.get("set"), gap_analysis)
     return Response(element_data)
 
 

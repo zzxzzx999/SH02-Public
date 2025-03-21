@@ -1,8 +1,7 @@
-import React, {useState, useEffect} from 'react';
-import NavBar from './NavBar.js';  // Import the Navbar component
-import { Link, useLocation } from 'react-router-dom';
-import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import NavBar from './NavBar.js'; // Import the Navbar component
 
 function GapAnalysisConfirm() {
   const links = [];
@@ -31,26 +30,17 @@ function GapAnalysisConfirm() {
     </div>
     );
 }
-
 export default GapAnalysisConfirm;
 
 function GapInformation(){
   const links = [];
-
   const location = useLocation();
   const [companyName, setCompanyName] = useState('');
-
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const company = queryParams.get('company');
-    setCompanyName(company);
-  }, [location]);
-
   const [consultant, setConsultant] = useState("");
   const [companyRep, setCompanyRep] = useState("");
   const [companyEmail, setCompanyEmail] = useState("");
   const [url, setUrl] = useState("");
-  const [additionalNotes, setAdditionalNotes] = useState("");
+  const [additional_notes, setAdditionalNotes] = useState("");
 
   const navigate = useNavigate(); 
 
@@ -63,7 +53,7 @@ function GapInformation(){
         consultant: consultant,
         company_rep: companyRep,
         company_email: companyEmail,
-        additional_notes: additionalNotes,
+        additional_notes: additional_notes,
         url: url,
       });
       navigate(`/gap-analysis?company=${companyName}`);
@@ -72,7 +62,12 @@ function GapInformation(){
     }
   };
 
-
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const company = queryParams.get('company');
+    setCompanyName(company);
+  }, [location]);
+  
   return (
   <div className="gap-info">
   <NavBar links={links} logout={true}/>
@@ -138,7 +133,7 @@ function GapInformation(){
       <label> 
       <textarea
           type="text" 
-          value={additionalNotes}
+          value={additional_notes}
           onChange={(e) => setAdditionalNotes(e.target.value)}
           placeholder = "Additional Notes"
           style ={{
@@ -154,4 +149,5 @@ function GapInformation(){
   )
 }
 
-export {GapInformation};
+export { GapInformation };
+
