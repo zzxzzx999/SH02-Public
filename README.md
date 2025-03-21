@@ -72,11 +72,11 @@ Authentication and logging in:
 There are two types of logins on the website, an admin view and a consultant view.
 The consultant view blocks the company list. To create an account with the admin view you set the username GAPAdmin. Any other username will be default to a consultant.
 
-## To login create an account run the command
+### To login create an account run the command
  - python manage.py createsuper
 And fill in the details.
 
-## Running tests 
+### Running tests 
 
 To run the tests for the backend, open a terminal and run:
  - python manage.py tests
@@ -84,7 +84,7 @@ To run the tests for the backend, open a terminal and run:
 To run the tests for the frontend, open a terminal and run:
  - npm run test
 
-## Updating models
+### Updating models
 
 If changes are made to the models, run:
  - python manage.py makemigrations
