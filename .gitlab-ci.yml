@@ -2,8 +2,6 @@ stages:
   - lint
   - build
   - test
-  # - docker
-  # - security
   - deploy
 
 variables:
@@ -29,7 +27,6 @@ cache:
   key: shared-cache
   paths:
     - $FRONTEND_DIR/node_modules/
-   # - $BACKEND_DIR/.venv/
   policy: pull-push
 
 lint-backend:
@@ -42,24 +39,11 @@ lint-backend:
     - cd "$BACKEND_DIR"
     - flake8 ./gap > "$REPORTS_DIR/django-lint-flake8-report.txt" --exit-zero || echo "Flake8 issues found." 
     # Formatting issues, unused imports, indentation errors
-    - mypy ./gap > "$REPORTS_DIR/django-lint-mypy-report.txt" || echo "Mypy issues found, but continuing the pipeline."
-    # Type mismatches, incorrect return types
-
-# TODO: Add frontend linting
-# lint-frontend:
-#   stage: lint
-#   image: node:22.11
-#   script:
-#     - cd "$FRONTEND_DIR"
-#     - npm install -g eslint
-#     - npx eslint . > "$REPORTS_DIR/react-lint-report.txt" || echo "Eslint issues found."
 
 build-backend:
   stage: build
   image: python:3.12
   before_script:
-    # - python -m venv $BACKEND_DIR/.venv 
-    # - source $BACKEND_DIR/.venv/bin/activate
     - cd $BACKEND_DIR
     - pip install -r requirements.txt
   script:
@@ -69,7 +53,6 @@ build-backend:
   artifacts:
     paths:
       - $BACKEND_DIR/staticfiles/
-     # - $BACKEND_DIR/.venv 
 
 build-frontend:
   stage: build
@@ -103,8 +86,6 @@ test-backend:
   script:
     - coverage run --source='.' manage.py test
     - coverage report -m > "$REPORTS_DIR/django-test-coverage-report.txt"
-  #rules:
-  #  - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
 
 test-frontend:
   stage: test
@@ -113,9 +94,7 @@ test-frontend:
     - cd $FRONTEND_DIR
     - npm install
   script:
-    - npm run test:coverage . || true # Temporary change during unit test implementation
-  #rules:
-  #  - if: $CI_COMMIT_BRANCH =~ $FEATURE_BRANCH_PATTERN  # Only run on feature branches
+    - npm run test:coverage .
 
 pages:
   stage: deploy
