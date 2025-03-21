@@ -1,5 +1,24 @@
 ## GAP Analysis Project
-Perform, store and view GAP analysis data for a company or individual. It assesses the effort done to follow Health and Safety regulations through a questionnaire with 12 categories and 10 questions per category. At the end of the questions the website will display the data as graphs and metrics achieved. On the company's page it will show a brief description of the company as well as their latest scores through line and bar charts. The download icon, when pressed, will create the PDF plan of all the data recorded from the GAP analysis. Additionally, the user can click on the various dates below the companies description to view past results. When the user goes on detailed results, they will be greeted by their scores in each section with a piechart, tally and points. The user can login from two different types of accounts, a consultant account and an admin account. The consultant account does not have access to the list of companies page and will have to search for companies through the search bar. Users can add new companies and fill out details related to the individuals being contacted at the company and which consultant is conducting the GAP Analysis. In the list of companies, the user can sort order by score and view the latest GAP score of companies as well as delete companies.
+Perform, store and view GAP analysis data for a company or individual. It assesses the effort done to follow Health and Safety regulations through a questionnaire with 12 categories and 10 questions per category. 
+The user can login from two different types of accounts, a consultant account and an admin account. 
+
+### Admin view
+The user can access the list of companies, and can add new companies.
+When the user clicks on a company's name through the lsit of companies page, they will be taken to the company's dashboard.
+ - Will show the most recent gap analysis data (shown as graphs).
+ - Click the download button to recieve the improvement plan for that gap analysis.
+ - Select a date to view the dashboard for the desired date of the gap analysis.
+ - Click the view results button to view the results of the selected gap analysis.
+
+### Consultant view
+User can add a new company and search for a company. 
+ - The searched company will come up with start gap analysis or resume (if the gap analysis was rpeviosuly saved but not finished)
+
+Once selecting resume/start gap analysis, the users will be taken to the GAP Analysis question page, where they will answer 120 questions (12 elements, 10 questions each) along with evidence and improvement text.
+ - They can save and come back later, or finish and go to results. If they finish, they will be taken to the results of the gap analysis.
+
+### Results Page
+The results page shows an overview page, with the total score out of 600 and some graphs. Through the navbar, you can select an element to view - this will show it's detailed score out of 50.
 
 # Important information on branches
 1. The main branch is for local hosting
