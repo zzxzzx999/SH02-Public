@@ -57,7 +57,7 @@ function AboutUs() {
     <div className="main-content">
       <NavBar links={linksForPage1} logout={true}/> {/* Passing the links to the Navbar component */}
       <div className="about-us-search">
-        <h2 className = "search-text">Gordon Foley Consulting</h2><br></br>
+        <h2 className = "search-text">Company Name</h2><br></br>
         <div className="search-box-and-results">
           <input 
             className="search-box" 
@@ -90,14 +90,13 @@ function AboutUs() {
       <div className="about-us-box">
         <h2>About Us</h2>
         <p>
-        Gordon-Foley Consulting are a health and safety consultancy business, who work with a range of clients across different industrial sectors. 
-        The client range are largely in the SME category with a small number of large multi-national organisations using our services. 
+        Company Content: 
         <br></br><br></br><br></br>
-        The services we provide to you include and are not limited to:<br></br>
-          - Health and Safety Advice and Support<br></br>
-          - Health and Safety Inspections<br></br>
-          - Health and Safety Inspections<br></br>
-          - Health and Safety Training<br></br>
+        The services:<br></br>
+          - text<br></br>
+          - text<br></br>
+          - text<br></br>
+          - text<br></br>
         </p>
       </div>
     </div>

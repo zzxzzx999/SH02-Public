@@ -46,7 +46,7 @@ function Login(){
 
     return (
         <div className = "bubble-container" style={{height:'350px'}}>
-        <img src='/GordonText.png' className="gordon-text-logo" alt="Gordon Foley Logo"/>
+        <img src='/placeholder.png' className="text-logo" alt="Logo"/>
         <form onSubmit={handleSubmit} className="form">
             <label>
             <input 

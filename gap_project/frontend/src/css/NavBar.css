@@ -144,14 +144,14 @@
   align-self: center;
 }
 
-.gordon-logo-container {
+.logo-container {
   display: flex; /* Enable flexbox for positioning */
   align-items: center; /* Vertically center */
   justify-content: space-between; /* Space out the items horizontally */
   padding: 10px;
 }
 
-.gordon-logo {
+.logo {
   width: 40px; /* Default width for expanded state */
   height: auto; /* Maintain aspect ratio */
   transition: width 0.2s ease; /* Smooth width change on collapse/expand */

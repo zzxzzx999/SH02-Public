@@ -209,9 +209,9 @@ def get_scores(request, gap_id, element_name):
 
     gap_data = analysis.gap_data
     element_names = [
-        "Policy", "Management", "Documented System", "Meetings", "Performance Measurement",
-        "Committee & Representatives", "Investigation Process", "Incident Reporting", "Training Plan",
-        "Risk Management Process", "Audit & Inspection Process", "Improvement Planning"
+        "Section 1", "Section 2", "Section 3", "Section 4", "Section 5",
+        "Section 6", "Section 7", "Section 8", "Section 9",
+        "Section 10", "Section 11", "Section 12"
     ]
     element_index = str(element_names.index(element_name) + 1)  # index start from 1
     element_scores = gap_data.get((element_index), [])
@@ -367,9 +367,9 @@ def get_bar_chart_data(request, gap_id):
 
     gap_data = analysis.gap_data
     element_names = [
-        "Policy", "Management", "Documented System", "Meetings", "Performance Measurement",
-        "Committee & Representatives", "Investigation Process", "Incident Reporting", "Training Plan",
-        "Risk Management Process", "Audit & Inspection Process", "Improvement Planning"
+        "Section 1", "Section 2", "Section 3", "Section 4", "Section 5",
+        "Section 6", "Section 7", "Section 8", "Section 9",
+        "Section 10", "Section 11", "Section 12"
     ]
 
     categories = element_names
@@ -427,9 +427,9 @@ def get_pie_chart_data(request, gap_id,element_name):
         return Response({"error": f"GapAnalysis with id {gap_id} not found."}, status=404)
     gap_data = analysis.gap_data
     element_names = [
-        "Policy", "Management", "Documented System", "Meetings", "Performance Measurement",
-        "Committee & Representatives", "Investigation Process", "Incident Reporting", "Training Plan",
-        "Risk Management Process", "Audit & Inspection Process", "Improvement Planning"
+        "Section 1", "Section 2", "Section 3", "Section 4", "Section 5",
+        "Section 6", "Section 7", "Section 8", "Section 9",
+        "Section 10", "Section 11", "Section 12"
     ]
     element_index = str(element_names.index(element_name) + 1) # change to the key of gap_data which is string
     element_scores = gap_data.get(element_index, []) # get all data of this element

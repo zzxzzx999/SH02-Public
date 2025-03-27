@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
-import '../css/Accordion.css'
+import '../css/Accordion.css';
 
 const compliance = {
   1: {text:( <> Unsatisfactory<br /> (Score 1) </> ), color: '#FF0B0B'},
@@ -19,7 +19,7 @@ const AccordionItem = ({ question, score, improvement, evidence, isOpen, onClick
         className={`question-container ${isOpen ? "active" : ""}`}
         onClick={onClick}
       >
-        <p className="question-content">{index+1}. {question}</p>
+        <p className="question-content">{index+1}. Sample question content </p> {/*{question}*/}
         <RiArrowDropDownLine className={`arrow ${isOpen ? "active" : ""}`} />
       </button>
 

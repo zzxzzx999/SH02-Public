@@ -40,11 +40,11 @@ function NavBar({links, logout, isComplete}) {
   return (
     <div ref={pageRef}>
     <nav className={`side-navbar ${collapsed ? 'collapsed' : ''}`}>
-      <div className="gordon-logo-container">
+      <div className="logo-container">
         <img
-          src='/gordonLogo.png'
-          className={`gordon-logo ${collapsed ? 'collapsed' : ''}`}
-          alt="Gordon Foley Logo"
+          src='/placeholder.png'
+          className={`logo ${collapsed ? 'collapsed' : ''}`}
+          alt="Logo"
         />
         {!collapsed && (
           <button className="toggle-btn" onClick={toggleSidebar}>

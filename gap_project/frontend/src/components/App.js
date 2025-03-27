@@ -29,18 +29,18 @@ function App() {
             <Route path="/new-gap-confirm" element={<PrivateRoute element={GapAnalysisConfirm} />} />
             <Route path="/new-gap-information" element={<PrivateRoute element={GapInformation} />} />
             <Route path="/gap-analysis" element={<PrivateRoute element={GapAnalysis} />}/>
-              <Route path="/gap-analysis/policy" element={<PrivateRoute element={Elements} />} />
-              <Route path="/gap-analysis/management" element={<PrivateRoute element={Elements} />} />
-              <Route path="/gap-analysis/documented-system" element={<PrivateRoute element={Elements} />} />
-              <Route path="/gap-analysis/meetings" element={<PrivateRoute element={Elements} />} />
-              <Route path="/gap-analysis/performance-measurement" element={<PrivateRoute element={Elements} />} />
-              <Route path="/gap-analysis/committee-and-representatives" element={<PrivateRoute element={Elements} />} />
-              <Route path="/gap-analysis/investigation-process" element={<PrivateRoute element={Elements} />} />
-              <Route path="/gap-analysis/incident-reporting" element={<PrivateRoute element={Elements} />} />
-              <Route path="/gap-analysis/training-plan" element={<PrivateRoute element={Elements} />} />
-              <Route path="/gap-analysis/risk-management-process" element={<PrivateRoute element={Elements} />} />
-              <Route path="/gap-analysis/audit-and-inspection-process" element={<PrivateRoute element={Elements} />} />
-              <Route path="/gap-analysis/improvement-planning" element={<PrivateRoute element={Elements} />} />
+              <Route path="/gap-analysis/section1" element={<PrivateRoute element={Elements} />} />
+              <Route path="/gap-analysis/section2" element={<PrivateRoute element={Elements} />} />
+              <Route path="/gap-analysis/section3" element={<PrivateRoute element={Elements} />} />
+              <Route path="/gap-analysis/section4" element={<PrivateRoute element={Elements} />} />
+              <Route path="/gap-analysis/section5" element={<PrivateRoute element={Elements} />} />
+              <Route path="/gap-analysis/section6" element={<PrivateRoute element={Elements} />} />
+              <Route path="/gap-analysis/section7" element={<PrivateRoute element={Elements} />} />
+              <Route path="/gap-analysis/section8" element={<PrivateRoute element={Elements} />} />
+              <Route path="/gap-analysis/section9" element={<PrivateRoute element={Elements} />} />
+              <Route path="/gap-analysis/section10" element={<PrivateRoute element={Elements} />} />
+              <Route path="/gap-analysis/section11" element={<PrivateRoute element={Elements} />} />
+              <Route path="/gap-analysis/section12" element={<PrivateRoute element={Elements} />} />
             <Route path="/list-of-companies" element={<PrivateRoute element={ListOfCompany} />}/>
           </Routes>
         </div>

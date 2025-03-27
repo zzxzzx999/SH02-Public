@@ -29,7 +29,8 @@ let gapID = null;
 function Elements() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const set = parseInt(params.get('element'));
+  const sectionName = params.get('element'); // for example "section1"
+  const set = parseInt(sectionName.replace('section', '')) - 1; //change to int index
   const companyName = params.get('company');
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -100,18 +101,18 @@ function Elements() {
   }, []);
 
   const links = [
-    { name: 'Policy', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=0&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Management', path: `/gap-analysis/management?company=${encodeURIComponent(companyName)}&element=1&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Documented System', path: `/gap-analysis/documented-system?company=${encodeURIComponent(companyName)}&element=2&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Meetings', path: `/gap-analysis/meetings?company=${encodeURIComponent(companyName)}&element=3&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Performance Measurement', path: `/gap-analysis/performance-measurement?company=${encodeURIComponent(companyName)}&element=4&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Committee & Representatives', path: `/gap-analysis/committee-and-representatives?company=${encodeURIComponent(companyName)}&element=5&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Investigation Process', path: `/gap-analysis/investigation-process?company=${encodeURIComponent(companyName)}&element=6&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Incident Reporting', path: `/gap-analysis/incident-reporting?company=${encodeURIComponent(companyName)}&element=7&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Training Plan', path: `/gap-analysis/training-plan?company=${encodeURIComponent(companyName)}&element=8&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Risk Management Process', path: `/gap-analysis/risk-management-process?company=${encodeURIComponent(companyName)}&element=9&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Audit & Inspection Process', path: `/gap-analysis/audit-and-inspection-process?company=${encodeURIComponent(companyName)}&element=10&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-    { name: 'Improvement Planning', path: `/gap-analysis/improvement-planning?company=${encodeURIComponent(companyName)}&element=11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Section 1', path: `/gap-analysis/section1?company=${encodeURIComponent(companyName)}&element=section1&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Section 2', path: `/gap-analysis/section2?company=${encodeURIComponent(companyName)}&element=section2&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Section 3', path: `/gap-analysis/section3?company=${encodeURIComponent(companyName)}&element=section3&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Section 4', path: `/gap-analysis/section4?company=${encodeURIComponent(companyName)}&element=section4&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Section 5', path: `/gap-analysis/section5?company=${encodeURIComponent(companyName)}&element=section5&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Section 6', path: `/gap-analysis/section6?company=${encodeURIComponent(companyName)}&element=section6&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Section 7', path: `/gap-analysis/section7?company=${encodeURIComponent(companyName)}&element=section7&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Section 8', path: `/gap-analysis/section8?company=${encodeURIComponent(companyName)}&element=section8&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Section 9', path: `/gap-analysis/section9?company=${encodeURIComponent(companyName)}&element=section9&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Section 10', path: `/gap-analysis/section10?company=${encodeURIComponent(companyName)}&element=section10&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Section 11', path: `/gap-analysis/section11?company=${encodeURIComponent(companyName)}&element=section11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+    { name: 'Section 12', path: `/gap-analysis/section12?company=${encodeURIComponent(companyName)}&element=section12&gap_id=${encodeURIComponent(gapID)}`, image: '' },
   ];
 
   // Send data to API to backend
@@ -157,11 +158,20 @@ function Elements() {
       let allQuestions = [];
       for (let i = 1; i <= 10; i++) {
         const questionData = await fetchQuestion(set + 1, i);
+
+        // initialize Section_Name
+      if (questionData.length > 0 && questionData[0]) {
+        questionData[0] = {
+          ...questionData[0],
+          Section_Name: `Section ${set + 1}`,
+          Section_Number: set + 1
+        };
+      }
         allQuestions = [...allQuestions, ...questionData];
       }
       //add an 11th page : the summary page
       allQuestions.push({
-        Section_Name: "Summary of " + allQuestions[0].Section_Name,
+        Section_Name: `Summary of Section ${set + 1}`,
         Questions: {
           Question_Number: 'Summary', 
           Question_Name: "",
@@ -263,7 +273,8 @@ function Elements() {
           <div className="question-text">
             <p style={{ marginLeft: '16px' }}>
               <strong>{questions[currentQuestionIndex]?.Questions?.Question_Number}: </strong>
-              {questions[currentQuestionIndex]?.Questions?.Question_Name}
+              {/* {questions[currentQuestionIndex]?.Questions?.Question_Number} */}
+              Sample question content
             </p>
           </div>
 
@@ -468,18 +479,18 @@ function GapAnalysis() {
             localStorage.setItem("gapID", gapID);
 
             const newLinks = [
-              { name: 'Policy', path: `/gap-analysis/policy?company=${encodeURIComponent(companyName)}&element=0&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Management', path: `/gap-analysis/management?company=${encodeURIComponent(companyName)}&element=1&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Documented System', path: `/gap-analysis/documented-system?company=${encodeURIComponent(companyName)}&element=2&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Meetings', path: `/gap-analysis/meetings?company=${encodeURIComponent(companyName)}&element=3&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Performance Measurement', path: `/gap-analysis/performance-measurement?company=${encodeURIComponent(companyName)}&element=4&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Committee & Representatives', path: `/gap-analysis/committee-and-representatives?company=${encodeURIComponent(companyName)}&element=5&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Investigation Process', path: `/gap-analysis/investigation-process?company=${encodeURIComponent(companyName)}&element=6&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Incident Reporting', path: `/gap-analysis/incident-reporting?company=${encodeURIComponent(companyName)}&element=7&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Training Plan', path: `/gap-analysis/training-plan?company=${encodeURIComponent(companyName)}&element=8&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Risk Management Process', path: `/gap-analysis/risk-management-process?company=${encodeURIComponent(companyName)}&element=9&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Audit & Inspection Process', path: `/gap-analysis/audit-and-inspection-process?company=${encodeURIComponent(companyName)}&element=10&gap_id=${encodeURIComponent(gapID)}`, image: '' },
-              { name: 'Improvement Planning', path: `/gap-analysis/improvement-planning?company=${encodeURIComponent(companyName)}&element=11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Section 1', path: `/gap-analysis/section1?company=${encodeURIComponent(companyName)}&element=section1&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Section 2', path: `/gap-analysis/section2?company=${encodeURIComponent(companyName)}&element=section2&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Section 3', path: `/gap-analysis/section3?company=${encodeURIComponent(companyName)}&element=section3&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Section 4', path: `/gap-analysis/section4?company=${encodeURIComponent(companyName)}&element=section4&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Section 5', path: `/gap-analysis/section5?company=${encodeURIComponent(companyName)}&element=section5&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Section 6', path: `/gap-analysis/section6?company=${encodeURIComponent(companyName)}&element=section6&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Section 7', path: `/gap-analysis/section7?company=${encodeURIComponent(companyName)}&element=section7&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Section 8', path: `/gap-analysis/section8?company=${encodeURIComponent(companyName)}&element=section8&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Section 9', path: `/gap-analysis/section9?company=${encodeURIComponent(companyName)}&element=section9&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Section 10', path: `/gap-analysis/section10?company=${encodeURIComponent(companyName)}&element=section10&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Section 11', path: `/gap-analysis/section11?company=${encodeURIComponent(companyName)}&element=section11&gap_id=${encodeURIComponent(gapID)}`, image: '' },
+              { name: 'Section 12', path: `/gap-analysis/section12?company=${encodeURIComponent(companyName)}&element=section12&gap_id=${encodeURIComponent(gapID)}`, image: '' },
             ];
           
             setLinks(newLinks);
