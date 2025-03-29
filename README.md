@@ -97,12 +97,3 @@ Jessica Neil
 Tom Hossel
 Zhixuan Zhu 
 Berk Ergezer
-
-# Proprietary Licence
-This software is the **proprietary intellectual property** of the members of SH02, developed as part of an academic project.
-
-**All rights reserved.**
-
-- This codebase is for internal use only.
-- It may not be copied, modified, distributed, or used in any form without explicit written permission from SH02.
-- This project is not open source and is not available for public or commercial use.
