@@ -511,20 +511,20 @@ function GapAnalysis() {
         <div className="purpose-benchmarking">
           <div className="purpose">
             <h2 className="purpose-title">Purpose</h2>
-            <p className="purpose-text">The Gap Analysis tool identifies an organization’s current status in health and safety management.
-            The Gap Analysis applies a set of questions which cover the general scope of a health and safety management system.</p>
+            <p className="purpose-text">The GAP Analysis tool identifies an organization’s current status in [<i>Custom</i>] management.
+            The GAP Analysis applies a set of questions which cover the general scope of a [<i>Custom</i>] management system.</p>
           </div>
           <div className="benchmarking">
             <h2 className="benchmarking-title">Benchmarking</h2>
-            <p className="benchmarking-text">The Gap Analysis benchmarks the organization against Gordon Foley’s ‘best in class’ standards and creates a phased improvement plan for health and safety, with options for periodic progress checks.</p>
+            <p className="benchmarking-text">The GAP Analysis benchmarks the organization against [<i>Custom Company</i>] standards and creates a phased improvement plan for [<i>Custom</i>] management, with options for periodic progress checks.</p>
           </div>
         </div>
-        <p className="gap-intro-outputs">The Gap Analysis process produces 3 main outputs:</p>
+        <p className="gap-intro-outputs">The GAP Analysis process produces 3 main outputs:</p>
         <div className="gap-outputs">
           <ul>
             <div className="output">
               <li className="output-text">
-                  A detailed review as an outcome of the 12 key theme question sets.
+                  A detailed review as an outcome of the [<i>Custom Count n</i>] key theme question sets.
               </li>
               <img src='/review.png' className="output-img" alt="Review" style={{width:"15%", height:"40%"}}/>
             </div>
