@@ -1,24 +1,24 @@
 ## GAP Analysis Project
-Perform, store and view GAP analysis data for a company or individual. It assesses the effort done to follow Health and Safety regulations through a questionnaire with 12 categories and 10 questions per category. 
+Perform, store and view analysis data for a company or individual. 
 The user can login from two different types of accounts, a consultant account and an admin account. 
 
 ### Admin view
 The user can access the list of companies, and can add new companies.
 When the user clicks on a company's name through the lsit of companies page, they will be taken to the company's dashboard.
- - Will show the most recent gap analysis data (shown as graphs).
- - Click the download button to recieve the improvement plan for that gap analysis.
- - Select a date to view the dashboard for the desired date of the gap analysis.
- - Click the view results button to view the results of the selected gap analysis.
+ - Will show the most recent analysis data (shown as graphs).
+ - Click the download button to recieve the improvement plan for that analysis.
+ - Select a date to view the dashboard for the desired date of the analysis.
+ - Click the view results button to view the results of the selected analysis.
 
 ### Consultant view
 User can add a new company and search for a company. 
- - The searched company will come up with start gap analysis or resume (if the gap analysis was rpeviosuly saved but not finished)
+ - The searched company will come up with start analysis or resume (if the analysis was rpeviosuly saved but not finished)
 
-Once selecting resume/start gap analysis, the users will be taken to the GAP Analysis question page, where they will answer 120 questions (12 elements, 10 questions each) along with evidence and improvement text.
- - They can save and come back later, or finish and go to results. If they finish, they will be taken to the results of the gap analysis.
+Once selecting resume/start analysis, the users will be taken to the Analysis question page, where they will answer few questions along with evidence and improvement text.
+ - They can save and come back later, or finish and go to results. If they finish, they will be taken to the results of the analysis.
 
 ### Results Page
-The results page shows an overview page, with the total score out of 600 and some graphs. Through the navbar, you can select an element to view - this will show it's detailed score out of 50.
+The results page shows an overview page, with the total score out of 600 and some graphs. Through the navbar, you can select a section to view - this will show it's detailed score out of 50.
 
 # Important information on branches
 1. The main branch is for local hosting
@@ -37,7 +37,7 @@ Install Python v3.12:
 Open 2 command lines then do the following commands:
 git clone https://stgit.dcs.gla.ac.uk/team-project-h/2024/sh02/sh02-main.git
 
-1. cd SH02-main
+1. cd SH02-Public
 2. cd gap_project
 3. pip install -r requirements.txt
 4. python manage.py migrate
@@ -45,7 +45,7 @@ git clone https://stgit.dcs.gla.ac.uk/team-project-h/2024/sh02/sh02-main.git
 
 On the 2nd command line:
 
-1. cd SH02-main
+1. cd SH02-Public
 2. cd gap_project
 3. cd frontend
 4. npm install
