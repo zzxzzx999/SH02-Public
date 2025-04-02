@@ -20,10 +20,6 @@ Once selecting resume/start analysis, the users will be taken to the Analysis qu
 ### Results Page
 The results page shows an overview page, with the total score out of 600 and some graphs. Through the navbar, you can select a section to view - this will show it's detailed score out of 50.
 
-# Important information on branches
-1. The main branch is for local hosting
-2. The production branch is for updating images on dockerhub and the deployed website.
-
 # Quickstart - Local Hosting
 Install Git:
  - https://git-scm.com/downloads
@@ -54,17 +50,6 @@ On the 2nd command line:
 You can now use the project. Use it through http://localhost:3000
 If you need to view the api, use it through http://localhost:8000 
 (the numbers at the end of the link may change on the port numbers assigned to the terminal)
-
-# Quickstart - Using Production Branch
-No need to install everything again, however you need PostGreSQL V17 for the database:
- - https://www.postgresql.org/download/ 
-
-You can access the frontend link using: 
- - https://gordon-foley-frontend.onrender.com/
-Access the backend API:
- - https://gordon-foley-backend.onrender.com/
-
-**NOTE**: These links will not work apst the 30th of March due to the database service running out of its free service. If you wish to access this after this date, use it locally.
 
 # Example Usage 
 Authentication and logging in:
